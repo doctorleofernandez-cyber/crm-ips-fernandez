@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pacientes | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --rojo: #e05454;
+      --verde: #4caf7d;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px; height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .sidebar-logo img { width: 48px; height: auto; filter: drop-shadow(0 0 8px rgba(201,168,76,0.2)); }
+
+    .logo-sub { font-size: 10px; color: #555; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-section {
+      font-size: 10px; color: #383838;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 12px 10px 4px; margin-top: 6px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px;
+      cursor: pointer; font-size: 13px; color: var(--gris);
+      transition: all 0.2s; text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.1); color: var(--dorado); }
+
+    .nav-icon { width: 18px; text-align: center; font-size: 14px; }
+
+    .sidebar-footer {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .user-info { display: flex; align-items: center; gap: 10px; }
+
+    .user-avatar {
+      width: 32px; height: 32px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--dorado); font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-name { font-size: 13px; font-weight: 500; }
+    .user-role { font-size: 11px; color: var(--gris); }
+
+    .logout-btn {
+      margin-top: 10px; width: 100%; text-align: left;
+      font-size: 11px; color: #444; letter-spacing: 0.5px;
+      cursor: pointer; background: none; border: none;
+      transition: color 0.2s;
+    }
+    .logout-btn:hover { color: var(--dorado); }
+
+    /* ── MAIN ────────────────────────────────── */
+    .main { margin-left: 240px; padding: 32px 40px; min-height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .page-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+
+    .btn-nuevo {
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 22px;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      border: none; border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--negro); letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(201,168,76,0.35); transform: translateY(-1px); }
+
+    /* ── BARRA DE BÚSQUEDA ───────────────────── */
+    .search-bar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .search-wrap {
+      flex: 1; position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 8px;
+      padding: 11px 16px 11px 40px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-wrap input::placeholder { color: #444; }
+    .search-wrap input:focus { border-color: rgba(201,168,76,0.4); }
+
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px; color: #444; pointer-events: none;
+    }
+
+    .filter-select {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px; color: var(--gris);
+      font-family: 'Inter', sans-serif;
+      outline: none; cursor: pointer;
+      appearance: none;
+      min-width: 140px;
+    }
+    .filter-select:focus { border-color: rgba(201,168,76,0.4); }
+
+    /* ── TABLA ───────────────────────────────── */
+    .table-wrap {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .table-info { font-size: 12px; color: var(--gris); }
+    .table-info span { color: var(--dorado); font-weight: 600; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      padding: 12px 20px;
+      font-size: 10px; font-weight: 600;
+      color: #444; letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+    td {
+      padding: 14px 20px;
+      font-size: 13px; color: var(--blanco);
+      vertical-align: middle;
+    }
+
+    .td-name { font-weight: 500; }
+    .td-doc { color: var(--gris); font-size: 12px; }
+
+    .avatar-cell {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .avatar-mini {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--dorado);
+      font-weight: 600; flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .badge-activo   { background: rgba(76,175,125,0.12); color: var(--verde); }
+    .badge-inactivo { background: rgba(224,84,84,0.1);   color: var(--rojo); }
+
+    .td-actions { display: flex; gap: 6px; }
+
+    .btn-icon {
+      width: 30px; height: 30px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--gris); font-size: 13px;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-icon.del:hover { border-color: rgba(224,84,84,0.3); color: var(--rojo); }
+
+    .empty-state {
+      text-align: center; padding: 64px 24px; color: #333;
+    }
+    .empty-state p { font-size: 13px; letter-spacing: 1px; margin-top: 8px; }
+    .empty-state .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.3; }
+
+    /* ── MODAL ───────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      display: none; align-items: center; justify-content: center;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: #161616;
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 16px;
+      width: 100%; max-width: 620px;
+      max-height: 90vh; overflow-y: auto;
+      padding: 36px 40px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; }
+    .modal-title span { color: var(--dorado); }
+
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: none; color: var(--gris);
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+
+    .form-divider {
+      font-size: 10px; color: #383838;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin: 20px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-row.full { grid-template-columns: 1fr; }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 10px; font-weight: 600;
+      color: var(--dorado); letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+      resize: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #333; }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: rgba(201,168,76,0.4);
+      background: rgba(201,168,76,0.03);
+    }
+
+    .form-group select option { background: #1a1a1a; }
+
+    .modal-footer {
+      display: flex; gap: 12px; justify-content: flex-end;
+      margin-top: 28px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .btn-cancel {
+      padding: 10px 22px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: none; color: var(--gris);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: var(--blanco); }
+
+    .btn-guardar {
+      padding: 10px 26px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      border: none; color: var(--negro);
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-guardar:hover { box-shadow: 0 4px 16px rgba(201,168,76,0.3); transform: translateY(-1px); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: #1a1a1a; border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 10px; padding: 14px 20px;
+      font-size: 13px; color: var(--blanco);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      z-index: 999; display: none;
+      animation: toastIn 0.3s ease;
+    }
+    .toast.show { display: block; }
+    .toast span { color: var(--dorado); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="assets/logo.png" alt="IPS Fernández" />
+    <div class="logo-sub">Sistema CRM</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-section">Principal</div>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">⊞</span> Inicio
+    </a>
+
+    <div class="nav-section">Comunicaciones</div>
+    <a href="chat.html" class="nav-item">
+      <span class="nav-icon">💬</span> Inbox de chat
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">✉️</span> Inbox de correo
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👥</span> Chats de equipo
+    </a>
+
+    <div class="nav-section">Pipelines</div>
+    <a href="pipeline.html" class="nav-item">
+      <span class="nav-icon">◈</span> Leo Fernández
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">◇</span> Todos los leads
+    </a>
+
+    <div class="nav-section">Insights</div>
+    <a href="insights.html" class="nav-item">
+      <span class="nav-icon">◈</span> Panel
+    </a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+    <div class="nav-section">Gestión</div>
+    <a href="pacientes.html" class="nav-item active">
+      <span class="nav-icon">◇</span> Contactos
+    </a>
+    <a href="citas.html" class="nav-item">
+      <span class="nav-icon">📅</span> Calendario
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">◇</span> Facturación
+    </a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item">
+      <span class="nav-icon">⚙</span> Ajustes
+    </a>
+      </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">LF</div>
+      <div>
+        <div class="user-name">Dr. Fernández</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<main class="main">
+  <div class="topbar">
+    <h1 class="page-title">Módulo de <span>Pacientes</span></h1>
+    <button class="btn-nuevo" onclick="abrirModal()">+ Nuevo Paciente</button>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Buscar por nombre o documento…" oninput="renderTabla()" />
+    </div>
+    <select class="filter-select" id="filterEstado" onchange="renderTabla()">
+      <option value="">Todos los estados</option>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+    <select class="filter-select" id="filterGenero" onchange="renderTabla()">
+      <option value="">Todos los géneros</option>
+      <option value="M">Masculino</option>
+      <option value="F">Femenino</option>
+      <option value="O">Otro</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-info">Total: <span id="totalCount">0</span> pacientes</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Documento</th>
+          <th>Teléfono</th>
+          <th>EPS</th>
+          <th>Último ingreso</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tablaPacientes"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">⊙</div>
+      <p>No se encontraron pacientes</p>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODAL NUEVO / EDITAR PACIENTE ─────────── -->
+<div class="overlay" id="overlay" onclick="cerrarModalOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitulo">Nuevo <span>Paciente</span></h2>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+
+    <form id="formPaciente" onsubmit="guardarPaciente(event)">
+      <input type="hidden" id="pacienteId" />
+
+      <div class="form-divider">Datos personales</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombres *</label>
+          <input type="text" id="nombres" placeholder="Ej. María José" required />
+        </div>
+        <div class="form-group">
+          <label>Apellidos *</label>
+          <input type="text" id="apellidos" placeholder="Ej. Ramírez López" required />
+        </div>
+      </div>
+
+      <div class="form-row three">
+        <div class="form-group">
+          <label>Tipo de documento</label>
+          <select id="tipoDoc">
+            <option value="CC">Cédula (CC)</option>
+            <option value="TI">Tarjeta de identidad</option>
+            <option value="CE">Cédula extranjería</option>
+            <option value="PA">Pasaporte</option>
+            <option value="RC">Registro civil</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Número de documento *</label>
+          <input type="text" id="numDoc" placeholder="123456789" required />
+        </div>
+        <div class="form-group">
+          <label>Género</label>
+          <select id="genero">
+            <option value="F">Femenino</option>
+            <option value="M">Masculino</option>
+            <option value="O">Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fecha de nacimiento</label>
+          <input type="date" id="fechaNac" />
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-divider">Contacto</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="tel" id="telefono" placeholder="300 000 0000" required />
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="email" placeholder="correo@ejemplo.com" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" id="direccion" placeholder="Calle 1 # 2-3, Ciudad" />
+        </div>
+      </div>
+
+      <div class="form-divider">Información médica</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>EPS / Aseguradora</label>
+          <input type="text" id="eps" placeholder="Ej. Nueva EPS, Sura…" />
+        </div>
+        <div class="form-group">
+          <label>Grupo sanguíneo</label>
+          <select id="grupoSanguineo">
+            <option value="">— Seleccionar —</option>
+            <option>O+</option><option>O-</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Alergias</label>
+          <input type="text" id="alergias" placeholder="Ej. Penicilina, Ibuprofeno…" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Antecedentes médicos</label>
+          <textarea id="antecedentes" rows="3" placeholder="Antecedentes relevantes…"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-guardar">Guardar paciente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── Utilidades ──────────────────────────── */
+  const KEY = 'ips_pacientes';
+
+  function cargar()    { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  function guardar(d)  { localStorage.setItem(KEY, JSON.stringify(d)); }
+  function uid()       { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function calcularEdad(fechaNac) {
+    if (!fechaNac) return '—';
+    const hoy = new Date(), nac = new Date(fechaNac);
+    let edad = hoy.getFullYear() - nac.getFullYear();
+    if (hoy < new Date(hoy.getFullYear(), nac.getMonth(), nac.getDate())) edad--;
+    return edad + ' años';
+  }
+
+  function formatFecha(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function inicialesNombre(n, a) {
+    return ((n[0] || '') + (a[0] || '')).toUpperCase();
+  }
+
+  /* ── Renderizado de tabla ────────────────── */
+  function renderTabla() {
+    const q        = document.getElementById('searchInput').value.toLowerCase();
+    const filtEst  = document.getElementById('filterEstado').value;
+    const filtGen  = document.getElementById('filterGenero').value;
+    const datos    = cargar();
+
+    let filtrados = datos.filter(p => {
+      const texto = `${p.nombres} ${p.apellidos} ${p.numDoc}`.toLowerCase();
+      return (!q || texto.includes(q))
+          && (!filtEst || p.estado === filtEst)
+          && (!filtGen || p.genero === filtGen);
+    });
+
+    document.getElementById('totalCount').textContent = filtrados.length;
+
+    const tbody = document.getElementById('tablaPacientes');
+    const empty = document.getElementById('emptyState');
+
+    if (filtrados.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtrados.map(p => `
+      <tr onclick="verPerfil('${p.id}')" style="cursor:pointer">
+        <td>
+          <div class="avatar-cell">
+            <div class="avatar-mini">${inicialesNombre(p.nombres, p.apellidos)}</div>
+            <div>
+              <div class="td-name">${p.nombres} ${p.apellidos}</div>
+              <div class="td-doc">${calcularEdad(p.fechaNac)}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="td-name">${p.tipoDoc} ${p.numDoc}</div>
+        </td>
+        <td>${p.telefono || '—'}</td>
+        <td>${p.eps || '—'}</td>
+        <td>${formatFecha(p.fechaRegistro)}</td>
+        <td><span class="badge badge-${p.estado}">${p.estado}</span></td>
+        <td>
+          <div class="td-actions" onclick="event.stopPropagation()">
+            <button class="btn-icon" title="Editar" onclick="editarPaciente('${p.id}')">✎</button>
+            <button class="btn-icon del" title="Eliminar" onclick="eliminarPaciente('${p.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ── Modal ───────────────────────────────── */
+  function abrirModal(paciente = null) {
+    document.getElementById('formPaciente').reset();
+    document.getElementById('overlay').classList.add('open');
+
+    if (paciente) {
+      document.getElementById('modalTitulo').innerHTML = 'Editar <span>Paciente</span>';
+      document.getElementById('pacienteId').value  = paciente.id;
+      document.getElementById('nombres').value     = paciente.nombres;
+      document.getElementById('apellidos').value   = paciente.apellidos;
+      document.getElementById('tipoDoc').value     = paciente.tipoDoc;
+      document.getElementById('numDoc').value      = paciente.numDoc;
+      document.getElementById('genero').value      = paciente.genero;
+      document.getElementById('fechaNac').value    = paciente.fechaNac || '';
+      document.getElementById('estado').value      = paciente.estado;
+      document.getElementById('telefono').value    = paciente.telefono || '';
+      document.getElementById('email').value       = paciente.email || '';
+      document.getElementById('direccion').value   = paciente.direccion || '';
+      document.getElementById('eps').value         = paciente.eps || '';
+      document.getElementById('grupoSanguineo').value = paciente.grupoSanguineo || '';
+      document.getElementById('alergias').value    = paciente.alergias || '';
+      document.getElementById('antecedentes').value = paciente.antecedentes || '';
+    } else {
+      document.getElementById('modalTitulo').innerHTML = 'Nuevo <span>Paciente</span>';
+      document.getElementById('pacienteId').value = '';
+    }
+  }
+
+  function cerrarModal() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function cerrarModalOverlay(e) {
+    if (e.target === document.getElementById('overlay')) cerrarModal();
+  }
+
+  /* ── CRUD ────────────────────────────────── */
+  function guardarPaciente(e) {
+    e.preventDefault();
+    const datos = cargar();
+    const id    = document.getElementById('pacienteId').value;
+
+    const paciente = {
+      nombres:       document.getElementById('nombres').value.trim(),
+      apellidos:     document.getElementById('apellidos').value.trim(),
+      tipoDoc:       document.getElementById('tipoDoc').value,
+      numDoc:        document.getElementById('numDoc').value.trim(),
+      genero:        document.getElementById('genero').value,
+      fechaNac:      document.getElementById('fechaNac').value,
+      estado:        document.getElementById('estado').value,
+      telefono:      document.getElementById('telefono').value.trim(),
+      email:         document.getElementById('email').value.trim(),
+      direccion:     document.getElementById('direccion').value.trim(),
+      eps:           document.getElementById('eps').value.trim(),
+      grupoSanguineo:document.getElementById('grupoSanguineo').value,
+      alergias:      document.getElementById('alergias').value.trim(),
+      antecedentes:  document.getElementById('antecedentes').value.trim(),
+    };
+
+    if (id) {
+      const idx = datos.findIndex(p => p.id === id);
+      if (idx !== -1) datos[idx] = { ...datos[idx], ...paciente };
+      toast(`✎ Paciente <span>${paciente.nombres}</span> actualizado`);
+    } else {
+      paciente.id = uid();
+      paciente.fechaRegistro = new Date().toISOString().split('T')[0];
+      datos.push(paciente);
+      toast(`✓ Paciente <span>${paciente.nombres}</span> registrado`);
+    }
+
+    guardar(datos);
+    cerrarModal();
+    renderTabla();
+  }
+
+  function verPerfil(id) {
+    location.href = 'paciente-perfil.html?id=' + id;
+  }
+
+  function editarPaciente(id) {
+    const p = cargar().find(p => p.id === id);
+    if (p) abrirModal(p);
+  }
+
+  function eliminarPaciente(id) {
+    const datos = cargar();
+    const p     = datos.find(p => p.id === id);
+    if (!p) return;
+    if (!confirm(`¿Eliminar a ${p.nombres} ${p.apellidos}? Esta acción no se puede deshacer.`)) return;
+    guardar(datos.filter(p => p.id !== id));
+    toast(`Paciente eliminado`);
+    renderTabla();
+  }
+
+  /* ── Init ────────────────────────────────── */
+  renderTabla();
+</script>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

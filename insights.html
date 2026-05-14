@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insights | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --negro-card: #141a14;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde-wa: #25D366;
+      --morado-ig: #C13584;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── FONDO ANIMADO ── */
+    .bg-video-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Video real (si existe assets/bg.mp4) */
+    .bg-video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+    }
+
+    /* Overlay oscuro sobre el video */
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.3) 40%,
+        rgba(0,0,0,0.6) 100%
+      );
+    }
+
+    /* Orbes CSS animados como fallback / capa adicional */
+    .bg-orbs {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: floatOrb linear infinite;
+      opacity: 0;
+    }
+
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+      top: -10%; left: 10%;
+      animation-duration: 22s;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      top: 30%; right: 5%;
+      animation-duration: 28s;
+      animation-delay: -8s;
+    }
+
+    .orb-3 {
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(100,80,20,0.15) 0%, transparent 70%);
+      bottom: -5%; left: 30%;
+      animation-duration: 35s;
+      animation-delay: -15s;
+    }
+
+    .orb-4 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: 10%; right: 30%;
+      animation-duration: 18s;
+      animation-delay: -5s;
+    }
+
+    @keyframes floatOrb {
+      0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      50%  { transform: translate(40px, -30px) scale(1.08); opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translate(0, 0) scale(1);   opacity: 0; }
+    }
+
+    /* Estrellas/partículas de polvo dorado */
+    .bg-dust {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(201,168,76,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 65%, rgba(201,168,76,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 35%, rgba(201,168,76,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 70%, rgba(201,168,76,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 85%, rgba(201,168,76,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 10%, rgba(201,168,76,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 35% 50%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 100%);
+      animation: driftDust 60s linear infinite;
+    }
+
+    @keyframes driftDust {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-20px); }
+    }
+
+    /* Todo lo demás va sobre el fondo */
+    .sidebar, .main { position: relative; z-index: 1; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      height: 100vh;
+      background: rgba(18,18,18,0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 22px 18px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 1px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+      border-radius: 7px; cursor: pointer; font-size: 12px; color: var(--gris);
+      transition: all 0.2s; text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-item.sub { padding-left: 24px; font-size: 11.5px; }
+    .nav-item.sub.active { background: rgba(201,168,76,0.08); color: var(--dorado); }
+
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-chevron { margin-left: auto; font-size: 10px; color: #444; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer { padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: rgba(10,10,10,0.55);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      gap: 12px;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.25);
+    }
+
+    .search-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 7px 14px;
+    }
+
+    .search-wrap input {
+      background: none; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      color: var(--blanco); width: 100%;
+    }
+
+    .search-wrap input::placeholder { color: #444; }
+
+    .btn-actividades {
+      font-size: 12px; font-weight: 600;
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--blanco);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-actividades:hover { border-color: rgba(201,168,76,0.3); }
+
+    /* Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 24px;
+    }
+
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-track { background: transparent; }
+    .content::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+    /* Nombre usuario */
+    .page-username {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--blanco);
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Filtros de tiempo */
+    .filters {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 4px;
+      gap: 2px;
+    }
+
+    .f-btn {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--gris);
+      border: none;
+      background: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .f-btn:hover { color: var(--blanco); }
+    .f-btn.active { background: rgba(201,168,76,0.15); color: var(--dorado); font-weight: 600; }
+
+    .f-btn.icon { display: flex; align-items: center; gap: 5px; }
+
+    .filter-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 8px;
+    }
+
+    .f-select {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--gris);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; gap: 5px;
+      transition: border-color 0.2s;
+    }
+
+    .f-select:hover { border-color: rgba(201,168,76,0.3); color: var(--blanco); }
+
+    .f-config {
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--gris);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .f-config:hover { border-color: rgba(201,168,76,0.3); color: var(--blanco); }
+
+    /* ── GRID DE TARJETAS ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 2fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 20px;
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    .card:hover {
+      border-color: rgba(201,168,76,0.3);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .card-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 12px;
+    }
+
+    .card-value {
+      font-size: 52px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      color: var(--dorado);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .card-value.md { font-size: 40px; }
+
+    .card-period {
+      font-size: 11px;
+      color: #444;
+      margin-bottom: 16px;
+    }
+
+    .card-delta {
+      font-size: 12px;
+      color: rgba(201,168,76,0.6);
+      margin-top: 6px;
+    }
+
+    .card-delta.pos { color: #4CAF82; }
+
+    /* Canal breakdown */
+    .channel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 14px;
+    }
+
+    .channel-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ch-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ch-dot.wa { background: var(--verde-wa); }
+    .ch-dot.ig { background: var(--morado-ig); }
+    .ch-dot.tk { background: #fff; }
+    .ch-dot.chat { background: var(--dorado); }
+    .ch-dot.otros { background: #444; }
+
+    .ch-name { font-size: 12px; color: var(--gris); flex: 1; }
+    .ch-count { font-size: 12px; font-weight: 600; color: var(--blanco); margin-right: 8px; white-space: nowrap; }
+
+    .ch-bar-wrap {
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      margin-top: 3px;
+    }
+
+    .ch-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: rgba(201,168,76,0.4);
+    }
+
+    /* Gráfico fuentes (arc SVG) */
+    .sources-card { display: flex; flex-direction: column; }
+
+    .sources-body {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .arc-wrap {
+      flex-shrink: 0;
+      position: relative;
+      width: 110px;
+      height: 110px;
+    }
+
+    .arc-wrap svg { width: 100%; height: 100%; }
+
+    .arc-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arc-center-val { font-size: 18px; font-weight: 700; color: var(--dorado); }
+    .arc-center-lbl { font-size: 9px; color: #444; letter-spacing: 1px; }
+
+    .sources-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--gris);
+    }
+
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Fila 2 — tarjetas pequeñas */
+    .card.span2 { grid-column: span 2; }
+
+    /* Estado vacío de tarjeta */
+    .card-empty {
+      font-size: 11px;
+      color: #2a2a2a;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Divisor */
+    .card-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(201,168,76,0.2);
+      margin: 10px 0;
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── FONDO ANIMADO ── -->
+  <div class="bg-video-wrap">
+    <!-- Reemplaza bg.mp4 con tu video en assets/ -->
+    <video autoplay muted loop playsinline>
+      <source src="assets/bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="orb orb-4"></div>
+    </div>
+    <div class="bg-dust"></div>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">⊞</span> Inicio
+      </a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item">
+        <span class="nav-icon">💬</span> Inbox de chat
+        <span class="nav-badge">0</span>
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">✉️</span> Inbox de correo
+        <span class="nav-badge alt">0</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👥</span> Chats de equipo
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🤖</span> Bots
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📋</span> Plantillas
+        <span class="nav-chevron">›</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📢</span> Difusiones
+      </div>
+
+      <div class="nav-section">Insights</div>
+      <div class="nav-item sub active">
+        <span class="nav-icon">◈</span> Panel
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> ROI
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> Ganancias y pérdidas
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> Reporte consolidado
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> Reporte de actividades
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> Registro de actividades
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> Reporte de llamadas
+      </div>
+      <div class="nav-item sub">
+        <span class="nav-icon">◇</span> WhatsApp Business
+      </div>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item">
+        <span class="nav-icon">◈</span> IPS Fernández O & M
+      </a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="citas.html" class="nav-item">
+        <span class="nav-icon">📅</span> Calendario
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Contactos
+      </div>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item">
+        <span class="nav-icon">⚙</span> Ajustes
+      </a>
+        </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">IPS Fernández O & M</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="search-wrap">
+        <span style="color:#444;font-size:13px">🔍</span>
+        <input type="text" placeholder="Buscar" />
+      </div>
+      <button class="btn-actividades">☰ &nbsp;ACTIVIDADES</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <div class="page-username">IPS Fernández O & M</div>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <div class="filter-group">
+          <button class="f-btn" onclick="setFilter(this)">Hoy</button>
+          <button class="f-btn" onclick="setFilter(this)">Ayer</button>
+          <button class="f-btn active" onclick="setFilter(this)">Semana</button>
+          <button class="f-btn" onclick="setFilter(this)">Mes</button>
+          <button class="f-btn icon" onclick="setFilter(this)">📅 Fechas</button>
+        </div>
+        <div class="filter-right">
+          <div class="f-select">Todo</div>
+          <div class="f-select">Elija un usuario &nbsp;▾</div>
+          <div class="f-config">⚙ Configurar</div>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="cards-grid">
+
+        <!-- 1. Mensajes Entrantes (ancho 2) -->
+        <div class="card">
+          <div class="card-label">Mensajes Entrantes</div>
+          <div class="card-value">—</div>
+          <div class="card-period">por semana</div>
+          <div class="channel-list">
+            <div>
+              <div class="channel-row">
+                <div class="ch-dot wa"></div>
+                <span class="ch-name">WhatsApp Cloud API</span>
+                <span class="ch-count">—</span>
+              </div>
+              <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="channel-row">
+                <div class="ch-dot ig"></div>
+                <span class="ch-name">Instagram</span>
+                <span class="ch-count">—</span>
+              </div>
+              <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="channel-row">
+                <div class="ch-dot tk"></div>
+                <span class="ch-name">TikTok</span>
+                <span class="ch-count">—</span>
+              </div>
+              <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="channel-row">
+                <div class="ch-dot chat"></div>
+                <span class="ch-name">Chats</span>
+                <span class="ch-count">—</span>
+              </div>
+              <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="channel-row">
+                <div class="ch-dot otros"></div>
+                <span class="ch-name">Otros</span>
+                <span class="ch-count">—</span>
+              </div>
+              <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Diálogos Vigentes -->
+        <div class="card">
+          <div class="card-label">Diálogos Vigentes</div>
+          <div class="card-value md">—</div>
+          <div class="card-divider"></div>
+          <div class="card-delta">— por semana</div>
+        </div>
+
+        <!-- 3. Diálogos Sin Réplica -->
+        <div class="card">
+          <div class="card-label">Diálogos Sin Réplica</div>
+          <div class="card-value md">—</div>
+          <div class="card-divider"></div>
+          <div class="card-delta">— por semana</div>
+        </div>
+
+        <!-- 4. Fuentes de Leads (ancho 2) -->
+        <div class="card sources-card">
+          <div class="card-label">Fuentes de Leads</div>
+          <div class="sources-body">
+            <div class="arc-wrap">
+              <svg viewBox="0 0 110 110" fill="none">
+                <circle cx="55" cy="55" r="44" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+                <circle cx="55" cy="55" r="44"
+                  stroke="rgba(201,168,76,0.15)"
+                  stroke-width="12"
+                  stroke-linecap="round"
+                  stroke-dasharray="276.46"
+                  stroke-dashoffset="276.46"
+                  transform="rotate(-90 55 55)"/>
+              </svg>
+              <div class="arc-center">
+                <div class="arc-center-val">—</div>
+                <div class="arc-center-lbl">LEADS</div>
+              </div>
+            </div>
+            <div class="sources-legend">
+              <div class="legend-row">
+                <div class="legend-dot" style="background:var(--dorado)"></div>
+                IPS Fernández O & M
+              </div>
+              <div class="legend-row">
+                <div class="legend-dot" style="background:var(--verde-wa)"></div>
+                WhatsApp
+              </div>
+              <div class="legend-row">
+                <div class="legend-dot" style="background:var(--morado-ig)"></div>
+                Instagram
+              </div>
+              <div class="legend-row">
+                <div class="legend-dot" style="background:#fff"></div>
+                TikTok
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2 -->
+
+        <!-- 5. Lapso Medio de Réplica -->
+        <div class="card">
+          <div class="card-label">Lapso Medio de Réplica</div>
+          <div class="card-value md">—</div>
+          <div class="card-period">por semana</div>
+          <div class="card-divider"></div>
+        </div>
+
+        <!-- 6. Lapso Mayor de Réplica -->
+        <div class="card">
+          <div class="card-label">Lapso Mayor de Réplica</div>
+          <div class="card-value md">—</div>
+          <div class="card-divider"></div>
+        </div>
+
+        <!-- 7. Leads Ganados -->
+        <div class="card">
+          <div class="card-label">Leads Ganados</div>
+          <div class="card-value md">—</div>
+          <div style="font-size:12px;color:#444;">$0</div>
+          <div class="card-divider"></div>
+          <div class="card-delta">0</div>
+        </div>
+
+        <!-- 8. Cantidad de Leads Activos -->
+        <div class="card">
+          <div class="card-label">Cantidad de Leads Activos</div>
+          <div class="card-value md">—</div>
+          <div style="font-size:12px;color:#444;">$0</div>
+          <div class="card-divider"></div>
+          <div class="card-delta pos">— por semana</div>
+        </div>
+
+        <!-- 9. Tareas -->
+        <div class="card">
+          <div class="card-label">Tareas</div>
+          <div class="card-value md">—</div>
+          <div class="card-divider"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setFilter(btn) {
+      btn.closest('.filter-group').querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

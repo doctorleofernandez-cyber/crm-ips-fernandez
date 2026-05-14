@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inbox de Chat | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --negro-medio: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde-wa: #25D366;
+      --morado-ig: #C13584;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 22px 18px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 10px 10px 4px; margin-top: 6px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 9px; padding: 9px 10px;
+      border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris);
+      transition: all 0.2s; text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── LISTA DE CHATS ── */
+    .chat-list-panel {
+      width: 320px;
+      flex-shrink: 0;
+      height: 100vh;
+      border-right: 1px solid rgba(201,168,76,0.1);
+      display: flex;
+      flex-direction: column;
+      background: var(--negro-medio);
+    }
+
+    .search-bar {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-icon { color: #444; font-size: 14px; flex-shrink: 0; }
+
+    .search-input {
+      background: none; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      color: var(--blanco); width: 100%;
+    }
+
+    .search-input::placeholder { color: #444; }
+
+    .chat-filter-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); gap: 8px;
+    }
+
+    .filter-chip { font-size: 11px; font-weight: 600; background: rgba(201,168,76,0.15); color: var(--dorado); border: 1px solid rgba(201,168,76,0.3); padding: 4px 10px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+    .filter-total { font-size: 11px; color: #555; margin-left: auto; white-space: nowrap; }
+    .filter-dots { font-size: 16px; color: #444; cursor: pointer; padding: 0 2px; }
+
+    .chat-list { flex: 1; overflow-y: auto; }
+    .chat-list::-webkit-scrollbar { width: 4px; }
+    .chat-list::-webkit-scrollbar-track { background: transparent; }
+    .chat-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+    /* Estado vacío lista */
+    .list-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #2a2a2a;
+      padding: 60px 20px;
+      text-align: center;
+      height: 100%;
+    }
+
+    .list-empty-icon { font-size: 32px; opacity: 0.3; }
+    .list-empty-text { font-size: 12px; color: #333; }
+
+    /* ── PANEL DERECHO ── */
+    .chat-view {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--negro-suave);
+    }
+
+    .chat-view-header {
+      padding: 0 24px;
+      height: 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-view-title { font-size: 13px; color: #444; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #2a2a2a;
+    }
+
+    .empty-icon { font-size: 36px; opacity: 0.25; }
+    .empty-text { font-size: 13px; color: #333; letter-spacing: 0.3px; }
+
+    .chat-input-area {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-box {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      transition: border-color 0.2s;
+    }
+
+    .input-box::placeholder { color: #333; }
+    .input-box:focus { border-color: rgba(201,168,76,0.3); }
+
+    .send-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+      color: #444; font-size: 16px; cursor: not-allowed;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+  </style>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">⊞</span> Inicio
+      </a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <div class="nav-item active">
+        <span class="nav-icon">💬</span> Inbox de chat
+        <span class="nav-badge">0</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">✉️</span> Inbox de correo
+        <span class="nav-badge alt">0</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👥</span> Chats de equipo
+      </div>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item">
+        <span class="nav-icon">◈</span> Leo Fernández
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Todos los leads
+      </div>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="citas.html" class="nav-item">
+        <span class="nav-icon">📅</span> Calendario
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Contactos
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Empresas
+      </div>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item">
+        <span class="nav-icon">⚙</span> Ajustes
+      </a>
+        </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── LISTA DE CHATS ── -->
+  <section class="chat-list-panel">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Buscar" />
+    </div>
+
+    <div class="chat-filter-bar">
+      <span class="filter-chip">Chats abiertos</span>
+      <span class="filter-total">Total: 0</span>
+      <span class="filter-dots">···</span>
+    </div>
+
+    <div class="chat-list">
+      <div class="list-empty">
+        <div class="list-empty-icon">💬</div>
+        <div class="list-empty-text">Sin conversaciones aún</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PANEL CONVERSACIÓN ── -->
+  <section class="chat-view">
+    <div class="chat-view-header">
+      <span class="chat-view-title">Seleccione un hilo para comenzar a enviar mensajes</span>
+    </div>
+
+    <div class="chat-messages">
+      <div class="empty-state">
+        <div class="empty-icon">💬</div>
+        <div class="empty-text">Seleccione un hilo para comenzar a enviar mensajes</div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea class="input-box" rows="1" placeholder="Selecciona una conversación..." disabled></textarea>
+      <div class="send-btn">➤</div>
+    </div>
+  </section>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

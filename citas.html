@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Citas | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4caf7d;
+      --amarillo: #e0b84c;
+      --rojo: #e05454;
+      --azul: #5490e0;
+    }
+
+    body {
+      background: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ────────────────────────────── */
+    .sidebar {
+      position: fixed; top: 0; left: 0;
+      width: 240px; height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-logo img { width: 48px; height: auto; filter: drop-shadow(0 0 8px rgba(201,168,76,0.2)); }
+    .logo-sub { font-size: 10px; color: #555; letter-spacing: 1.5px; text-transform: uppercase; }
+    .nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section { font-size: 10px; color: #383838; letter-spacing: 2px; text-transform: uppercase; padding: 12px 10px 4px; margin-top: 6px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.1); color: var(--dorado); }
+    .nav-icon { width: 18px; text-align: center; font-size: 14px; }
+    .sidebar-footer { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--dorado); font-weight: 600; flex-shrink: 0; }
+    .user-name { font-size: 13px; font-weight: 500; }
+    .user-role { font-size: 11px; color: var(--gris); }
+    .logout-btn { margin-top: 10px; width: 100%; text-align: left; font-size: 11px; color: #444; cursor: pointer; background: none; border: none; transition: color 0.2s; }
+    .logout-btn:hover { color: var(--dorado); }
+
+    /* ── MAIN ───────────────────────────────── */
+    .main { margin-left: 240px; padding: 32px 40px; min-height: 100vh; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .view-toggle { display: flex; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.15); border-radius: 8px; overflow: hidden; }
+    .view-btn { padding: 8px 16px; font-size: 12px; color: var(--gris); cursor: pointer; background: none; border: none; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .view-btn.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+
+    .btn-nuevo { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(201,168,76,0.35); transform: translateY(-1px); }
+
+    /* ── FILTROS ────────────────────────────── */
+    .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-chip { padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: none; color: var(--gris); transition: all 0.2s; }
+    .filter-chip:hover { border-color: rgba(201,168,76,0.3); color: var(--blanco); }
+    .filter-chip.active { border-color: var(--dorado); color: var(--dorado); background: rgba(201,168,76,0.08); }
+    .filter-chip.chip-pendiente.active  { border-color: var(--amarillo); color: var(--amarillo); background: rgba(224,184,76,0.08); }
+    .filter-chip.chip-confirmada.active { border-color: var(--verde);    color: var(--verde);    background: rgba(76,175,125,0.08); }
+    .filter-chip.chip-cancelada.active  { border-color: var(--rojo);     color: var(--rojo);     background: rgba(224,84,84,0.08); }
+    .filter-chip.chip-completada.active { border-color: var(--azul);     color: var(--azul);     background: rgba(84,144,224,0.08); }
+
+    .search-date { display: flex; gap: 10px; margin-bottom: 20px; }
+    .search-date input { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.15); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+    .search-date input:focus { border-color: rgba(201,168,76,0.4); }
+    .search-date input[type="text"] { flex: 1; }
+
+    /* ── VISTA LISTA ────────────────────────── */
+    #vistaLista { display: block; }
+
+    .table-wrap { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.12); border-radius: 12px; overflow: hidden; }
+    .table-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .table-info { font-size: 12px; color: var(--gris); }
+    .table-info span { color: var(--dorado); font-weight: 600; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 11px 20px; font-size: 10px; font-weight: 600; color: #444; letter-spacing: 2px; text-transform: uppercase; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; cursor: pointer; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+    td { padding: 13px 20px; font-size: 13px; vertical-align: middle; }
+
+    .avatar-cell { display: flex; align-items: center; gap: 10px; }
+    .avatar-mini { width: 32px; height: 32px; border-radius: 50%; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 600; flex-shrink: 0; }
+    .td-name { font-weight: 500; font-size: 13px; }
+    .td-sub  { font-size: 11px; color: var(--gris); margin-top: 2px; }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .badge::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .badge-pendiente  { background: rgba(224,184,76,0.12); color: var(--amarillo); }
+    .badge-confirmada { background: rgba(76,175,125,0.12); color: var(--verde); }
+    .badge-cancelada  { background: rgba(224,84,84,0.1);  color: var(--rojo); }
+    .badge-completada { background: rgba(84,144,224,0.1); color: var(--azul); }
+
+    .td-actions { display: flex; gap: 6px; }
+    .btn-icon { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: var(--gris); font-size: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .btn-icon:hover     { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-icon.del:hover { border-color: rgba(224,84,84,0.3); color: var(--rojo); }
+
+    .empty-state { text-align: center; padding: 60px 24px; color: #333; }
+    .empty-state p { font-size: 13px; letter-spacing: 1px; margin-top: 8px; }
+    .empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.3; }
+
+    /* ── VISTA CALENDARIO ───────────────────── */
+    #vistaCalendario { display: none; }
+
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .cal-mes { font-family: 'Playfair Display', serif; font-size: 20px; }
+    .cal-mes span { color: var(--dorado); }
+    .cal-arrow { width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(201,168,76,0.2); background: none; color: var(--dorado); font-size: 16px; cursor: pointer; transition: all 0.2s; }
+    .cal-arrow:hover { background: rgba(201,168,76,0.1); }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.1); border-radius: 12px; overflow: hidden; }
+    .cal-head { background: var(--negro-panel); padding: 10px 4px; text-align: center; font-size: 10px; font-weight: 600; color: #444; letter-spacing: 1.5px; text-transform: uppercase; }
+    .cal-day { background: var(--negro-panel); min-height: 100px; padding: 8px; cursor: pointer; transition: background 0.15s; position: relative; }
+    .cal-day:hover { background: rgba(201,168,76,0.04); }
+    .cal-day.other-month .day-num { color: #2a2a2a; }
+    .cal-day.today { background: rgba(201,168,76,0.05); }
+    .cal-day.today .day-num { color: var(--dorado); font-weight: 700; }
+    .day-num { font-size: 12px; color: var(--gris); margin-bottom: 4px; }
+    .cal-event { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+    .cal-event.pendiente  { background: rgba(224,184,76,0.15); color: var(--amarillo); }
+    .cal-event.confirmada { background: rgba(76,175,125,0.15); color: var(--verde); }
+    .cal-event.cancelada  { background: rgba(224,84,84,0.12);  color: var(--rojo); }
+    .cal-event.completada { background: rgba(84,144,224,0.12); color: var(--azul); }
+    .cal-more { font-size: 10px; color: var(--gris); padding: 1px 4px; }
+
+    /* ── MODAL ──────────────────────────────── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+
+    .modal { background: #161616; border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; padding: 36px 40px; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; }
+    .modal-title span { color: var(--dorado); }
+    .modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: none; color: var(--gris); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .modal-close:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+
+    .form-divider { font-size: 10px; color: #383838; letter-spacing: 2px; text-transform: uppercase; margin: 20px 0 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 10px; font-weight: 600; color: var(--dorado); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.15); border-radius: 8px; padding: 11px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; resize: none; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #333; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.03); }
+    .form-group select option { background: #1a1a1a; }
+
+    /* estado en modal */
+    .estado-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .estado-opt { padding: 9px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: none; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; text-align: center; color: var(--gris); transition: all 0.2s; }
+    .estado-opt[data-val="pendiente"].sel  { border-color: var(--amarillo); color: var(--amarillo); background: rgba(224,184,76,0.08); }
+    .estado-opt[data-val="confirmada"].sel { border-color: var(--verde);    color: var(--verde);    background: rgba(76,175,125,0.08); }
+    .estado-opt[data-val="cancelada"].sel  { border-color: var(--rojo);     color: var(--rojo);     background: rgba(224,84,84,0.08); }
+    .estado-opt[data-val="completada"].sel { border-color: var(--azul);     color: var(--azul);     background: rgba(84,144,224,0.08); }
+
+    .modal-footer { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .btn-cancel { padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: none; color: var(--gris); font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: var(--blanco); }
+    .btn-guardar { padding: 10px 26px; border-radius: 8px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; color: var(--negro); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-guardar:hover { box-shadow: 0 4px 16px rgba(201,168,76,0.3); transform: translateY(-1px); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: #1a1a1a; border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 14px 20px; font-size: 13px; color: var(--blanco); box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 999; display: none; }
+    .toast.show { display: block; animation: toastIn 0.3s ease; }
+    .toast span { color: var(--dorado); }
+    @keyframes toastIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+<!-- ── SIDEBAR ────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="assets/logo.png" alt="IPS Fernández" />
+    <div class="logo-sub">Sistema CRM</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+    <div class="nav-section">Comunicaciones</div>
+    <a href="chat.html" class="nav-item"><span class="nav-icon">💬</span> Inbox de chat</a>
+    <a href="#"         class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo</a>
+    <a href="#"         class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+    <div class="nav-section">Pipelines</div>
+    <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+    <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+    <div class="nav-section">Insights</div>
+    <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+    <div class="nav-section">Gestión</div>
+    <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+    <a href="citas.html"     class="nav-item active"><span class="nav-icon">📅</span> Calendario</a>
+    <a href="#"              class="nav-item"><span class="nav-icon">◇</span> Facturación</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"              class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+      </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">LF</div>
+      <div>
+        <div class="user-name">Dr. Fernández</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ──────────────────────────────────── -->
+<main class="main">
+  <div class="topbar">
+    <h1 class="page-title">Agenda de <span>Citas</span></h1>
+    <div class="topbar-right">
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnLista"      onclick="setVista('lista')">≡ Lista</button>
+        <button class="view-btn"        id="btnCalendario" onclick="setVista('calendario')">⊟ Calendario</button>
+      </div>
+      <button class="btn-nuevo" onclick="abrirModal()">+ Nueva Cita</button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters">
+    <button class="filter-chip active"             data-estado=""           onclick="setFiltro(this)">Todas</button>
+    <button class="filter-chip chip-pendiente"     data-estado="pendiente"  onclick="setFiltro(this)">Pendiente</button>
+    <button class="filter-chip chip-confirmada"    data-estado="confirmada" onclick="setFiltro(this)">Confirmada</button>
+    <button class="filter-chip chip-completada"    data-estado="completada" onclick="setFiltro(this)">Completada</button>
+    <button class="filter-chip chip-cancelada"     data-estado="cancelada"  onclick="setFiltro(this)">Cancelada</button>
+  </div>
+
+  <div class="search-date">
+    <input type="text" id="searchInput" placeholder="Buscar paciente o tipo de cita…" oninput="renderLista()" />
+    <input type="date"  id="filtFecha"  onchange="renderLista()" />
+  </div>
+
+  <!-- VISTA LISTA -->
+  <div id="vistaLista">
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="table-info">Total: <span id="totalCount">0</span> citas</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Tipo de cita</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Duración</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tablaCitas"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">◷</div>
+        <p>No hay citas registradas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA CALENDARIO -->
+  <div id="vistaCalendario">
+    <div class="cal-nav">
+      <button class="cal-arrow" onclick="cambiarMes(-1)">‹</button>
+      <h2 class="cal-mes" id="calTitulo"></h2>
+      <button class="cal-arrow" onclick="cambiarMes(1)">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+</main>
+
+<!-- ── MODAL ──────────────────────────────────── -->
+<div class="overlay" id="overlay" onclick="cerrarModalOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitulo">Nueva <span>Cita</span></h2>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+
+    <form id="formCita" onsubmit="guardarCita(event)">
+      <input type="hidden" id="citaId" />
+
+      <div class="form-divider">Paciente</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Paciente *</label>
+          <select id="pacienteSelect" required>
+            <option value="">— Seleccionar paciente —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-divider">Cita</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Tipo de cita *</label>
+          <select id="tipoCita" required>
+            <option value="">— Seleccionar tipo —</option>
+            <option>Consulta general</option>
+            <option>Profilaxis / Limpieza</option>
+            <option>Blanqueamiento dental</option>
+            <option>Extracción</option>
+            <option>Endodoncia</option>
+            <option>Ortodoncia — Control</option>
+            <option>Implante dental</option>
+            <option>Carillas / Estética</option>
+            <option>Radiografía</option>
+            <option>Control postoperatorio</option>
+            <option>Urgencia odontológica</option>
+            <option>Consulta médica general</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row three">
+        <div class="form-group">
+          <label>Fecha *</label>
+          <input type="date" id="fechaCita" required />
+        </div>
+        <div class="form-group">
+          <label>Hora *</label>
+          <input type="time" id="horaCita" required />
+        </div>
+        <div class="form-group">
+          <label>Duración</label>
+          <select id="duracion">
+            <option value="30">30 min</option>
+            <option value="45">45 min</option>
+            <option value="60" selected>1 hora</option>
+            <option value="90">1h 30min</option>
+            <option value="120">2 horas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-divider">Estado</div>
+      <div class="estado-grid" id="estadoGrid">
+        <button type="button" class="estado-opt sel" data-val="pendiente"  onclick="selEstado(this)">Pendiente</button>
+        <button type="button" class="estado-opt"     data-val="confirmada" onclick="selEstado(this)">Confirmada</button>
+        <button type="button" class="estado-opt"     data-val="completada" onclick="selEstado(this)">Completada</button>
+        <button type="button" class="estado-opt"     data-val="cancelada"  onclick="selEstado(this)">Cancelada</button>
+      </div>
+      <input type="hidden" id="estadoCita" value="pendiente" />
+
+      <div class="form-divider">Notas</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Observaciones</label>
+          <textarea id="notas" rows="3" placeholder="Indicaciones previas, observaciones clínicas…"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-guardar">Guardar cita</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── Storage ─────────────────────────────── */
+  const KEY_CITAS = 'ips_citas';
+  const KEY_PAC   = 'ips_pacientes';
+
+  const cargar    = () => JSON.parse(localStorage.getItem(KEY_CITAS) || '[]');
+  const guardar   = d  => localStorage.setItem(KEY_CITAS, JSON.stringify(d));
+  const cargarPac = () => JSON.parse(localStorage.getItem(KEY_PAC)   || '[]');
+  const uid       = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+  /* ── Estado UI ───────────────────────────── */
+  let vistaActual  = 'lista';
+  let filtroEstado = '';
+  let calFecha     = new Date();
+
+  /* ── Utilidades ──────────────────────────── */
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function formatFecha(iso) {
+    if (!iso) return '—';
+    const [y,m,d] = iso.split('-');
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    return `${parseInt(d)} ${meses[parseInt(m)-1]} ${y}`;
+  }
+
+  function formatHora(t) {
+    if (!t) return '—';
+    const [h, m] = t.split(':');
+    const hr = parseInt(h);
+    return `${hr > 12 ? hr-12 : hr}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+  }
+
+  function nombrePaciente(id) {
+    const p = cargarPac().find(p => p.id === id);
+    return p ? `${p.nombres} ${p.apellidos}` : 'Paciente desconocido';
+  }
+
+  function inicialesPaciente(id) {
+    const p = cargarPac().find(p => p.id === id);
+    return p ? ((p.nombres[0]||'')+(p.apellidos[0]||'')).toUpperCase() : '?';
+  }
+
+  /* ── Vista ───────────────────────────────── */
+  function setVista(v) {
+    vistaActual = v;
+    document.getElementById('vistaLista').style.display      = v === 'lista'      ? 'block' : 'none';
+    document.getElementById('vistaCalendario').style.display = v === 'calendario' ? 'block' : 'none';
+    document.getElementById('btnLista').classList.toggle('active',      v === 'lista');
+    document.getElementById('btnCalendario').classList.toggle('active', v === 'calendario');
+    if (v === 'calendario') renderCalendario();
+    else renderLista();
+  }
+
+  /* ── Filtro estado ───────────────────────── */
+  function setFiltro(btn) {
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filtroEstado = btn.dataset.estado;
+    renderLista();
+  }
+
+  /* ── VISTA LISTA ─────────────────────────── */
+  function renderLista() {
+    const q      = document.getElementById('searchInput').value.toLowerCase();
+    const fecha  = document.getElementById('filtFecha').value;
+    const datos  = cargar();
+
+    let filtrados = datos.filter(c => {
+      const nom = nombrePaciente(c.pacienteId).toLowerCase();
+      const tip = (c.tipoCita || '').toLowerCase();
+      return (!q         || nom.includes(q) || tip.includes(q))
+          && (!filtroEstado || c.estado === filtroEstado)
+          && (!fecha     || c.fecha === fecha);
+    }).sort((a,b) => (a.fecha+a.hora) < (b.fecha+b.hora) ? -1 : 1);
+
+    document.getElementById('totalCount').textContent = filtrados.length;
+    const tbody = document.getElementById('tablaCitas');
+    const empty = document.getElementById('emptyState');
+
+    if (!filtrados.length) {
+      tbody.innerHTML = ''; empty.style.display = 'block'; return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtrados.map(c => `
+      <tr onclick="editarCita('${c.id}')">
+        <td>
+          <div class="avatar-cell">
+            <div class="avatar-mini">${inicialesPaciente(c.pacienteId)}</div>
+            <div class="td-name">${nombrePaciente(c.pacienteId)}</div>
+          </div>
+        </td>
+        <td>${c.tipoCita || '—'}</td>
+        <td>${formatFecha(c.fecha)}</td>
+        <td>${formatHora(c.hora)}</td>
+        <td>${c.duracion ? c.duracion+' min' : '—'}</td>
+        <td><span class="badge badge-${c.estado}">${c.estado}</span></td>
+        <td>
+          <div class="td-actions" onclick="event.stopPropagation()">
+            <button class="btn-icon" title="Editar"   onclick="editarCita('${c.id}')">✎</button>
+            <button class="btn-icon del" title="Eliminar" onclick="eliminarCita('${c.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ── CALENDARIO ──────────────────────────── */
+  const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  function cambiarMes(dir) {
+    calFecha = new Date(calFecha.getFullYear(), calFecha.getMonth() + dir, 1);
+    renderCalendario();
+  }
+
+  function renderCalendario() {
+    const hoy   = new Date();
+    const año   = calFecha.getFullYear();
+    const mes   = calFecha.getMonth();
+    const datos = cargar();
+
+    document.getElementById('calTitulo').innerHTML = `${MESES[mes]} <span>${año}</span>`;
+
+    const primerDia = new Date(año, mes, 1).getDay();
+    const diasMes   = new Date(año, mes+1, 0).getDate();
+    const diasAnt   = new Date(año, mes, 0).getDate();
+
+    let html = DIAS.map(d => `<div class="cal-head">${d}</div>`).join('');
+
+    for (let i = 0; i < primerDia; i++) {
+      const d = diasAnt - primerDia + i + 1;
+      html += `<div class="cal-day other-month"><div class="day-num">${d}</div></div>`;
+    }
+
+    for (let d = 1; d <= diasMes; d++) {
+      const isoFecha = `${año}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const esHoy    = hoy.getFullYear()===año && hoy.getMonth()===mes && hoy.getDate()===d;
+      const citasDia = datos.filter(c => c.fecha === isoFecha)
+                            .sort((a,b)=>a.hora<b.hora?-1:1);
+
+      const eventos = citasDia.slice(0,3).map(c =>
+        `<div class="cal-event ${c.estado}" onclick="event.stopPropagation();editarCita('${c.id}')" title="${nombrePaciente(c.pacienteId)} — ${c.tipoCita}">${formatHora(c.hora)} ${nombrePaciente(c.pacienteId).split(' ')[0]}</div>`
+      ).join('');
+
+      const mas = citasDia.length > 3 ? `<div class="cal-more">+${citasDia.length-3} más</div>` : '';
+
+      html += `<div class="cal-day${esHoy?' today':''}" onclick="abrirModalFecha('${isoFecha}')">
+        <div class="day-num">${d}</div>
+        ${eventos}${mas}
+      </div>`;
+    }
+
+    const total = primerDia + diasMes;
+    const resto = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let d = 1; d <= resto; d++) {
+      html += `<div class="cal-day other-month"><div class="day-num">${d}</div></div>`;
+    }
+
+    document.getElementById('calGrid').innerHTML = html;
+  }
+
+  /* ── Modal ───────────────────────────────── */
+  function poblarPacientes(selId = '') {
+    const sel = document.getElementById('pacienteSelect');
+    const pac = cargarPac().filter(p => p.estado !== 'inactivo')
+                           .sort((a,b) => a.apellidos < b.apellidos ? -1 : 1);
+    sel.innerHTML = '<option value="">— Seleccionar paciente —</option>'
+      + pac.map(p => `<option value="${p.id}" ${p.id===selId?'selected':''}>${p.apellidos}, ${p.nombres}</option>`).join('');
+  }
+
+  function selEstado(btn) {
+    document.querySelectorAll('.estado-opt').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    document.getElementById('estadoCita').value = btn.dataset.val;
+  }
+
+  function abrirModal(cita = null, fechaPreset = '') {
+    document.getElementById('formCita').reset();
+    document.querySelectorAll('.estado-opt').forEach(b => b.classList.remove('sel'));
+    document.querySelector('.estado-opt[data-val="pendiente"]').classList.add('sel');
+    document.getElementById('estadoCita').value = 'pendiente';
+    poblarPacientes();
+    document.getElementById('overlay').classList.add('open');
+
+    if (cita) {
+      document.getElementById('modalTitulo').innerHTML = 'Editar <span>Cita</span>';
+      document.getElementById('citaId').value          = cita.id;
+      document.getElementById('pacienteSelect').value  = cita.pacienteId;
+      document.getElementById('tipoCita').value        = cita.tipoCita;
+      document.getElementById('fechaCita').value       = cita.fecha;
+      document.getElementById('horaCita').value        = cita.hora;
+      document.getElementById('duracion').value        = cita.duracion;
+      document.getElementById('notas').value           = cita.notas || '';
+      document.getElementById('estadoCita').value      = cita.estado;
+      document.querySelectorAll('.estado-opt').forEach(b => {
+        b.classList.toggle('sel', b.dataset.val === cita.estado);
+      });
+    } else {
+      document.getElementById('modalTitulo').innerHTML = 'Nueva <span>Cita</span>';
+      document.getElementById('citaId').value = '';
+      if (fechaPreset) document.getElementById('fechaCita').value = fechaPreset;
+    }
+  }
+
+  function abrirModalFecha(fecha) { abrirModal(null, fecha); }
+
+  function cerrarModal() { document.getElementById('overlay').classList.remove('open'); }
+  function cerrarModalOverlay(e) { if (e.target.id === 'overlay') cerrarModal(); }
+
+  /* ── CRUD ────────────────────────────────── */
+  function guardarCita(e) {
+    e.preventDefault();
+    const datos = cargar();
+    const id    = document.getElementById('citaId').value;
+
+    const cita = {
+      pacienteId: document.getElementById('pacienteSelect').value,
+      tipoCita:   document.getElementById('tipoCita').value,
+      fecha:      document.getElementById('fechaCita').value,
+      hora:       document.getElementById('horaCita').value,
+      duracion:   document.getElementById('duracion').value,
+      estado:     document.getElementById('estadoCita').value,
+      notas:      document.getElementById('notas').value.trim(),
+    };
+
+    if (id) {
+      const idx = datos.findIndex(c => c.id === id);
+      if (idx !== -1) datos[idx] = { ...datos[idx], ...cita };
+      toast(`✎ Cita actualizada — <span>${formatFecha(cita.fecha)}</span>`);
+    } else {
+      cita.id = uid();
+      datos.push(cita);
+      toast(`✓ Cita registrada — <span>${formatFecha(cita.fecha)}</span>`);
+    }
+
+    guardar(datos);
+    cerrarModal();
+    if (vistaActual === 'lista') renderLista();
+    else renderCalendario();
+  }
+
+  function editarCita(id) {
+    const c = cargar().find(c => c.id === id);
+    if (c) abrirModal(c);
+  }
+
+  function eliminarCita(id) {
+    const datos = cargar();
+    const c     = datos.find(c => c.id === id);
+    if (!c) return;
+    if (!confirm(`¿Eliminar la cita del ${formatFecha(c.fecha)}?`)) return;
+    guardar(datos.filter(c => c.id !== id));
+    toast('Cita eliminada');
+    if (vistaActual === 'lista') renderLista();
+    else renderCalendario();
+  }
+
+  /* ── Init ────────────────────────────────── */
+  renderLista();
+</script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

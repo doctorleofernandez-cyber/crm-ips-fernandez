@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tratamientos | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+      --morado: #9B59B6;
+      --naranja: #E67E22;
+    }
+
+    body {
+      background: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0; height: 100vh;
+      position: fixed; top: 0; left: 0;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+    }
+
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar-s { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+    .topbar-actions { display: flex; gap: 10px; }
+
+    .btn-nuevo {
+      font-size: 12px; font-weight: 600;
+      background: var(--dorado); color: var(--negro);
+      border: none; padding: 9px 18px; border-radius: 8px;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-nuevo:hover { opacity: 0.85; }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover { border-color: rgba(201,168,76,0.25); }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+    }
+
+    .stat-card.s1::before { background: var(--dorado); }
+    .stat-card.s2::before { background: var(--verde); }
+    .stat-card.s3::before { background: var(--azul); }
+    .stat-card.s4::before { background: var(--morado); }
+
+    .stat-icon { font-size: 22px; margin-bottom: 10px; }
+    .stat-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gris); margin-bottom: 6px; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--dorado); line-height: 1; }
+    .stat-card.s2 .stat-value { color: var(--verde); }
+    .stat-card.s3 .stat-value { color: var(--azul); }
+    .stat-card.s4 .stat-value { color: var(--morado); }
+    .stat-sub { font-size: 11px; color: #555; margin-top: 4px; }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1; min-width: 200px;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px; padding: 9px 14px;
+    }
+
+    .search-wrap input { background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--blanco); width: 100%; }
+    .search-wrap input::placeholder { color: #444; }
+
+    .cat-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .chip {
+      font-size: 11px; font-weight: 500;
+      padding: 6px 14px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--gris);
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+
+    .chip:hover { color: var(--blanco); border-color: rgba(255,255,255,0.18); }
+    .chip.active { background: rgba(201,168,76,0.12); color: var(--dorado); border-color: rgba(201,168,76,0.3); }
+
+    /* vista grid / lista */
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn {
+      width: 34px; height: 34px; border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--gris);
+      font-size: 14px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .view-btn.active { background: rgba(201,168,76,0.12); color: var(--dorado); border-color: rgba(201,168,76,0.25); }
+
+    /* ── GRID DE TARJETAS ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .t-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .t-card:hover {
+      border-color: rgba(201,168,76,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .t-card.inactivo { opacity: 0.5; }
+
+    .t-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .t-emoji {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    .t-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+    .t-card:hover .t-actions { opacity: 1; }
+
+    .t-action-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--gris);
+      font-size: 12px; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .t-action-btn:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .t-action-btn.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+
+    .t-name {
+      font-size: 15px; font-weight: 600;
+      color: var(--blanco); margin-bottom: 4px;
+    }
+
+    .t-desc {
+      font-size: 12px; color: #666;
+      line-height: 1.5; margin-bottom: 14px;
+    }
+
+    .t-meta {
+      display: flex; align-items: center;
+      gap: 8px; flex-wrap: wrap;
+    }
+
+    .t-cat {
+      font-size: 10px; font-weight: 600;
+      padding: 3px 9px; border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* colores por categoría */
+    .cat-preventivo  { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .cat-estetica    { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .cat-rehabilitacion { background: rgba(76,143,202,0.12); color: var(--azul); }
+    .cat-cirugia     { background: rgba(224,85,85,0.12); color: var(--rojo); }
+    .cat-ortodoncia  { background: rgba(155,89,182,0.12); color: var(--morado); }
+    .cat-endodoncia  { background: rgba(230,126,34,0.12); color: var(--naranja); }
+
+    .t-duration {
+      font-size: 11px; color: #555;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .t-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px; font-weight: 700;
+      color: var(--dorado-claro);
+      margin-left: auto;
+    }
+
+    .t-status {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    .t-status.activo   { background: var(--verde); box-shadow: 0 0 6px var(--verde); }
+    .t-status.inactivo { background: #444; }
+
+    /* ── VISTA LISTA ── */
+    .list-view { display: none; }
+    .list-view.active { display: block; }
+    .grid-view { display: grid; }
+    .grid-view.hidden { display: none; }
+
+    .list-table-wrap {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 13px 16px; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #555; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; cursor: pointer; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+    tbody td { padding: 13px 16px; font-size: 13px; color: var(--blanco); vertical-align: middle; }
+
+    .td-actions-list { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
+    tbody tr:hover .td-actions-list { opacity: 1; }
+    .btn-act { font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); cursor: pointer; transition: all 0.15s; }
+    .btn-act:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-act.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+
+    /* Estado vacío */
+    .empty-state { text-align: center; padding: 72px 24px; color: #2a2a2a; }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+    .empty-text { font-size: 13px; }
+
+    /* ── MODAL ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px; width: 100%; max-width: 560px;
+      padding: 32px; position: relative;
+      max-height: 90vh; overflow-y: auto;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #555; font-size: 18px; cursor: pointer; }
+    .modal-close:hover { color: var(--blanco); }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+    .modal-title span { color: var(--dorado); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+
+    .form-group label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; resize: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #444; }
+    .form-group select option { background: #1a1a1a; }
+
+    /* Selector de emoji */
+    .emoji-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .emoji-opt {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      font-size: 18px; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .emoji-opt:hover { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.06); }
+    .emoji-opt.sel   { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.12); }
+
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); font-size: 13px; cursor: pointer; }
+    .btn-cancel:hover { color: var(--blanco); }
+    .btn-guardar { padding: 10px 24px; border-radius: 8px; border: none; background: var(--dorado); color: var(--negro); font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .btn-guardar:hover { opacity: 0.85; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"     class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"             class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"             class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item active"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"                 class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar-s">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <div class="topbar">
+      <h1 class="page-title">Catálogo de <span>Tratamientos</span></h1>
+      <div class="topbar-actions">
+        <div class="view-toggle">
+          <button class="view-btn active" id="btnGrid" title="Vista tarjetas" onclick="setVista('grid')">⊞</button>
+          <button class="view-btn" id="btnList" title="Vista lista" onclick="setVista('list')">≡</button>
+        </div>
+        <button class="btn-nuevo" onclick="abrirModal()">+ Nuevo Tratamiento</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card s1">
+        <div class="stat-icon">🦷</div>
+        <div class="stat-label">Total tratamientos</div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-sub">En el catálogo</div>
+      </div>
+      <div class="stat-card s2">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Activos</div>
+        <div class="stat-value" id="statActivos">0</div>
+        <div class="stat-sub">Disponibles</div>
+      </div>
+      <div class="stat-card s3">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Categorías</div>
+        <div class="stat-value" id="statCats">0</div>
+        <div class="stat-sub">Tipos diferentes</div>
+      </div>
+      <div class="stat-card s4">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Precio promedio</div>
+        <div class="stat-value" id="statPromedio">$0</div>
+        <div class="stat-sub">Por tratamiento</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span style="color:#444;font-size:13px">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar tratamiento…" oninput="render()" />
+      </div>
+      <div class="cat-chips" id="catChips"></div>
+    </div>
+
+    <!-- Vista grid -->
+    <div class="cards-grid grid-view" id="gridView"></div>
+
+    <!-- Vista lista -->
+    <div class="list-view" id="listView">
+      <div class="list-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tratamiento</th>
+              <th>Categoría</th>
+              <th>Duración</th>
+              <th>Precio desde</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="listBody"></tbody>
+        </table>
+        <div id="listEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">🦷</div>
+          <div class="empty-text">Sin tratamientos registrados</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty grid -->
+    <div id="gridEmpty" class="empty-state" style="display:none">
+      <div class="empty-icon">🦷</div>
+      <div class="empty-text">Sin tratamientos — agrega el primero con "+ Nuevo Tratamiento"</div>
+    </div>
+
+  </main>
+
+  <!-- ── MODAL ── -->
+  <div class="overlay" id="overlay" onclick="cerrarOverlay(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+      <div class="modal-title" id="modalTitle">Nuevo <span>Tratamiento</span></div>
+
+      <form id="tForm" onsubmit="guardar(event)">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label>Ícono</label>
+            <div class="emoji-picker" id="emojiPicker">
+              <div class="emoji-opt sel" data-e="🦷" onclick="selEmoji(this)">🦷</div>
+              <div class="emoji-opt" data-e="😁" onclick="selEmoji(this)">😁</div>
+              <div class="emoji-opt" data-e="🔬" onclick="selEmoji(this)">🔬</div>
+              <div class="emoji-opt" data-e="✂️" onclick="selEmoji(this)">✂️</div>
+              <div class="emoji-opt" data-e="💉" onclick="selEmoji(this)">💉</div>
+              <div class="emoji-opt" data-e="🩻" onclick="selEmoji(this)">🩻</div>
+              <div class="emoji-opt" data-e="🧴" onclick="selEmoji(this)">🧴</div>
+              <div class="emoji-opt" data-e="⚙️" onclick="selEmoji(this)">⚙️</div>
+              <div class="emoji-opt" data-e="🌟" onclick="selEmoji(this)">🌟</div>
+              <div class="emoji-opt" data-e="🏥" onclick="selEmoji(this)">🏥</div>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Nombre del tratamiento</label>
+            <input type="text" id="tNombre" placeholder="Ej: Limpieza dental profunda" required />
+          </div>
+
+          <div class="form-group full">
+            <label>Descripción</label>
+            <textarea id="tDesc" rows="2" placeholder="Breve descripción del procedimiento…"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Categoría</label>
+            <select id="tCategoria" required>
+              <option value="">Seleccionar…</option>
+              <option value="preventivo">Preventivo</option>
+              <option value="estetica">Estética</option>
+              <option value="rehabilitacion">Rehabilitación</option>
+              <option value="cirugia">Cirugía</option>
+              <option value="ortodoncia">Ortodoncia</option>
+              <option value="endodoncia">Endodoncia</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="tEstado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Precio desde (COP)</label>
+            <input type="number" id="tPrecioMin" placeholder="0" min="0" />
+          </div>
+
+          <div class="form-group">
+            <label>Precio hasta (COP)</label>
+            <input type="number" id="tPrecioMax" placeholder="0" min="0" />
+          </div>
+
+          <div class="form-group">
+            <label>Duración estimada</label>
+            <input type="text" id="tDuracion" placeholder="Ej: 45 min, 1-2 sesiones" />
+          </div>
+
+          <div class="form-group">
+            <label>Sesiones requeridas</label>
+            <input type="number" id="tSesiones" placeholder="1" min="1" />
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const CATS = {
+      preventivo:     { label: 'Preventivo',     cls: 'cat-preventivo' },
+      estetica:       { label: 'Estética',        cls: 'cat-estetica' },
+      rehabilitacion: { label: 'Rehabilitación',  cls: 'cat-rehabilitacion' },
+      cirugia:        { label: 'Cirugía',         cls: 'cat-cirugia' },
+      ortodoncia:     { label: 'Ortodoncia',      cls: 'cat-ortodoncia' },
+      endodoncia:     { label: 'Endodoncia',      cls: 'cat-endodoncia' },
+    };
+
+    let tratamientos  = JSON.parse(localStorage.getItem('tratamientos_ips') || '[]');
+    let filtrosCat    = [];
+    let editandoId    = null;
+    let vistaActual   = 'grid';
+    let emojiSeleccionado = '🦷';
+
+    // Pre-cargar catálogo base si está vacío
+    if (tratamientos.length === 0) {
+      tratamientos = [
+        { id:'t1', emoji:'🦷', nombre:'Limpieza dental', desc:'Eliminación de placa, sarro y manchas superficiales. Incluye pulido.', categoria:'preventivo', precioMin:80000, precioMax:150000, duracion:'45 min', sesiones:1, estado:'activo' },
+        { id:'t2', emoji:'😁', nombre:'Blanqueamiento dental', desc:'Aclaramiento del esmalte con gel de peróxido activado por luz LED.', categoria:'estetica', precioMin:350000, precioMax:600000, duracion:'60-90 min', sesiones:1, estado:'activo' },
+        { id:'t3', emoji:'🌟', nombre:'Carillas de porcelana', desc:'Láminas de porcelana adheridas al frente del diente para mejorar estética.', categoria:'estetica', precioMin:800000, precioMax:1500000, duracion:'2 sesiones', sesiones:2, estado:'activo' },
+        { id:'t4', emoji:'⚙️', nombre:'Ortodoncia fija (brackets)', desc:'Corrección de la posición dental con brackets metálicos o estéticos.', categoria:'ortodoncia', precioMin:2500000, precioMax:5000000, duracion:'18-36 meses', sesiones:24, estado:'activo' },
+        { id:'t5', emoji:'🩻', nombre:'Radiografía panorámica', desc:'Imagen radiográfica completa de maxilares, dientes y estructuras óseas.', categoria:'preventivo', precioMin:60000, precioMax:120000, duracion:'15 min', sesiones:1, estado:'activo' },
+        { id:'t6', emoji:'🔬', nombre:'Endodoncia (conducto)', desc:'Tratamiento del canal radicular para eliminar infección y preservar el diente.', categoria:'endodoncia', precioMin:400000, precioMax:900000, duracion:'1-3 sesiones', sesiones:2, estado:'activo' },
+        { id:'t7', emoji:'✂️', nombre:'Extracción dental simple', desc:'Extracción de piezas dentales con anestesia local.', categoria:'cirugia', precioMin:80000, precioMax:200000, duracion:'30 min', sesiones:1, estado:'activo' },
+        { id:'t8', emoji:'✂️', nombre:'Extracción de muela del juicio', desc:'Cirugía para extracción de terceros molares incluidos o semincluidos.', categoria:'cirugia', precioMin:250000, precioMax:500000, duracion:'45-60 min', sesiones:1, estado:'activo' },
+        { id:'t9', emoji:'🏥', nombre:'Implante dental', desc:'Implante de titanio para reemplazar raíces dentales perdidas. Incluye corona.', categoria:'rehabilitacion', precioMin:2000000, precioMax:4000000, duracion:'3-6 meses', sesiones:4, estado:'activo' },
+        { id:'t10', emoji:'🦷', nombre:'Corona de porcelana', desc:'Restauración total del diente con funda de porcelana o zirconio.', categoria:'rehabilitacion', precioMin:600000, precioMax:1200000, duracion:'2 sesiones', sesiones:2, estado:'activo' },
+        { id:'t11', emoji:'💉', nombre:'Aplicación de flúor', desc:'Tratamiento preventivo tópico de fluoruro para fortalecer el esmalte.', categoria:'preventivo', precioMin:30000, precioMax:60000, duracion:'20 min', sesiones:1, estado:'activo' },
+        { id:'t12', emoji:'⚙️', nombre:'Alineadores invisibles', desc:'Ortodoncia con alineadores transparentes removibles tipo Invisalign.', categoria:'ortodoncia', precioMin:4000000, precioMax:8000000, duracion:'12-24 meses', sesiones:12, estado:'activo' },
+      ];
+      localStorage.setItem('tratamientos_ips', JSON.stringify(tratamientos));
+    }
+
+    buildCatChips();
+    actualizarStats();
+    render();
+
+    // ── CHIPS DE CATEGORÍA ──
+    function buildCatChips() {
+      const wrap = document.getElementById('catChips');
+      wrap.innerHTML = `<button class="chip active" data-cat="" onclick="toggleCat(this)">Todos</button>`;
+      Object.entries(CATS).forEach(([k, v]) => {
+        wrap.innerHTML += `<button class="chip" data-cat="${k}" onclick="toggleCat(this)">${v.label}</button>`;
+      });
+    }
+
+    function toggleCat(btn) {
+      const cat = btn.dataset.cat;
+      if (cat === '') {
+        filtrosCat = [];
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+      } else {
+        document.querySelector('.chip[data-cat=""]').classList.remove('active');
+        btn.classList.toggle('active');
+        if (btn.classList.contains('active')) filtrosCat.push(cat);
+        else filtrosCat = filtrosCat.filter(c => c !== cat);
+        if (filtrosCat.length === 0) {
+          document.querySelector('.chip[data-cat=""]').classList.add('active');
+        }
+      }
+      render();
+    }
+
+    // ── STATS ──
+    function actualizarStats() {
+      const activos = tratamientos.filter(t => t.estado === 'activo');
+      const cats    = [...new Set(tratamientos.map(t => t.categoria))].length;
+      const precios = tratamientos.filter(t => t.precioMin > 0).map(t => t.precioMin);
+      const prom    = precios.length ? Math.round(precios.reduce((a,b)=>a+b,0)/precios.length) : 0;
+
+      document.getElementById('statTotal').textContent   = tratamientos.length;
+      document.getElementById('statActivos').textContent = activos.length;
+      document.getElementById('statCats').textContent    = cats;
+      document.getElementById('statPromedio').textContent = '$' + prom.toLocaleString('es-CO');
+    }
+
+    // ── FILTRAR ──
+    function filtrados() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      return tratamientos.filter(t => {
+        const matchCat  = filtrosCat.length === 0 || filtrosCat.includes(t.categoria);
+        const matchQ    = !q || t.nombre.toLowerCase().includes(q) || (t.desc||'').toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+    }
+
+    // ── RENDER ──
+    function render() {
+      const lista = filtrados();
+
+      // Grid
+      const grid  = document.getElementById('gridView');
+      const gEmpty = document.getElementById('gridEmpty');
+      if (lista.length === 0) {
+        grid.innerHTML = ''; gEmpty.style.display = 'block';
+      } else {
+        gEmpty.style.display = 'none';
+        grid.innerHTML = lista.map(t => {
+          const cat = CATS[t.categoria] || { label: t.categoria, cls: 'cat-preventivo' };
+          const precio = t.precioMin > 0 ? '$' + Number(t.precioMin).toLocaleString('es-CO') : '—';
+          return `
+            <div class="t-card ${t.estado}" onclick="editarTratamiento('${t.id}')">
+              <div class="t-status ${t.estado}"></div>
+              <div class="t-card-top">
+                <div class="t-emoji">${t.emoji || '🦷'}</div>
+                <div class="t-actions">
+                  <button class="t-action-btn" title="Editar" onclick="event.stopPropagation();editarTratamiento('${t.id}')">✎</button>
+                  <button class="t-action-btn danger" title="Eliminar" onclick="event.stopPropagation();eliminar('${t.id}')">✕</button>
+                </div>
+              </div>
+              <div class="t-name">${t.nombre}</div>
+              <div class="t-desc">${t.desc || ''}</div>
+              <div class="t-meta">
+                <span class="t-cat ${cat.cls}">${cat.label}</span>
+                ${t.duracion ? `<span class="t-duration">⏱ ${t.duracion}</span>` : ''}
+                <span class="t-price">${precio}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Lista
+      const tbody  = document.getElementById('listBody');
+      const lEmpty = document.getElementById('listEmpty');
+      if (lista.length === 0) {
+        tbody.innerHTML = ''; lEmpty.style.display = 'block';
+      } else {
+        lEmpty.style.display = 'none';
+        tbody.innerHTML = lista.map(t => {
+          const cat = CATS[t.categoria] || { label: t.categoria, cls: 'cat-preventivo' };
+          const precio = t.precioMin > 0 ? '$' + Number(t.precioMin).toLocaleString('es-CO') : '—';
+          const statusColor = t.estado === 'activo' ? 'var(--verde)' : '#444';
+          return `
+            <tr onclick="editarTratamiento('${t.id}')">
+              <td>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-size:18px">${t.emoji || '🦷'}</span>
+                  <div>
+                    <div style="font-weight:600">${t.nombre}</div>
+                    <div style="font-size:11px;color:#555">${t.desc ? t.desc.slice(0,50)+'…' : ''}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="t-cat ${cat.cls}">${cat.label}</span></td>
+              <td style="color:#888;font-size:12px">${t.duracion || '—'}</td>
+              <td style="font-family:'Playfair Display',serif;color:var(--dorado-claro)">${precio}</td>
+              <td>
+                <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:${statusColor}">
+                  <span style="width:6px;height:6px;border-radius:50%;background:${statusColor};display:inline-block"></span>
+                  ${t.estado.charAt(0).toUpperCase()+t.estado.slice(1)}
+                </span>
+              </td>
+              <td>
+                <div class="td-actions-list" onclick="event.stopPropagation()">
+                  <button class="btn-act" onclick="editarTratamiento('${t.id}')">✎ Editar</button>
+                  <button class="btn-act danger" onclick="eliminar('${t.id}')">✕</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // ── VISTA ──
+    function setVista(v) {
+      vistaActual = v;
+      document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
+      document.getElementById('btnList').classList.toggle('active', v === 'list');
+      document.getElementById('gridView').classList.toggle('hidden', v !== 'grid');
+      document.getElementById('gridEmpty').style.display = v !== 'grid' ? 'none' : '';
+      document.getElementById('listView').classList.toggle('active', v === 'list');
+      if (v === 'grid') render();
+    }
+
+    // ── MODAL ──
+    function abrirModal() {
+      editandoId = null;
+      document.getElementById('tForm').reset();
+      selEmoji(document.querySelector('.emoji-opt[data-e="🦷"]'));
+      document.getElementById('modalTitle').innerHTML = 'Nuevo <span>Tratamiento</span>';
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    function cerrarModal() { document.getElementById('overlay').classList.remove('open'); }
+    function cerrarOverlay(e) { if (e.target.id === 'overlay') cerrarModal(); }
+
+    function selEmoji(el) {
+      document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('sel'));
+      el.classList.add('sel');
+      emojiSeleccionado = el.dataset.e;
+    }
+
+    // ── GUARDAR ──
+    function guardar(e) {
+      e.preventDefault();
+      const t = {
+        id:         editandoId || Date.now().toString(),
+        emoji:      emojiSeleccionado,
+        nombre:     document.getElementById('tNombre').value.trim(),
+        desc:       document.getElementById('tDesc').value.trim(),
+        categoria:  document.getElementById('tCategoria').value,
+        precioMin:  Number(document.getElementById('tPrecioMin').value) || 0,
+        precioMax:  Number(document.getElementById('tPrecioMax').value) || 0,
+        duracion:   document.getElementById('tDuracion').value.trim(),
+        sesiones:   Number(document.getElementById('tSesiones').value) || 1,
+        estado:     document.getElementById('tEstado').value,
+      };
+
+      if (editandoId) {
+        const idx = tratamientos.findIndex(x => x.id === editandoId);
+        if (idx !== -1) tratamientos[idx] = t;
+      } else {
+        tratamientos.unshift(t);
+      }
+
+      localStorage.setItem('tratamientos_ips', JSON.stringify(tratamientos));
+      cerrarModal();
+      actualizarStats();
+      render();
+    }
+
+    // ── EDITAR ──
+    function editarTratamiento(id) {
+      const t = tratamientos.find(x => x.id === id);
+      if (!t) return;
+      editandoId = id;
+      document.getElementById('tNombre').value    = t.nombre;
+      document.getElementById('tDesc').value      = t.desc || '';
+      document.getElementById('tCategoria').value = t.categoria;
+      document.getElementById('tPrecioMin').value = t.precioMin || '';
+      document.getElementById('tPrecioMax').value = t.precioMax || '';
+      document.getElementById('tDuracion').value  = t.duracion || '';
+      document.getElementById('tSesiones').value  = t.sesiones || 1;
+      document.getElementById('tEstado').value    = t.estado;
+
+      const ep = document.querySelector(`.emoji-opt[data-e="${t.emoji}"]`);
+      if (ep) selEmoji(ep);
+      else emojiSeleccionado = t.emoji || '🦷';
+
+      document.getElementById('modalTitle').innerHTML = 'Editar <span>Tratamiento</span>';
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    // ── ELIMINAR ──
+    function eliminar(id) {
+      const t = tratamientos.find(x => x.id === id);
+      if (!t || !confirm(`¿Eliminar "${t.nombre}"?`)) return;
+      tratamientos = tratamientos.filter(x => x.id !== id);
+      localStorage.setItem('tratamientos_ips', JSON.stringify(tratamientos));
+      actualizarStats();
+      render();
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

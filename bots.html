@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bots | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --negro: #000000; --negro-suave: #111111; --negro-panel: #1a1a1a; --negro-input: #141414;
+      --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
+      --verde: #4CAF82; --rojo: #e05555; --azul: #4C8FCA; --morado: #9B59B6; --amarillo: #e0a435;
+    }
+    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+
+    .btn-nuevo { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); cursor: pointer; transition: all 0.2s; }
+    .btn-nuevo:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Bot grid */
+    .bots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
+
+    .bot-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 14px;
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .bot-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+
+    .bot-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .bot-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .bi-verde  { background: rgba(76,175,130,0.12); }
+    .bi-dorado { background: rgba(201,168,76,0.12); }
+    .bi-azul   { background: rgba(76,143,202,0.12); }
+    .bi-morado { background: rgba(155,89,182,0.12); }
+
+    .bot-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .bot-trigger { font-size: 11px; color: var(--gris); }
+
+    .bot-status {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .bs-activo   { background: rgba(76,175,130,0.1); color: var(--verde); }
+    .bs-inactivo { background: rgba(255,255,255,0.05); color: #555; }
+    .bs-borrador { background: rgba(224,164,53,0.1); color: var(--amarillo); }
+
+    .bot-stats { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .bs-item { text-align: center; }
+    .bs-num { font-size: 16px; font-weight: 700; color: var(--dorado); }
+    .bs-lbl { font-size: 10px; color: #555; }
+
+    .bot-actions { display: flex; gap: 6px; margin-top: 14px; }
+    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+
+    /* Plantillas de inicio */
+    .section-title { font-size: 13px; font-weight: 600; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+    .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+
+    .tpl-card {
+      background: transparent;
+      border: 1px dashed rgba(201,168,76,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tpl-card:hover { background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.4); }
+    .tpl-icon { font-size: 28px; margin-bottom: 10px; }
+    .tpl-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .tpl-desc { font-size: 11.5px; color: var(--gris); line-height: 1.5; }
+
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:center; justify-content:center; }
+    .modal-overlay.show { display:flex; }
+    .modal { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 32px; width: 540px; max-height: 80vh; overflow-y: auto; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .modal-title span { color: var(--dorado); }
+    .modal-sub { font-size: 12.5px; color: var(--gris); margin-bottom: 24px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
+    input[type="text"], select, textarea { background: var(--negro-input); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; resize: none; transition: border-color 0.2s; width: 100%; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
+    input::placeholder, textarea::placeholder { color: #333; }
+    select option { background: #1a1a1a; }
+
+    /* Flujo del bot */
+    .flow-step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--dorado); flex-shrink: 0; }
+    .step-content { flex: 1; }
+    .step-type { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .btn-cancel { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--gris); cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-cancel:hover { color: var(--blanco); }
+    .btn-create { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: none; background: var(--dorado); color: var(--negro); font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-create:hover { opacity: 0.88; }
+
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html"  class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"       class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"               class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <div class="nav-section">Insights</div>
+      <a href="insights.html"   class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+      <div class="nav-section">IA & Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item active"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"      class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div><div class="user-name">Dr. Leo Fernandez</div><div class="user-role">doctorleofernandez</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">⚡ <span>Bots</span> de automatización</div>
+      <button class="btn-nuevo" onclick="abrirModal()">+ Nuevo bot</button>
+    </div>
+
+    <!-- Bots existentes -->
+    <div class="section-title">Mis bots</div>
+    <div class="bots-grid" id="botsGrid">
+
+      <div class="bot-card">
+        <span class="bot-status bs-activo">Activo</span>
+        <div class="bot-header">
+          <div class="bot-icon bi-verde">👋</div>
+          <div>
+            <div class="bot-name">Bienvenida automática</div>
+            <div class="bot-trigger">⚡ Se activa: Nuevo contacto entra al CRM</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía saludo inicial + menú de opciones al primer mensaje de un nuevo paciente.</div>
+        <div class="bot-stats">
+          <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Activaciones</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Último envío</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Tasa respuesta</div></div>
+        </div>
+        <div class="bot-actions">
+          <button class="btn-sm" onclick="editarBot('Bienvenida automática')">✏ Editar flujo</button>
+          <button class="btn-sm" onclick="showToast('Bot desactivado')">⏸ Pausar</button>
+          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <span class="bot-status bs-activo">Activo</span>
+        <div class="bot-header">
+          <div class="bot-icon bi-dorado">📅</div>
+          <div>
+            <div class="bot-name">Recordatorio de cita</div>
+            <div class="bot-trigger">⏰ Se activa: 24h antes de cada cita</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía recordatorio por WhatsApp con fecha, hora y dirección de la clínica.</div>
+        <div class="bot-stats">
+          <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Enviados</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Confirmados</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Cancelados</div></div>
+        </div>
+        <div class="bot-actions">
+          <button class="btn-sm" onclick="editarBot('Recordatorio de cita')">✏ Editar flujo</button>
+          <button class="btn-sm" onclick="showToast('Bot pausado')">⏸ Pausar</button>
+          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <span class="bot-status bs-borrador">Borrador</span>
+        <div class="bot-header">
+          <div class="bot-icon bi-azul">💰</div>
+          <div>
+            <div class="bot-name">Seguimiento de cotización</div>
+            <div class="bot-trigger">📋 Se activa: Paciente en etapa "Interesado"</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía seguimiento 48h después de enviar una cotización sin respuesta del paciente.</div>
+        <div class="bot-stats">
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Activaciones</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Conversiones</div></div>
+          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Pendientes</div></div>
+        </div>
+        <div class="bot-actions">
+          <button class="btn-sm" onclick="editarBot('Seguimiento de cotización')">✏ Completar</button>
+          <button class="btn-sm" onclick="showToast('Bot activado')">▶ Activar</button>
+          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Plantillas de inicio rápido -->
+    <div class="section-title">Crear desde plantilla</div>
+    <div class="templates-grid">
+      <div class="tpl-card" onclick="crearDesdeTemplate('Calificación de lead')">
+        <div class="tpl-icon">🎯</div>
+        <div class="tpl-name">Calificación de lead</div>
+        <div class="tpl-desc">Pregunta automáticamente por el tratamiento de interés, presupuesto y urgencia.</div>
+      </div>
+      <div class="tpl-card" onclick="crearDesdeTemplate('Post-tratamiento')">
+        <div class="tpl-icon">😊</div>
+        <div class="tpl-name">Seguimiento post-tratamiento</div>
+        <div class="tpl-desc">Pregunta cómo se siente el paciente 24h después del procedimiento.</div>
+      </div>
+      <div class="tpl-card" onclick="crearDesdeTemplate('Reactivación pacientes')">
+        <div class="tpl-icon">🔄</div>
+        <div class="tpl-name">Reactivación de pacientes</div>
+        <div class="tpl-desc">Contacta pacientes que llevan más de 6 meses sin cita.</div>
+      </div>
+      <div class="tpl-card" onclick="crearDesdeTemplate('Encuesta de satisfacción')">
+        <div class="tpl-icon">⭐</div>
+        <div class="tpl-name">Encuesta de satisfacción</div>
+        <div class="tpl-desc">Envía encuesta corta después de cada consulta completada.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal nuevo bot -->
+  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+    <div class="modal">
+      <div class="modal-title">Nuevo <span>Bot</span></div>
+      <div class="modal-sub">Define el flujo automático que seguirá el bot cuando se active.</div>
+
+      <div class="form-group">
+        <label>Nombre del bot</label>
+        <input type="text" id="botNombre" placeholder="Ej: Bienvenida WhatsApp" />
+      </div>
+      <div class="form-group">
+        <label>Canal</label>
+        <select id="botCanal">
+          <option>WhatsApp</option>
+          <option>Instagram</option>
+          <option>Todos los canales</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Disparador (trigger)</label>
+        <select id="botTrigger">
+          <option>Nuevo contacto entra al CRM</option>
+          <option>Mensaje con palabra clave</option>
+          <option>Etapa del pipeline cambia</option>
+          <option>24h antes de una cita</option>
+          <option>1 hora antes de una cita</option>
+          <option>Cita confirmada</option>
+          <option>Cita cancelada</option>
+          <option>Sin respuesta por 48h</option>
+          <option>Fecha específica / recurrente</option>
+        </select>
+      </div>
+
+      <div style="font-size:11px;color:var(--gris);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;font-weight:600">Flujo de mensajes</div>
+
+      <div id="flowSteps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-type">Mensaje de texto</div>
+            <textarea rows="2" placeholder="Ej: ¡Hola {{nombre}}! 👋 Soy el asistente de IPS Fernández..."></textarea>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-type">Esperar respuesta</div>
+            <select><option>Continuar automáticamente</option><option>Esperar respuesta del contacto</option><option>Esperar X minutos</option></select>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-type">Acción final</div>
+            <select><option>Asignar a agente humano</option><option>Mover en el pipeline</option><option>Crear tarea</option><option>Enviar otro mensaje</option></select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-add" style="margin-top:8px" onclick="agregarPaso()">+ Agregar paso</button>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-create" onclick="crearBot()">⚡ Crear bot</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function abrirModal() { document.getElementById('modalOverlay').classList.add('show'); }
+    function cerrarModal(e) {
+      if (!e || e.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('show');
+      }
+    }
+
+    function crearBot() {
+      const nombre = document.getElementById('botNombre').value.trim();
+      if (!nombre) { showToast('Escribe un nombre para el bot'); return; }
+      const bots = JSON.parse(localStorage.getItem('bots_ips') || '[]');
+      bots.push({ id: Date.now(), nombre, canal: document.getElementById('botCanal').value, trigger: document.getElementById('botTrigger').value, activo: true, activaciones: 0 });
+      localStorage.setItem('bots_ips', JSON.stringify(bots));
+      cerrarModal();
+      showToast('Bot "' + nombre + '" creado');
+    }
+
+    function editarBot(nombre) { showToast('Editor de flujo: disponible con backend conectado'); }
+    function crearDesdeTemplate(t) { document.getElementById('botNombre').value = t; abrirModal(); }
+
+    function agregarPaso() {
+      const steps = document.getElementById('flowSteps');
+      const num = steps.children.length + 1;
+      const div = document.createElement('div');
+      div.className = 'flow-step';
+      div.innerHTML = `<div class="step-num">${num}</div><div class="step-content"><div class="step-type">Nuevo paso</div><select><option>Mensaje de texto</option><option>Esperar respuesta</option><option>Condición</option><option>Acción</option></select></div>`;
+      steps.appendChild(div);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✓  ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

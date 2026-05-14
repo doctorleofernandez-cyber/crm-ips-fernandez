@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facturación | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --rojo: #e05555;
+      --amarillo: #e0a435;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      min-height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+    }
+
+    .sidebar-logo {
+      padding: 22px 18px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 9px; padding: 9px 10px;
+      border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris);
+      transition: all 0.2s; text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      padding: 32px 36px;
+      min-height: 100vh;
+    }
+
+    /* Topbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .page-title span { color: var(--dorado); }
+
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn-nueva-factura {
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--dorado);
+      color: var(--negro);
+      border: none;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-nueva-factura:hover { opacity: 0.85; }
+
+    .btn-exportar {
+      font-size: 12px;
+      font-weight: 500;
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--dorado);
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-exportar:hover { background: rgba(201,168,76,0.08); }
+
+    /* ── TARJETAS DE RESUMEN ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover { border-color: rgba(201,168,76,0.28); }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      border-radius: 12px 0 0 12px;
+    }
+
+    .stat-card.total::before  { background: var(--dorado); }
+    .stat-card.cobrado::before { background: var(--verde); }
+    .stat-card.pendiente::before { background: var(--amarillo); }
+    .stat-card.vencido::before  { background: var(--rojo); }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-card.total   .stat-value { color: var(--dorado); }
+    .stat-card.cobrado .stat-value { color: var(--verde); }
+    .stat-card.pendiente .stat-value { color: var(--amarillo); }
+    .stat-card.vencido .stat-value { color: var(--rojo); }
+
+    .stat-count { font-size: 11px; color: #555; }
+
+    /* ── FILTROS Y BÚSQUEDA ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 9px 14px;
+    }
+
+    .search-wrap input {
+      background: none; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      color: var(--blanco); width: 100%;
+    }
+
+    .search-wrap input::placeholder { color: #444; }
+
+    .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent;
+      color: var(--gris);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .chip:hover { color: var(--blanco); border-color: rgba(255,255,255,0.18); }
+    .chip.active { background: rgba(201,168,76,0.12); color: var(--dorado); border-color: rgba(201,168,76,0.3); }
+    .chip.cobrado.active   { background: rgba(76,175,130,0.12); color: var(--verde); border-color: rgba(76,175,130,0.3); }
+    .chip.pendiente.active { background: rgba(224,164,53,0.12); color: var(--amarillo); border-color: rgba(224,164,53,0.3); }
+    .chip.vencido.active   { background: rgba(224,85,85,0.12); color: var(--rojo); border-color: rgba(224,85,85,0.3); }
+
+    /* ── TABLA ── */
+    .table-wrap {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      padding: 13px 16px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #555;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--blanco);
+      vertical-align: middle;
+    }
+
+    .td-num { color: var(--gris); font-size: 12px; font-family: monospace; }
+
+    .td-paciente {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pac-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      color: var(--dorado);
+      flex-shrink: 0;
+    }
+
+    .pac-name { font-size: 13px; font-weight: 500; }
+    .pac-doc  { font-size: 11px; color: #555; }
+
+    .td-valor {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dorado-claro);
+    }
+
+    /* Badge de estado */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    .badge.cobrado   { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .badge.cobrado .badge-dot   { background: var(--verde); }
+    .badge.pendiente { background: rgba(224,164,53,0.12); color: var(--amarillo); }
+    .badge.pendiente .badge-dot { background: var(--amarillo); }
+    .badge.vencido   { background: rgba(224,85,85,0.12); color: var(--rojo); }
+    .badge.vencido .badge-dot   { background: var(--rojo); }
+
+    /* Acciones */
+    .td-actions { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
+    tbody tr:hover .td-actions { opacity: 1; }
+
+    .btn-action {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent;
+      color: var(--gris);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-action:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-action.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+
+    /* Vacío */
+    .table-empty {
+      padding: 64px 24px;
+      text-align: center;
+      color: #333;
+    }
+
+    .table-empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.3; }
+    .table-empty-text { font-size: 13px; }
+
+    /* Paginación */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .page-info { font-size: 12px; color: #444; }
+
+    .page-btns { display: flex; gap: 4px; }
+
+    .page-btn {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: transparent;
+      color: var(--gris);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .page-btn:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .page-btn.active { background: rgba(201,168,76,0.12); color: var(--dorado); border-color: rgba(201,168,76,0.3); }
+
+    /* ── MODAL NUEVA FACTURA ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      padding: 32px;
+      position: relative;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none; border: none;
+      color: #555; font-size: 18px;
+      cursor: pointer; line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--blanco); }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .modal-title span { color: var(--dorado); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+
+    .form-group label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--dorado);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #444; }
+
+    .form-group select option { background: #1a1a1a; }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .btn-cancel {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent;
+      color: var(--gris);
+      font-size: 13px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .btn-cancel:hover { color: var(--blanco); }
+
+    .btn-guardar {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      background: var(--dorado);
+      color: var(--negro);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-guardar:hover { opacity: 0.85; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"     class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="facturacion.html" class="nav-item active"><span class="nav-icon">💰</span> Facturación</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"              class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <h1 class="page-title">Módulo de <span>Facturación</span></h1>
+      <div class="topbar-actions">
+        <button class="btn-exportar" onclick="exportar()">↓ Exportar</button>
+        <button class="btn-nueva-factura" onclick="abrirModal()">+ Nueva Factura</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-label">Total Facturado</div>
+        <div class="stat-value" id="statTotal">$0</div>
+        <div class="stat-count" id="statTotalCnt">0 facturas</div>
+      </div>
+      <div class="stat-card cobrado">
+        <div class="stat-label">Cobrado</div>
+        <div class="stat-value" id="statCobrado">$0</div>
+        <div class="stat-count" id="statCobradoCnt">0 facturas</div>
+      </div>
+      <div class="stat-card pendiente">
+        <div class="stat-label">Pendiente</div>
+        <div class="stat-value" id="statPendiente">$0</div>
+        <div class="stat-count" id="statPendienteCnt">0 facturas</div>
+      </div>
+      <div class="stat-card vencido">
+        <div class="stat-label">Vencido</div>
+        <div class="stat-value" id="statVencido">$0</div>
+        <div class="stat-count" id="statVencidoCnt">0 facturas</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span style="color:#444;font-size:13px">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por paciente, concepto o N° de factura…" oninput="renderTabla()" />
+      </div>
+      <div class="filter-chips">
+        <button class="chip active"     data-estado="" onclick="setFiltro(this)">Todas</button>
+        <button class="chip cobrado"    data-estado="cobrado"   onclick="setFiltro(this)">Cobrado</button>
+        <button class="chip pendiente"  data-estado="pendiente" onclick="setFiltro(this)">Pendiente</button>
+        <button class="chip vencido"    data-estado="vencido"   onclick="setFiltro(this)">Vencido</button>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>N° Factura</th>
+            <th>Paciente</th>
+            <th>Fecha</th>
+            <th>Vencimiento</th>
+            <th>Concepto</th>
+            <th>Valor</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody"></tbody>
+      </table>
+      <div id="emptyState" class="table-empty" style="display:none">
+        <div class="table-empty-icon">💰</div>
+        <div class="table-empty-text">Sin facturas registradas</div>
+      </div>
+      <div class="pagination">
+        <span class="page-info" id="pageInfo">0 facturas</span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── MODAL NUEVA FACTURA ── -->
+  <div class="overlay" id="overlay" onclick="cerrarOverlay(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+      <div class="modal-title">Nueva <span>Factura</span></div>
+
+      <form id="facturaForm" onsubmit="guardarFactura(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>N° Factura</label>
+            <input type="text" id="fNumero" placeholder="FAC-0001" required />
+          </div>
+          <div class="form-group">
+            <label>Fecha</label>
+            <input type="date" id="fFecha" required />
+          </div>
+          <div class="form-group">
+            <label>Paciente</label>
+            <input type="text" id="fPaciente" placeholder="Nombre completo" required />
+          </div>
+          <div class="form-group">
+            <label>Documento</label>
+            <input type="text" id="fDocumento" placeholder="CC / NIT" />
+          </div>
+          <div class="form-group full">
+            <label>Concepto</label>
+            <input type="text" id="fConcepto" placeholder="Ej: Ortodoncia fase 1, Limpieza dental…" required />
+          </div>
+          <div class="form-group">
+            <label>Valor (COP)</label>
+            <input type="number" id="fValor" placeholder="0" min="0" required />
+          </div>
+          <div class="form-group">
+            <label>Vencimiento</label>
+            <input type="date" id="fVencimiento" />
+          </div>
+          <div class="form-group full">
+            <label>Estado</label>
+            <select id="fEstado">
+              <option value="pendiente">Pendiente</option>
+              <option value="cobrado">Cobrado</option>
+              <option value="vencido">Vencido</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar Factura</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ── DATOS ──
+    let facturas = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+    let filtroEstado = '';
+    let editandoId = null;
+    const POR_PAGINA = 10;
+    let paginaActual = 1;
+
+    // ── INICIALIZAR ──
+    inicializarFecha();
+    actualizarStats();
+    renderTabla();
+
+    function inicializarFecha() {
+      const hoy = new Date().toISOString().split('T')[0];
+      document.getElementById('fFecha').value = hoy;
+      // vencimiento por defecto: 30 días
+      const v = new Date(); v.setDate(v.getDate() + 30);
+      document.getElementById('fVencimiento').value = v.toISOString().split('T')[0];
+      // Número sugerido
+      document.getElementById('fNumero').value = 'FAC-' + String(facturas.length + 1).padStart(4, '0');
+    }
+
+    // ── STATS ──
+    function actualizarStats() {
+      const fmt = n => '$' + n.toLocaleString('es-CO');
+
+      const cobradas  = facturas.filter(f => f.estado === 'cobrado');
+      const pendientes = facturas.filter(f => f.estado === 'pendiente');
+      const vencidas  = facturas.filter(f => f.estado === 'vencido');
+      const total = facturas.reduce((s, f) => s + Number(f.valor), 0);
+
+      document.getElementById('statTotal').textContent    = fmt(total);
+      document.getElementById('statTotalCnt').textContent = facturas.length + ' factura' + (facturas.length !== 1 ? 's' : '');
+
+      document.getElementById('statCobrado').textContent    = fmt(cobradas.reduce((s,f)=>s+Number(f.valor),0));
+      document.getElementById('statCobradoCnt').textContent = cobradas.length + ' factura' + (cobradas.length !== 1 ? 's' : '');
+
+      document.getElementById('statPendiente').textContent    = fmt(pendientes.reduce((s,f)=>s+Number(f.valor),0));
+      document.getElementById('statPendienteCnt').textContent = pendientes.length + ' factura' + (pendientes.length !== 1 ? 's' : '');
+
+      document.getElementById('statVencido').textContent    = fmt(vencidas.reduce((s,f)=>s+Number(f.valor),0));
+      document.getElementById('statVencidoCnt').textContent = vencidas.length + ' factura' + (vencidas.length !== 1 ? 's' : '');
+    }
+
+    // ── FILTRO ──
+    function setFiltro(btn) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      filtroEstado = btn.dataset.estado;
+      paginaActual = 1;
+      renderTabla();
+    }
+
+    // ── RENDER ──
+    function renderTabla() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      let lista = facturas.filter(f => {
+        const matchEstado = !filtroEstado || f.estado === filtroEstado;
+        const matchSearch = !q ||
+          f.paciente.toLowerCase().includes(q) ||
+          f.concepto.toLowerCase().includes(q)  ||
+          f.numero.toLowerCase().includes(q);
+        return matchEstado && matchSearch;
+      });
+
+      const total = lista.length;
+      const inicio = (paginaActual - 1) * POR_PAGINA;
+      const pagina = lista.slice(inicio, inicio + POR_PAGINA);
+
+      const tbody = document.getElementById('tablaBody');
+      const empty = document.getElementById('emptyState');
+
+      if (total === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        tbody.innerHTML = pagina.map(f => `
+          <tr onclick="editarFactura('${f.id}')">
+            <td class="td-num">${f.numero}</td>
+            <td>
+              <div class="td-paciente">
+                <div class="pac-avatar">${iniciales(f.paciente)}</div>
+                <div>
+                  <div class="pac-name">${f.paciente}</div>
+                  <div class="pac-doc">${f.documento || '—'}</div>
+                </div>
+              </div>
+            </td>
+            <td style="color:#888;font-size:12px">${formatFecha(f.fecha)}</td>
+            <td style="color:#888;font-size:12px">${f.vencimiento ? formatFecha(f.vencimiento) : '—'}</td>
+            <td style="color:#aaa;font-size:12px">${f.concepto}</td>
+            <td class="td-valor">$${Number(f.valor).toLocaleString('es-CO')}</td>
+            <td>
+              <span class="badge ${f.estado}">
+                <span class="badge-dot"></span>
+                ${f.estado.charAt(0).toUpperCase() + f.estado.slice(1)}
+              </span>
+            </td>
+            <td>
+              <div class="td-actions" onclick="event.stopPropagation()">
+                <button class="btn-action" onclick="editarFactura('${f.id}')">✎</button>
+                <button class="btn-action danger" onclick="eliminarFactura('${f.id}')">✕</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Paginación
+      document.getElementById('pageInfo').textContent = total + ' factura' + (total !== 1 ? 's' : '');
+      const totalPags = Math.ceil(total / POR_PAGINA);
+      const pb = document.getElementById('pageBtns');
+      pb.innerHTML = '';
+      for (let i = 1; i <= totalPags; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === paginaActual ? ' active' : '');
+        b.textContent = i;
+        b.onclick = () => { paginaActual = i; renderTabla(); };
+        pb.appendChild(b);
+      }
+    }
+
+    // ── MODAL ──
+    function abrirModal() {
+      editandoId = null;
+      document.getElementById('facturaForm').reset();
+      inicializarFecha();
+      document.querySelector('.modal-title').innerHTML = 'Nueva <span>Factura</span>';
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    function cerrarModal() {
+      document.getElementById('overlay').classList.remove('open');
+    }
+
+    function cerrarOverlay(e) {
+      if (e.target === document.getElementById('overlay')) cerrarModal();
+    }
+
+    // ── GUARDAR ──
+    function guardarFactura(e) {
+      e.preventDefault();
+      const factura = {
+        id:          editandoId || Date.now().toString(),
+        numero:      document.getElementById('fNumero').value.trim(),
+        fecha:       document.getElementById('fFecha').value,
+        vencimiento: document.getElementById('fVencimiento').value,
+        paciente:    document.getElementById('fPaciente').value.trim(),
+        documento:   document.getElementById('fDocumento').value.trim(),
+        concepto:    document.getElementById('fConcepto').value.trim(),
+        valor:       document.getElementById('fValor').value,
+        estado:      document.getElementById('fEstado').value,
+      };
+
+      if (editandoId) {
+        const idx = facturas.findIndex(f => f.id === editandoId);
+        if (idx !== -1) facturas[idx] = factura;
+      } else {
+        facturas.unshift(factura);
+      }
+
+      localStorage.setItem('facturas_ips', JSON.stringify(facturas));
+      cerrarModal();
+      actualizarStats();
+      renderTabla();
+    }
+
+    // ── EDITAR ──
+    function editarFactura(id) {
+      const f = facturas.find(x => x.id === id);
+      if (!f) return;
+      editandoId = id;
+      document.getElementById('fNumero').value    = f.numero;
+      document.getElementById('fFecha').value     = f.fecha;
+      document.getElementById('fVencimiento').value = f.vencimiento || '';
+      document.getElementById('fPaciente').value  = f.paciente;
+      document.getElementById('fDocumento').value = f.documento || '';
+      document.getElementById('fConcepto').value  = f.concepto;
+      document.getElementById('fValor').value     = f.valor;
+      document.getElementById('fEstado').value    = f.estado;
+      document.querySelector('.modal-title').innerHTML = 'Editar <span>Factura</span>';
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    // ── ELIMINAR ──
+    function eliminarFactura(id) {
+      if (!confirm('¿Eliminar esta factura?')) return;
+      facturas = facturas.filter(f => f.id !== id);
+      localStorage.setItem('facturas_ips', JSON.stringify(facturas));
+      actualizarStats();
+      renderTabla();
+    }
+
+    // ── EXPORTAR ──
+    function exportar() {
+      const encabezado = ['N° Factura','Paciente','Documento','Fecha','Vencimiento','Concepto','Valor','Estado'];
+      const filas = facturas.map(f => [
+        f.numero, f.paciente, f.documento, f.fecha, f.vencimiento,
+        f.concepto, f.valor, f.estado
+      ]);
+      const csv = [encabezado, ...filas].map(r => r.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'facturas_ips.csv'; a.click();
+    }
+
+    // ── UTILS ──
+    function iniciales(nombre) {
+      return nombre.split(' ').slice(0,2).map(p => p[0]).join('').toUpperCase();
+    }
+
+    function formatFecha(iso) {
+      if (!iso) return '—';
+      const [y,m,d] = iso.split('-');
+      const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      return `${d} ${meses[+m-1]} ${y}`;
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

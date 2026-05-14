@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agente de IA | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --negro-input: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+      --morado: #9B59B6;
+    }
+
+    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+
+    /* ── TOPBAR ── */
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .page-title span { color: var(--dorado); }
+
+    /* ── AGENT STATUS HERO ── */
+    .agent-hero {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .agent-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.2), rgba(201,168,76,0.05));
+      border: 2px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .agent-status-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--verde);
+      border: 2px solid var(--negro-panel);
+      box-shadow: 0 0 8px rgba(76,175,130,0.5);
+      transition: all 0.3s;
+    }
+
+    .agent-status-dot.off {
+      background: #444;
+      box-shadow: none;
+    }
+
+    .agent-info { flex: 1; }
+    .agent-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .agent-desc { font-size: 13px; color: var(--gris); margin-bottom: 10px; }
+    .agent-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .agent-tag {
+      font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+    .tag-wa  { background: rgba(37,211,102,0.1);  color: #25D366; }
+    .tag-ig  { background: rgba(193,53,132,0.1);  color: #C13584; }
+    .tag-web { background: rgba(76,143,202,0.1);  color: var(--azul); }
+    .tag-ia  { background: rgba(201,168,76,0.1);  color: var(--dorado); }
+
+    /* Toggle grande */
+    .agent-toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .toggle-big {
+      position: relative; width: 60px; height: 32px; cursor: pointer;
+    }
+    .toggle-big input { opacity: 0; width: 0; height: 0; }
+    .slider-big {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      transition: background 0.3s;
+    }
+    .slider-big::before {
+      content: ''; position: absolute;
+      width: 24px; height: 24px;
+      left: 4px; top: 4px;
+      background: #555; border-radius: 50%;
+      transition: all 0.3s;
+    }
+    .toggle-big input:checked + .slider-big { background: rgba(76,175,130,0.4); }
+    .toggle-big input:checked + .slider-big::before { transform: translateX(28px); background: var(--verde); }
+    .toggle-label-big { font-size: 11px; color: var(--gris); font-weight: 500; }
+    .toggle-label-big.on { color: var(--verde); }
+
+    /* ── KPI ── */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+
+    .kpi-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .kpi-label { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .kpi-value { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+    .kpi-sub { font-size: 11px; color: var(--gris); }
+    .kpi-verde { color: var(--verde); }
+    .kpi-azul  { color: var(--azul); }
+    .kpi-dorado{ color: var(--dorado); }
+    .kpi-morado{ color: var(--morado); }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--negro-panel); padding: 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); width: fit-content; }
+    .tab-btn { padding: 8px 18px; border-radius: 7px; border: none; background: transparent; color: var(--gris); font-size: 12.5px; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.2s; }
+    .tab-btn:hover { color: var(--blanco); }
+    .tab-btn.active { background: rgba(201,168,76,0.12); color: var(--dorado); font-weight: 500; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 13px; font-weight: 600;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .card-title .ct-icon { color: var(--dorado); }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+    label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
+
+    input[type="text"], input[type="number"], select, textarea {
+      background: var(--negro-input);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; resize: vertical;
+      transition: border-color 0.2s; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
+    input::placeholder, textarea::placeholder { color: #333; }
+    select option { background: #1a1a1a; }
+
+    textarea.prompt-area { min-height: 140px; line-height: 1.6; font-size: 12.5px; }
+
+    .btn-save {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--dorado); color: var(--negro);
+      border: none; padding: 10px 22px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s; margin-top: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-save:hover { opacity: 0.85; }
+
+    /* ── KNOWLEDGE BASE ── */
+    .kb-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .kb-item:last-child { border-bottom: none; }
+    .kb-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .kb-info { flex: 1; }
+    .kb-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .kb-desc { font-size: 11.5px; color: var(--gris); line-height: 1.5; }
+    .kb-status { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .kb-active   { background: rgba(76,175,130,0.1); color: var(--verde); }
+    .kb-inactive { background: rgba(255,255,255,0.06); color: #555; }
+
+    .btn-add {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px;
+      background: transparent;
+      border: 1px dashed rgba(201,168,76,0.25);
+      border-radius: 8px;
+      color: var(--dorado); font-size: 12px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      margin-top: 14px;
+    }
+    .btn-add:hover { background: rgba(201,168,76,0.05); border-color: rgba(201,168,76,0.4); }
+
+    /* ── REGLAS ── */
+    .regla-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .regla-row:last-child { border-bottom: none; }
+    .regla-info .r-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+    .regla-info .r-desc  { font-size: 11px; color: var(--gris); }
+
+    .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 10px; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #555; border-radius: 50%; transition: all 0.2s; }
+    .toggle input:checked + .toggle-slider { background: rgba(201,168,76,0.3); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--dorado); }
+
+    /* ── HISTORIAL ── */
+    .historial-item {
+      display: flex; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .historial-item:hover { opacity: 0.75; }
+    .historial-item:last-child { border-bottom: none; }
+    .h-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--dorado); flex-shrink: 0; }
+    .h-info { flex: 1; }
+    .h-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+    .h-preview { font-size: 11.5px; color: var(--gris); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px; }
+    .h-meta { text-align: right; }
+    .h-time { font-size: 11px; color: var(--gris); margin-bottom: 6px; }
+    .h-canal { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .h-wa  { background: rgba(37,211,102,0.1); color: #25D366; }
+    .h-ig  { background: rgba(193,53,132,0.1); color: #C13584; }
+    .h-resolved { background: rgba(76,175,130,0.1); color: var(--verde); }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 48px 20px; color: var(--gris); }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+    .empty-text { font-size: 14px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Modelo badge */
+    .model-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; color: var(--dorado);
+    }
+
+    .model-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 6px rgba(76,175,130,0.6); }
+
+    /* Stats chart bar */
+    .stat-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .stat-bar-label { font-size: 12px; color: var(--gris); width: 130px; flex-shrink: 0; }
+    .stat-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .stat-bar-fill  { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--dorado), var(--dorado-claro)); transition: width 0.8s ease; }
+    .stat-bar-pct   { font-size: 11px; color: var(--dorado); font-weight: 600; width: 36px; text-align: right; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html"  class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"       class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
+      <a href="#"               class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html"   class="nav-item"><span class="nav-icon">📈</span> Insights</a>
+
+      <div class="nav-section">IA & Automatización</div>
+      <a href="agente-ia.html"  class="nav-item active"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"      class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="page-title">Agente de <span>IA</span>
+        <span class="model-badge"><span class="model-dot"></span> Claude 3.5 Sonnet</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-save" style="margin-top:0;background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--dorado)" onclick="showToast('Configuración exportada')">⬇ Exportar config</button>
+        <button class="btn-save" style="margin-top:0" onclick="guardarConfig()">✓ Guardar todo</button>
+      </div>
+    </div>
+
+    <!-- Hero status -->
+    <div class="agent-hero">
+      <div class="agent-avatar" id="agentAvatar">
+        🤖
+        <div class="agent-status-dot" id="statusDot"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Asistente IPS Fernández</div>
+        <div class="agent-desc">Responde automáticamente a pacientes por WhatsApp e Instagram · Agenda citas · Resuelve preguntas frecuentes</div>
+        <div class="agent-tags">
+          <span class="agent-tag tag-wa">📱 WhatsApp</span>
+          <span class="agent-tag tag-ig">📸 Instagram</span>
+          <span class="agent-tag tag-ia">✨ IA Generativa</span>
+        </div>
+      </div>
+      <div class="agent-toggle-wrap">
+        <label class="toggle-big">
+          <input type="checkbox" id="agenteActivo" checked onchange="toggleAgente()" />
+          <span class="slider-big"></span>
+        </label>
+        <span class="toggle-label-big on" id="toggleLabel">Activo</span>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Mensajes respondidos</div>
+        <div class="kpi-value kpi-verde" id="kpiMensajes">0</div>
+        <div class="kpi-sub">Este mes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tasa de resolución</div>
+        <div class="kpi-value kpi-dorado" id="kpiResolucion">—</div>
+        <div class="kpi-sub">Resuelto sin escalada</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tiempo de respuesta</div>
+        <div class="kpi-value kpi-azul" id="kpiTiempo">—</div>
+        <div class="kpi-sub">Promedio</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Citas agendadas por IA</div>
+        <div class="kpi-value kpi-morado" id="kpiCitas">0</div>
+        <div class="kpi-sub">Este mes</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="setTab(this,'config')">⚙ Configuración</button>
+      <button class="tab-btn" onclick="setTab(this,'conocimiento')">📚 Base de conocimiento</button>
+      <button class="tab-btn" onclick="setTab(this,'reglas')">📋 Reglas</button>
+      <button class="tab-btn" onclick="setTab(this,'historial')">🕐 Historial</button>
+    </div>
+
+    <!-- ── CONFIGURACIÓN ── -->
+    <div class="tab-content active" id="tab-config">
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">🧠</span> Modelo de inteligencia artificial</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Proveedor de IA</label>
+            <select id="iaProveedor">
+              <option value="anthropic">Anthropic (Claude)</option>
+              <option value="openai">OpenAI (GPT-4o)</option>
+              <option value="google">Google (Gemini)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Modelo</label>
+            <select id="iaModelo">
+              <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (Recomendado)</option>
+              <option value="claude-opus-4-7">Claude Opus 4.7 (Máximo)</option>
+              <option value="claude-haiku-4-5">Claude Haiku 4.5 (Rápido)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Temperatura (creatividad)</label>
+            <select id="iaTemp">
+              <option value="0.2">0.2 — Muy preciso</option>
+              <option value="0.4" selected>0.4 — Balanceado</option>
+              <option value="0.7">0.7 — Más natural</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Idioma de respuesta</label>
+            <select id="iaIdioma">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="auto">Detectar automáticamente</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">✍️</span> Personalidad y tono del agente</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre del agente</label>
+            <input type="text" id="agentNombre" value="Valentina" placeholder="Ej: Valentina" />
+          </div>
+          <div class="form-group">
+            <label>Tono de comunicación</label>
+            <select id="agentTono">
+              <option value="profesional">Profesional y cálido</option>
+              <option value="formal">Formal</option>
+              <option value="amigable">Amigable y cercano</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Prompt del sistema (instrucciones para la IA)</label>
+            <textarea class="prompt-area" id="agentPrompt">Eres Valentina, asistente virtual de IPS Fernández Odontología y Medicina SAS. Tu rol es atender a los pacientes con calidez y profesionalismo.
+
+Puedes ayudar con:
+- Información sobre nuestros tratamientos (ortodoncia, blanqueamiento, implantes, etc.)
+- Agendar y confirmar citas
+- Responder preguntas frecuentes sobre precios y procedimientos
+- Orientar sobre ubicación, horarios y medios de pago
+
+Siempre saluda al paciente por su nombre si lo conoces. Si no puedes resolver algo, escala amablemente al doctor o al equipo.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Mensaje de bienvenida</label>
+            <textarea style="min-height:80px" id="agentBienvenida">¡Hola! 👋 Soy Valentina, asistente virtual de IPS Fernández. ¿En qué puedo ayudarte hoy?</textarea>
+          </div>
+          <div class="form-group">
+            <label>Mensaje de escalada (cuando no puede responder)</label>
+            <textarea style="min-height:80px" id="agentEscalada">Esta consulta requiere atención personalizada. Te conecto con nuestro equipo. Un momento por favor. 🙏</textarea>
+          </div>
+        </div>
+        <button class="btn-save" onclick="guardarConfig()">✓ &nbsp;Guardar configuración</button>
+      </div>
+
+    </div>
+
+    <!-- ── BASE DE CONOCIMIENTO ── -->
+    <div class="tab-content" id="tab-conocimiento">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">📚</span> Temas que conoce el agente</div>
+        <div id="kbList">
+          <div class="kb-item">
+            <div class="kb-icon">🦷</div>
+            <div class="kb-info">
+              <div class="kb-title">Catálogo de tratamientos</div>
+              <div class="kb-desc">Ortodoncia, blanqueamiento, implantes, carillas, resinas, endodoncia y más. Precios aproximados y duración.</div>
+            </div>
+            <span class="kb-status kb-active">Activo</span>
+          </div>
+          <div class="kb-item">
+            <div class="kb-icon">📅</div>
+            <div class="kb-info">
+              <div class="kb-title">Horarios y agenda</div>
+              <div class="kb-desc">Disponibilidad del consultorio, cómo agendar cita, tiempos de consulta por especialidad.</div>
+            </div>
+            <span class="kb-status kb-active">Activo</span>
+          </div>
+          <div class="kb-item">
+            <div class="kb-icon">💳</div>
+            <div class="kb-info">
+              <div class="kb-title">Medios de pago y financiación</div>
+              <div class="kb-desc">Efectivo, tarjetas, transferencias. Planes de pago disponibles para tratamientos de alto costo.</div>
+            </div>
+            <span class="kb-status kb-active">Activo</span>
+          </div>
+          <div class="kb-item">
+            <div class="kb-icon">📍</div>
+            <div class="kb-info">
+              <div class="kb-title">Ubicación e información de contacto</div>
+              <div class="kb-desc">Dirección, teléfono, parqueadero, cómo llegar en transporte público.</div>
+            </div>
+            <span class="kb-status kb-active">Activo</span>
+          </div>
+          <div class="kb-item">
+            <div class="kb-icon">🏥</div>
+            <div class="kb-info">
+              <div class="kb-title">Convenios y EPS</div>
+              <div class="kb-desc">Información sobre qué convenios maneja la clínica y procedimientos cubiertos.</div>
+            </div>
+            <span class="kb-status kb-inactive">Inactivo</span>
+          </div>
+          <div class="kb-item">
+            <div class="kb-icon">❓</div>
+            <div class="kb-info">
+              <div class="kb-title">Preguntas frecuentes (FAQ)</div>
+              <div class="kb-desc">¿Duele la anestesia? ¿Puedo comer antes de la cita? ¿Cuánto dura el tratamiento?</div>
+            </div>
+            <span class="kb-status kb-active">Activo</span>
+          </div>
+        </div>
+        <button class="btn-add" onclick="showToast('Función disponible con backend conectado')">+ Agregar fuente de conocimiento</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">📄</span> Documentos cargados</div>
+        <div class="empty">
+          <div class="empty-icon">📂</div>
+          <div class="empty-text" style="font-size:13px">Sube PDFs, menús de precios o guías clínicas para que la IA las consulte</div>
+          <button class="btn-add" style="max-width:280px;margin:16px auto 0" onclick="showToast('Disponible con backend conectado')">+ Cargar documento (PDF/DOCX)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REGLAS ── -->
+    <div class="tab-content" id="tab-reglas">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">⚡</span> Cuándo activa el agente</div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Nuevo mensaje de paciente desconocido</div>
+            <div class="r-desc">Responde automáticamente a quien escribe por primera vez</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Fuera del horario de atención</div>
+            <div class="r-desc">Activa el agente cuando el consultorio está cerrado</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Sin respuesta del equipo en más de 5 minutos</div>
+            <div class="r-desc">Activa si un agente humano no ha respondido en el tiempo definido</div>
+          </div>
+          <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Preguntas con palabras clave (precio, cita, horario)</div>
+            <div class="r-desc">Responde automáticamente cuando detecta estas palabras</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">🚨</span> Cuándo escala a humano</div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">El paciente pide hablar con un doctor</div>
+            <div class="r-desc">Detecta frases como "necesito hablar con el doctor", "quiero una persona"</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Urgencia o emergencia detectada</div>
+            <div class="r-desc">Palabras como "dolor fuerte", "sangrado", "urgente" activan notificación al equipo</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Queja o reclamo</div>
+            <div class="r-desc">El agente no maneja quejas. Las escala inmediatamente</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="regla-row">
+          <div class="regla-info">
+            <div class="r-title">Confianza de respuesta menor al 70%</div>
+            <div class="r-desc">Cuando la IA no está segura, prefiere escalar</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <button class="btn-save" onclick="guardarConfig()">✓ &nbsp;Guardar reglas</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">🕐</span> Horario de actividad</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Activar agente desde</label>
+            <input type="text" value="06:00 PM" />
+          </div>
+          <div class="form-group">
+            <label>Desactivar agente a las</label>
+            <input type="text" value="07:00 AM" />
+          </div>
+          <div class="form-group full">
+            <label>Días activos fuera del horario</label>
+            <select>
+              <option>Todos los días</option>
+              <option>Solo fines de semana</option>
+              <option>Personalizado</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-save" onclick="guardarConfig()">✓ &nbsp;Guardar horario</button>
+      </div>
+    </div>
+
+    <!-- ── HISTORIAL ── -->
+    <div class="tab-content" id="tab-historial">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">🕐</span> Conversaciones recientes del agente</div>
+
+        <div style="margin-bottom:16px;display:flex;gap:8px">
+          <select style="background:var(--negro-input);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--gris);font-family:'Inter',sans-serif;outline:none">
+            <option>Todos los canales</option>
+            <option>WhatsApp</option>
+            <option>Instagram</option>
+          </select>
+          <select style="background:var(--negro-input);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--gris);font-family:'Inter',sans-serif;outline:none">
+            <option>Esta semana</option>
+            <option>Este mes</option>
+            <option>Todo el tiempo</option>
+          </select>
+        </div>
+
+        <div class="empty">
+          <div class="empty-icon">🤖</div>
+          <div class="empty-text">Aún no hay conversaciones gestionadas por el agente.<br/>Conecta WhatsApp o Instagram para empezar.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">📊</span> Rendimiento por tipo de consulta</div>
+        <div id="statBars">
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Información precios</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:82%"></div></div>
+            <div class="stat-bar-pct">82%</div>
+          </div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Agendar cita</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:67%"></div></div>
+            <div class="stat-bar-pct">67%</div>
+          </div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Horarios</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:91%"></div></div>
+            <div class="stat-bar-pct">91%</div>
+          </div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Preguntas médicas</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:44%"></div></div>
+            <div class="stat-bar-pct">44%</div>
+          </div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Quejas / reclamos</div>
+            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:12%"></div></div>
+            <div class="stat-bar-pct">12%</div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:#444;margin-top:12px">Porcentaje de conversaciones resueltas sin intervención humana por categoría. Datos demo.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">✓ Guardado</div>
+
+  <script>
+    function setTab(btn, id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+    }
+
+    function toggleAgente() {
+      const activo = document.getElementById('agenteActivo').checked;
+      const dot   = document.getElementById('statusDot');
+      const label = document.getElementById('toggleLabel');
+      dot.classList.toggle('off', !activo);
+      label.textContent = activo ? 'Activo' : 'Inactivo';
+      label.className = 'toggle-label-big' + (activo ? ' on' : '');
+      localStorage.setItem('agente_ia_activo', activo ? '1' : '0');
+      showToast(activo ? 'Agente activado' : 'Agente desactivado');
+    }
+
+    function guardarConfig() {
+      const cfg = {
+        nombre:     document.getElementById('agentNombre').value,
+        tono:       document.getElementById('agentTono').value,
+        prompt:     document.getElementById('agentPrompt').value,
+        bienvenida: document.getElementById('agentBienvenida').value,
+        escalada:   document.getElementById('agentEscalada').value,
+        modelo:     document.getElementById('iaModelo').value,
+        proveedor:  document.getElementById('iaProveedor').value,
+        temp:       document.getElementById('iaTemp').value,
+        activo:     document.getElementById('agenteActivo').checked,
+      };
+      localStorage.setItem('agente_ia_config', JSON.stringify(cfg));
+      showToast('Configuración guardada');
+    }
+
+    // Cargar config guardada
+    const cfgGuardada = JSON.parse(localStorage.getItem('agente_ia_config') || 'null');
+    if (cfgGuardada) {
+      if (cfgGuardada.nombre)     document.getElementById('agentNombre').value     = cfgGuardada.nombre;
+      if (cfgGuardada.tono)       document.getElementById('agentTono').value       = cfgGuardada.tono;
+      if (cfgGuardada.prompt)     document.getElementById('agentPrompt').value     = cfgGuardada.prompt;
+      if (cfgGuardada.bienvenida) document.getElementById('agentBienvenida').value = cfgGuardada.bienvenida;
+      if (cfgGuardada.modelo)     document.getElementById('iaModelo').value        = cfgGuardada.modelo;
+    }
+    const agenteActivo = localStorage.getItem('agente_ia_activo');
+    if (agenteActivo === '0') {
+      document.getElementById('agenteActivo').checked = false;
+      document.getElementById('statusDot').classList.add('off');
+      document.getElementById('toggleLabel').textContent = 'Inactivo';
+      document.getElementById('toggleLabel').className = 'toggle-label-big';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✓  ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

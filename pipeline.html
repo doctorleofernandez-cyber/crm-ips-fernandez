@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pipeline | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --negro-medio: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 22px 18px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 6px rgba(201,168,76,0.2));
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--blanco);
+    }
+
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav {
+      flex: 1;
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+
+    .nav-section {
+      font-size: 9px;
+      color: #444;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 10px 4px;
+      margin-top: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12.5px;
+      color: var(--gris);
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--dorado);
+      color: var(--negro);
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer {
+      padding: 14px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .user-info { display: flex; align-items: center; gap: 9px; }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--dorado);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--blanco);
+    }
+
+    .topbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); }
+
+    .topbar-filter {
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(201,168,76,0.12);
+      color: var(--dorado);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .topbar-search {
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      padding: 5px 12px;
+    }
+
+    .topbar-meta {
+      font-size: 12px;
+      color: #444;
+      margin-left: auto;
+    }
+
+    .topbar-dots { font-size: 18px; color: #444; cursor: pointer; padding: 0 4px; }
+
+    .btn-auto {
+      font-size: 11px;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--dorado);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-auto:hover { background: rgba(201,168,76,0.08); }
+
+    .btn-new {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--dorado);
+      color: var(--negro);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-new:hover { opacity: 0.85; }
+
+    /* ── KANBAN ── */
+    .kanban {
+      flex: 1;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0;
+    }
+
+    .kanban::-webkit-scrollbar { height: 4px; }
+    .kanban::-webkit-scrollbar-track { background: transparent; }
+    .kanban::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+    .column {
+      min-width: 280px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      height: 100%;
+    }
+
+    .column-header {
+      padding: 14px 16px 10px;
+      border-bottom: 2px solid transparent;
+      flex-shrink: 0;
+    }
+
+    .column:nth-child(1) .column-header { border-color: rgba(201,168,76,0.5); }
+    .column:nth-child(2) .column-header { border-color: #4CAF82; }
+    .column:nth-child(3) .column-header { border-color: #4C8FCA; }
+    .column:nth-child(4) .column-header { border-color: #9B59B6; }
+
+    .col-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--blanco);
+      margin-bottom: 3px;
+    }
+
+    .col-sub {
+      font-size: 11px;
+      color: #444;
+    }
+
+    .column-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .column-body::-webkit-scrollbar { width: 3px; }
+    .column-body::-webkit-scrollbar-track { background: transparent; }
+    .column-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+    /* Estado vacío por columna */
+    .col-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #2a2a2a;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .col-empty-icon { font-size: 28px; opacity: 0.4; }
+    .col-empty-text { font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    /* Lead rápido */
+    .quick-lead {
+      border: 1px dashed rgba(201,168,76,0.2);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-size: 12px;
+      color: #444;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .quick-lead:hover {
+      border-color: rgba(201,168,76,0.4);
+      color: var(--dorado);
+      background: rgba(201,168,76,0.04);
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">⊞</span> Inicio
+      </a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item">
+        <span class="nav-icon">💬</span> Inbox de chat
+        <span class="nav-badge">137</span>
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">✉️</span> Inbox de correo
+        <span class="nav-badge alt">4K</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👥</span> Chats de equipo
+      </div>
+
+      <div class="nav-section">Pipelines</div>
+      <div class="nav-item active">
+        <span class="nav-icon">◈</span> Leo Fernández
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Todos los leads
+      </div>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="citas.html" class="nav-item">
+        <span class="nav-icon">📅</span> Calendario
+      </a>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Contactos
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◇</span> Empresas
+      </div>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item">
+        <span class="nav-icon">⚙</span> Ajustes
+      </a>
+        </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <span class="topbar-title">LEADS</span>
+      <span class="topbar-sep"></span>
+      <span class="topbar-filter">Leads abiertos</span>
+      <span class="topbar-search">Búsqueda y filtro</span>
+      <span class="topbar-meta" id="leadCount">0 leads: $0</span>
+      <span class="topbar-dots">···</span>
+      <button class="btn-auto">⚡ AUTOMATIZA</button>
+      <button class="btn-new" onclick="showNewLead()">+ NUEVO LEAD</button>
+    </div>
+
+    <!-- Kanban -->
+    <div class="kanban">
+
+      <!-- Columna 1 -->
+      <div class="column">
+        <div class="column-header">
+          <div class="col-title">Leads Entrantes</div>
+          <div class="col-sub">Solicitudes: 0</div>
+        </div>
+        <div class="column-body">
+          <div class="col-empty">
+            <div class="col-empty-icon">📥</div>
+            <div class="col-empty-text">Sin leads entrantes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 2 -->
+      <div class="column">
+        <div class="column-header">
+          <div class="col-title">Interesado</div>
+          <div class="col-sub">0 Clientes potenciales: $0</div>
+        </div>
+        <div class="column-body">
+          <div class="quick-lead" onclick="showNewLead()">+ Lead rápido</div>
+          <div class="col-empty">
+            <div class="col-empty-icon">💡</div>
+            <div class="col-empty-text">Sin clientes interesados</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 3 -->
+      <div class="column">
+        <div class="column-header">
+          <div class="col-title">Cita Programada</div>
+          <div class="col-sub">0 Clientes potenciales: $0</div>
+        </div>
+        <div class="column-body">
+          <div class="col-empty">
+            <div class="col-empty-icon">📅</div>
+            <div class="col-empty-text">Sin citas programadas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 4 -->
+      <div class="column">
+        <div class="column-header">
+          <div class="col-title">Especialistas / Proveedores</div>
+          <div class="col-sub">0 Clientes potenciales: $0</div>
+        </div>
+        <div class="column-body">
+          <div class="col-empty">
+            <div class="col-empty-icon">🦷</div>
+            <div class="col-empty-text">Sin asignaciones</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function showNewLead() {
+      alert('Módulo "Nuevo Lead" en construcción.');
+    }
+  </script>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+/* ══════════════════════════════════════════
+   TEMA CLARO — IPS Fernández CRM
+   Se activa cuando html[data-theme="claro"]
+   ══════════════════════════════════════════ */
+
+html[data-theme="claro"] {
+  /* Fondos */
+  --negro:        #f0f2f5;
+  --negro-suave:  #e8ebf0;
+  --negro-panel:  #ffffff;
+  --negro-input:  #f5f7fa;
+  /* Texto */
+  --blanco:       #1a1a1a;
+  --gris:         #6b7280;
+  /* Marca — sin cambios */
+  --dorado:        #b8942e;
+  --dorado-claro:  #d4aa50;
+  --verde:         #2d8a5e;
+  --rojo:          #c73e3e;
+  --azul:          #2b6fa8;
+  --amarillo:      #c4831a;
+}
+
+/* ── Body base ── */
+html[data-theme="claro"] body {
+  background: var(--negro);
+  color: var(--blanco);
+}
+
+/* ── Sidebar principal ── */
+html[data-theme="claro"] .sidebar {
+  background: #ffffff;
+  border-right-color: rgba(184,148,46,0.25);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+}
+
+html[data-theme="claro"] .sidebar-logo {
+  border-bottom-color: rgba(184,148,46,0.2);
+}
+
+html[data-theme="claro"] .logo-text {
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] .nav-section {
+  color: #bbb;
+}
+
+html[data-theme="claro"] .nav-item {
+  color: #5a6475;
+}
+
+html[data-theme="claro"] .nav-item:hover {
+  background: rgba(184,148,46,0.08);
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] .nav-item.active {
+  background: rgba(184,148,46,0.14);
+  color: var(--dorado);
+}
+
+html[data-theme="claro"] .sidebar-footer {
+  border-top-color: rgba(0,0,0,0.08);
+}
+
+html[data-theme="claro"] .nav-badge {
+  background: var(--dorado);
+  color: #fff;
+}
+
+html[data-theme="claro"] .nav-badge.alt {
+  background: rgba(184,148,46,0.15);
+  color: var(--dorado);
+}
+
+/* ── Header / Topbar ── */
+html[data-theme="claro"] .topbar,
+html[data-theme="claro"] .page-header {
+  background: #ffffff;
+  border-bottom-color: rgba(0,0,0,0.07);
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] .search-input {
+  background: #f0f2f5;
+  border-color: rgba(0,0,0,0.08);
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] .search-input::placeholder { color: #aaa; }
+
+/* ── Tarjetas y paneles ── */
+html[data-theme="claro"] .stat-card,
+html[data-theme="claro"] .config-card,
+html[data-theme="claro"] .table-card,
+html[data-theme="claro"] .card,
+html[data-theme="claro"] .kpi-card,
+html[data-theme="claro"] .chart-card,
+html[data-theme="claro"] .profile-card,
+html[data-theme="claro"] .tab-content,
+html[data-theme="claro"] .kanban-col,
+html[data-theme="claro"] .tratamiento-card,
+html[data-theme="claro"] .factura-card {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.07);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+
+html[data-theme="claro"] .stat-card:hover,
+html[data-theme="claro"] .config-card:hover,
+html[data-theme="claro"] .tratamiento-card:hover {
+  border-color: rgba(184,148,46,0.3);
+}
+
+/* ── Tabla ── */
+html[data-theme="claro"] table {
+  background: #ffffff;
+}
+
+html[data-theme="claro"] thead th {
+  background: #f5f7fa;
+  color: #6b7280;
+  border-bottom-color: rgba(0,0,0,0.07);
+}
+
+html[data-theme="claro"] tbody tr {
+  border-bottom-color: rgba(0,0,0,0.05);
+}
+
+html[data-theme="claro"] tbody tr:hover {
+  background: rgba(184,148,46,0.04);
+}
+
+html[data-theme="claro"] td {
+  color: #1a1a1a;
+}
+
+/* ── Inputs y selects ── */
+html[data-theme="claro"] input[type="text"],
+html[data-theme="claro"] input[type="email"],
+html[data-theme="claro"] input[type="tel"],
+html[data-theme="claro"] input[type="password"],
+html[data-theme="claro"] input[type="time"],
+html[data-theme="claro"] input[type="url"],
+html[data-theme="claro"] input[type="date"],
+html[data-theme="claro"] input[type="search"],
+html[data-theme="claro"] select,
+html[data-theme="claro"] textarea {
+  background: #f5f7fa;
+  border-color: rgba(0,0,0,0.1);
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] input:focus,
+html[data-theme="claro"] select:focus,
+html[data-theme="claro"] textarea:focus {
+  border-color: rgba(184,148,46,0.5);
+}
+
+html[data-theme="claro"] input::placeholder,
+html[data-theme="claro"] textarea::placeholder {
+  color: #b0b7c3;
+}
+
+html[data-theme="claro"] select option {
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+/* ── Ajustes sidebar ── */
+html[data-theme="claro"] .settings-sidebar {
+  background: #f8f9fb;
+  border-right-color: rgba(0,0,0,0.07);
+}
+
+html[data-theme="claro"] .s-section {
+  color: #bbb;
+}
+
+html[data-theme="claro"] .s-tab {
+  color: #5a6475;
+}
+
+html[data-theme="claro"] .s-tab:hover {
+  background: rgba(184,148,46,0.08);
+  color: #1a1a1a;
+}
+
+html[data-theme="claro"] .s-tab.active {
+  background: rgba(184,148,46,0.14);
+  color: var(--dorado);
+}
+
+/* ── Separadores sutiles ── */
+html[data-theme="claro"] .user-row,
+html[data-theme="claro"] .notif-row,
+html[data-theme="claro"] .integration-row,
+html[data-theme="claro"] .danger-row {
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+
+/* ── Kanban ── */
+html[data-theme="claro"] .kanban-col {
+  background: #f5f7fa;
+  border-color: rgba(0,0,0,0.06);
+}
+
+html[data-theme="claro"] .kanban-card {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.07);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+html[data-theme="claro"] .col-header {
+  color: #1a1a1a;
+}
+
+/* ── Toast ── */
+html[data-theme="claro"] .toast {
+  background: #ffffff;
+  border-color: rgba(184,148,46,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  color: var(--dorado);
+}
+
+/* ── Modales ── */
+html[data-theme="claro"] .modal-overlay {
+  background: rgba(0,0,0,0.3);
+}
+
+html[data-theme="claro"] .modal,
+html[data-theme="claro"] .modal-box {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+html[data-theme="claro"] .modal-header,
+html[data-theme="claro"] .modal-footer {
+  border-color: rgba(0,0,0,0.07);
+}
+
+/* ── Scrollbar ── */
+html[data-theme="claro"] ::-webkit-scrollbar-track {
+  background: #f0f2f5;
+}
+
+html[data-theme="claro"] ::-webkit-scrollbar-thumb {
+  background: rgba(184,148,46,0.25);
+}
+
+/* ── Badges / chips ── */
+html[data-theme="claro"] .badge-pendiente { background: rgba(196,131,26,0.12); color: var(--amarillo); }
+html[data-theme="claro"] .badge-cobrado   { background: rgba(45,138,94,0.12);  color: var(--verde);   }
+html[data-theme="claro"] .badge-vencido   { background: rgba(199,62,62,0.12);  color: var(--rojo);    }
+html[data-theme="claro"] .badge-confirmada{ background: rgba(43,111,168,0.12); color: var(--azul);    }
+
+/* ── Perfil paciente ── */
+html[data-theme="claro"] .tab-btn {
+  background: transparent;
+  border-bottom-color: transparent;
+  color: #6b7280;
+}
+
+html[data-theme="claro"] .tab-btn.active {
+  color: var(--dorado);
+  border-bottom-color: var(--dorado);
+}
+
+/* ── Chat panels ── */
+html[data-theme="claro"] .chat-list-panel {
+  background: #f8f9fb;
+  border-right-color: rgba(0,0,0,0.07);
+}
+
+html[data-theme="claro"] .chat-item:hover,
+html[data-theme="claro"] .chat-item.active {
+  background: rgba(184,148,46,0.06);
+}
+
+html[data-theme="claro"] .chat-view {
+  background: #f5f7fa;
+}
+
+html[data-theme="claro"] .chat-input-bar {
+  background: #ffffff;
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+html[data-theme="claro"] .chat-input {
+  background: #f5f7fa;
+}

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --blanco-suave: #f5f5f5;
+      --gris: #888888;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 8px rgba(201,168,76,0.2));
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .logo-text span { color: var(--dorado); }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--gris);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav {
+      flex: 1;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-section {
+      font-size: 10px;
+      color: #444;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 12px 12px 6px;
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--gris);
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: rgba(201,168,76,0.06);
+      color: var(--blanco);
+    }
+
+    .nav-item.active {
+      background: rgba(201,168,76,0.1);
+      color: var(--dorado);
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--dorado);
+      font-weight: 600;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--gris);
+    }
+
+    /* Main */
+    .main {
+      margin-left: 240px;
+      padding: 32px 40px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .page-title span { color: var(--dorado); }
+
+    .date-badge {
+      font-size: 12px;
+      color: var(--gris);
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: rgba(201,168,76,0.3); }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--gris);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      color: var(--dorado);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    /* Panels */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blanco);
+    }
+
+    .panel-tag {
+      font-size: 10px;
+      color: var(--dorado);
+      background: rgba(201,168,76,0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .placeholder-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .placeholder-row:last-child { border-bottom: none; }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dorado);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+
+    .ph-line {
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      flex: 1;
+    }
+
+    .ph-badge {
+      font-size: 11px;
+      color: var(--gris);
+      white-space: nowrap;
+    }
+
+    .coming-soon {
+      text-align: center;
+      padding: 48px 24px;
+      color: #333;
+    }
+
+    .coming-soon p {
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    .logout-btn {
+      font-size: 12px;
+      color: #444;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .logout-btn:hover { color: var(--dorado); }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div class="logo-sub" style="font-size:10px; color:#666; letter-spacing:1.5px; text-transform:uppercase;">Sistema CRM</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item active">
+        <span class="nav-icon">⊞</span> Inicio
+      </a>
+      <a href="pacientes.html" class="nav-item">
+        <span class="nav-icon">◇</span> Pacientes
+      </a>
+      <a href="citas.html" class="nav-item">
+        <span class="nav-icon">◈</span> Citas
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">◇</span> Tratamientos
+      </a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item">
+        <span class="nav-icon">💬</span> Inbox de chat
+      </a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item">
+        <span class="nav-icon">◈</span> Leo Fernández
+      </a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item">
+        <span class="nav-icon">◈</span> Panel
+      </a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="facturacion.html" class="nav-item">
+        <span class="nav-icon">💰</span> Facturación
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">◇</span> Reportes
+      </a>
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+    </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">Dr. Fernández</div>
+          <div class="user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="window.location.href='index.html'" style="margin-top:12px; width:100%; text-align:left;">
+        → Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <h1 class="page-title">Panel <span>Principal</span></h1>
+      <div class="date-badge">10 de Mayo, 2026</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Pacientes activos</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Por conectar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Citas hoy</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Por conectar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Facturación mes</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Por conectar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tratamientos</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Por conectar</div>
+      </div>
+    </div>
+
+    <!-- Panels -->
+    <div class="panels">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Próximas citas</div>
+          <div class="panel-tag">Hoy</div>
+        </div>
+        <div class="coming-soon">
+          <p>Módulo en construcción</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Pacientes recientes</div>
+          <div class="panel-tag">Últimos 7 días</div>
+        </div>
+        <div class="coming-soon">
+          <p>Módulo en construcción</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

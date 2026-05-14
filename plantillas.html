@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plantillas | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --negro: #000000; --negro-suave: #111111; --negro-panel: #1a1a1a; --negro-input: #141414;
+      --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
+      --verde: #4CAF82; --rojo: #e05555; --azul: #4C8FCA; --amarillo: #e0a435;
+    }
+    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+    .btn-nuevo { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); cursor: pointer; transition: all 0.2s; }
+    .btn-nuevo:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Filtros */
+    .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .filter-chip { padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .filter-chip:hover { border-color: rgba(201,168,76,0.3); color: var(--blanco); }
+    .filter-chip.active { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+
+    /* Grid de plantillas */
+    .plantillas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+    .plantilla-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .plantilla-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+
+    .p-header {
+      padding: 16px 18px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .p-cat-icon { font-size: 20px; }
+    .p-cat-name { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; }
+    .p-name { font-size: 14px; font-weight: 600; }
+    .p-status { margin-left: auto; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+    .ps-aprobada  { background: rgba(76,175,130,0.1); color: var(--verde); }
+    .ps-pendiente { background: rgba(224,164,53,0.1); color: var(--amarillo); }
+    .ps-local     { background: rgba(76,143,202,0.1); color: var(--azul); }
+
+    /* Burbuja de WhatsApp preview */
+    .p-preview {
+      padding: 14px 18px;
+      background: rgba(0,0,0,0.2);
+    }
+    .wa-bubble {
+      background: rgba(37,211,102,0.08);
+      border: 1px solid rgba(37,211,102,0.12);
+      border-radius: 12px 12px 12px 0;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #d0d0d0;
+      max-width: 100%;
+      position: relative;
+    }
+    .wa-bubble .wa-time { font-size: 10px; color: #555; text-align: right; margin-top: 4px; }
+    .wa-vars { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .wa-var { font-size: 10px; background: rgba(201,168,76,0.1); color: var(--dorado); padding: 2px 8px; border-radius: 4px; }
+
+    .p-footer { padding: 12px 18px; display: flex; gap: 8px; align-items: center; }
+    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+    .p-canales { margin-left: auto; display: flex; gap: 4px; }
+    .canal-ico { font-size: 13px; }
+
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-start; justify-content:center; padding-top:60px; }
+    .modal-overlay.show { display:flex; }
+    .modal { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 32px; width: 680px; max-height: 85vh; overflow-y: auto; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .modal-title span { color: var(--dorado); }
+    .modal-sub { font-size: 12.5px; color: var(--gris); margin-bottom: 24px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
+    input[type="text"], select, textarea { background: var(--negro-input); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; resize: vertical; transition: border-color 0.2s; width: 100%; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
+    input::placeholder, textarea::placeholder { color: #333; }
+    select option { background: #1a1a1a; }
+
+    .preview-box { background: rgba(37,211,102,0.04); border: 1px solid rgba(37,211,102,0.1); border-radius: 12px; padding: 16px; min-height: 120px; font-size: 13px; line-height: 1.6; color: #d0d0d0; }
+    .preview-label { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+
+    .vars-hint { font-size: 11px; color: var(--gris); margin-top: 6px; }
+    .vars-hint code { background: rgba(201,168,76,0.1); color: var(--dorado); padding: 1px 6px; border-radius: 4px; font-family: monospace; }
+
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .btn-cancel { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--gris); cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-cancel:hover { color: var(--blanco); }
+    .btn-create { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: none; background: var(--dorado); color: var(--negro); font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-create:hover { opacity: 0.88; }
+
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html"  class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"       class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"               class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <div class="nav-section">Insights</div>
+      <a href="insights.html"   class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+      <div class="nav-section">IA & Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item active"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"      class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div><div class="user-name">Dr. Leo Fernandez</div><div class="user-role">doctorleofernandez</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">📝 <span>Plantillas</span> de mensajes</div>
+      <button class="btn-nuevo" onclick="abrirModal()">+ Nueva plantilla</button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <button class="filter-chip active" onclick="filtrar(this,'all')">Todas</button>
+      <button class="filter-chip" onclick="filtrar(this,'bienvenida')">👋 Bienvenida</button>
+      <button class="filter-chip" onclick="filtrar(this,'recordatorio')">⏰ Recordatorio</button>
+      <button class="filter-chip" onclick="filtrar(this,'seguimiento')">🔄 Seguimiento</button>
+      <button class="filter-chip" onclick="filtrar(this,'promocion')">🎁 Promoción</button>
+      <button class="filter-chip" onclick="filtrar(this,'informativa')">ℹ Informativa</button>
+    </div>
+
+    <div class="plantillas-grid" id="plantillasGrid">
+
+      <!-- Bienvenida -->
+      <div class="plantilla-card" data-cat="bienvenida">
+        <div class="p-header">
+          <span class="p-cat-icon">👋</span>
+          <div><div class="p-cat-name">Bienvenida</div><div class="p-name">Saludo inicial nuevo paciente</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            ¡Hola <b>{{nombre}}</b>! 👋 Bienvenido/a a <b>IPS Fernández Odontología y Medicina SAS</b>.<br/><br/>
+            Estoy aquí para ayudarte. ¿Qué tratamiento te interesa conocer hoy?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Saludo inicial')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Saludo inicial')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Recordatorio cita -->
+      <div class="plantilla-card" data-cat="recordatorio">
+        <div class="p-header">
+          <span class="p-cat-icon">⏰</span>
+          <div><div class="p-cat-name">Recordatorio</div><div class="p-name">Recordatorio de cita 24h antes</div></div>
+          <span class="p-status ps-aprobada">Aprobada WhatsApp</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b> 😊 Te recordamos que mañana tienes cita en <b>IPS Fernández</b>.<br/><br/>
+            📅 <b>{{fecha}}</b> a las <b>{{hora}}</b><br/>
+            📍 {{direccion}}<br/><br/>
+            ¿Confirmas tu asistencia? Responde SÍ o NO.
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{fecha}}</span><span class="wa-var">{{hora}}</span><span class="wa-var">{{direccion}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Recordatorio 24h')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Recordatorio 24h')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span></div>
+        </div>
+      </div>
+
+      <!-- Seguimiento cotización -->
+      <div class="plantilla-card" data-cat="seguimiento">
+        <div class="p-header">
+          <span class="p-cat-icon">🔄</span>
+          <div><div class="p-cat-name">Seguimiento</div><div class="p-name">Follow-up cotización sin respuesta</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b>, soy el equipo de IPS Fernández. 🦷<br/><br/>
+            Hace unos días te compartimos información sobre <b>{{tratamiento}}</b>. ¿Tienes alguna pregunta? Estamos disponibles para ayudarte y coordinar una cita.
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{tratamiento}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Follow-up cotización')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Follow-up cotización')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Promoción -->
+      <div class="plantilla-card" data-cat="promocion">
+        <div class="p-header">
+          <span class="p-cat-icon">🎁</span>
+          <div><div class="p-cat-name">Promoción</div><div class="p-name">Oferta especial blanqueamiento</div></div>
+          <span class="p-status ps-pendiente">Pendiente WhatsApp</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            ✨ <b>¡Oferta exclusiva para ti, {{nombre}}!</b><br/><br/>
+            Este mes tenemos <b>{{descuento}}% de descuento</b> en blanqueamiento dental profesional. 🦷<br/><br/>
+            Válido hasta el <b>{{fecha_limite}}</b>. ¡Cupos limitados!<br/>
+            Escríbenos para apartar el tuyo.
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{descuento}}</span><span class="wa-var">{{fecha_limite}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Oferta blanqueamiento')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Oferta blanqueamiento')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span></div>
+        </div>
+      </div>
+
+      <!-- Post tratamiento -->
+      <div class="plantilla-card" data-cat="seguimiento">
+        <div class="p-header">
+          <span class="p-cat-icon">😊</span>
+          <div><div class="p-cat-name">Seguimiento</div><div class="p-name">¿Cómo te sientes? Post-tratamiento</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            ¡Hola <b>{{nombre}}</b>! 👋 Esperamos que te encuentres muy bien después de tu procedimiento de <b>{{tratamiento}}</b> de ayer.<br/><br/>
+            ¿Tienes alguna molestia o pregunta? Recuerda que estamos disponibles para ayudarte. 💙
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{tratamiento}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Post-tratamiento')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Post-tratamiento')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Reactivación -->
+      <div class="plantilla-card" data-cat="seguimiento">
+        <div class="p-header">
+          <span class="p-cat-icon">💤</span>
+          <div><div class="p-cat-name">Reactivación</div><div class="p-name">Paciente sin cita en 6 meses</div></div>
+          <span class="p-status ps-aprobada">Aprobada WhatsApp</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b>, ¡hace mucho que no te vemos por IPS Fernández! 😊<br/><br/>
+            Tu última visita fue hace más de 6 meses. Te invitamos a una revisión gratuita. 🦷<br/><br/>
+            ¿Te gustaría agendar? Responde y te ayudamos en un minuto.
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Reactivación 6 meses')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Reactivación 6 meses')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal nueva plantilla -->
+  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+    <div class="modal">
+      <div class="modal-title">Nueva <span>Plantilla</span></div>
+      <div class="modal-sub">Crea un mensaje reutilizable para bots, difusiones o respuestas rápidas.</div>
+
+      <div class="two-col">
+        <div>
+          <div class="form-group">
+            <label>Nombre de la plantilla</label>
+            <input type="text" id="pNombre" placeholder="Ej: Recordatorio 1 hora antes" />
+          </div>
+          <div class="form-group">
+            <label>Categoría</label>
+            <select id="pCat">
+              <option value="bienvenida">👋 Bienvenida</option>
+              <option value="recordatorio">⏰ Recordatorio</option>
+              <option value="seguimiento">🔄 Seguimiento</option>
+              <option value="promocion">🎁 Promoción</option>
+              <option value="informativa">ℹ Informativa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Canales</label>
+            <select id="pCanal">
+              <option>WhatsApp + Instagram</option>
+              <option>Solo WhatsApp</option>
+              <option>Solo Instagram</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Contenido del mensaje</label>
+            <textarea id="pContenido" rows="6" placeholder="Escribe el mensaje aquí. Usa {{nombre}}, {{fecha}}, {{hora}}, {{tratamiento}} como variables." oninput="actualizarPreview()"></textarea>
+            <div class="vars-hint">Variables: <code>{{nombre}}</code> <code>{{fecha}}</code> <code>{{hora}}</code> <code>{{tratamiento}}</code></div>
+          </div>
+        </div>
+        <div>
+          <div class="preview-label">Vista previa</div>
+          <div class="preview-box" id="previewBox" style="white-space:pre-wrap">El mensaje aparecerá aquí mientras escribes...</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-create" onclick="crearPlantilla()">📝 Guardar plantilla</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function filtrar(btn, cat) {
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.plantilla-card').forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function abrirModal() { document.getElementById('modalOverlay').classList.add('show'); }
+    function cerrarModal(e) {
+      if (!e || e.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('show');
+      }
+    }
+
+    function actualizarPreview() {
+      const txt = document.getElementById('pContenido').value || 'El mensaje aparecerá aquí mientras escribes...';
+      document.getElementById('previewBox').textContent = txt;
+    }
+
+    function crearPlantilla() {
+      const nombre = document.getElementById('pNombre').value.trim();
+      if (!nombre) { showToast('Escribe un nombre para la plantilla'); return; }
+      const plantillas = JSON.parse(localStorage.getItem('plantillas_ips') || '[]');
+      plantillas.push({ id: Date.now(), nombre, cat: document.getElementById('pCat').value, contenido: document.getElementById('pContenido').value });
+      localStorage.setItem('plantillas_ips', JSON.stringify(plantillas));
+      cerrarModal();
+      showToast('Plantilla "' + nombre + '" guardada');
+    }
+
+    function usarPlantilla(nombre) { showToast('Plantilla "' + nombre + '" copiada al portapapeles'); }
+    function editarPlantilla(nombre) { showToast('Editor de plantilla: disponible con backend'); }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✓  ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

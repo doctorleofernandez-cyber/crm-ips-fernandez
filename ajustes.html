@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ajustes | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --negro-input: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+      --amarillo: #e0a435;
+    }
+
+    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; display: flex; min-height: 100vh; }
+
+    /* ── TABS LATERAL AJUSTES ── */
+    .settings-sidebar {
+      width: 210px;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      padding: 28px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .settings-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 0 8px;
+      margin-bottom: 18px;
+    }
+
+    .settings-title span { color: var(--dorado); }
+
+    .s-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 6px; }
+
+    .s-tab {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 10px; border-radius: 8px;
+      cursor: pointer; font-size: 12.5px; color: var(--gris);
+      transition: all 0.2s; border: none; background: none;
+      font-family: 'Inter', sans-serif; text-align: left; width: 100%;
+    }
+
+    .s-tab:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .s-tab.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .s-tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* ── CONTENIDO ── */
+    .settings-content { flex: 1; padding: 32px 40px; overflow-y: auto; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-header { margin-bottom: 28px; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .section-header h2 span { color: var(--dorado); }
+    .section-header p { font-size: 13px; color: var(--gris); }
+
+    /* Cards de configuración */
+    .config-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .config-card:hover { border-color: rgba(201,168,76,0.2); }
+
+    .config-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-card-title span { color: var(--dorado); }
+
+    /* Formulario */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+    .form-group.full3 { grid-column: span 3; }
+
+    label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dorado);
+    }
+
+    input[type="text"], input[type="email"], input[type="tel"],
+    input[type="password"], input[type="time"], input[type="url"],
+    select, textarea {
+      background: var(--negro-input);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; resize: none;
+      transition: border-color 0.2s; width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
+    input::placeholder, textarea::placeholder { color: #333; }
+    select option { background: #1a1a1a; }
+
+    /* Botón guardar */
+    .btn-save {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--dorado); color: var(--negro);
+      border: none; padding: 10px 22px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s; margin-top: 18px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-save:hover { opacity: 0.85; }
+
+    /* ── HORARIOS ── */
+    .horario-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr 80px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .horario-day { font-size: 13px; font-weight: 500; }
+    .horario-header { font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+    .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+
+    .toggle {
+      position: relative; width: 36px; height: 20px;
+      cursor: pointer;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 14px; height: 14px;
+      left: 3px; top: 3px;
+      background: #555; border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .toggle input:checked + .toggle-slider { background: rgba(201,168,76,0.3); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--dorado); }
+
+    .toggle-label { font-size: 12px; color: var(--gris); }
+
+    /* ── USUARIOS ── */
+    .user-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .user-row:last-child { border-bottom: none; }
+
+    .u-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--dorado);
+      flex-shrink: 0;
+    }
+
+    .u-info { flex: 1; }
+    .u-name { font-size: 13px; font-weight: 600; }
+    .u-email { font-size: 11px; color: #555; }
+
+    .u-role-badge {
+      font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    .u-role-badge.admin   { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .u-role-badge.doctor  { background: rgba(76,143,202,0.12); color: var(--azul); }
+    .u-role-badge.asistente { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .u-role-badge.recep   { background: rgba(155,89,182,0.12); color: #9B59B6; }
+
+    .u-actions { display: flex; gap: 6px; }
+
+    .btn-sm {
+      font-size: 11px; padding: 5px 12px;
+      border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--gris);
+      cursor: pointer; transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+
+    .btn-invite {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500;
+      background: transparent;
+      border: 1px dashed rgba(201,168,76,0.25);
+      color: var(--dorado); padding: 10px 16px;
+      border-radius: 8px; cursor: pointer;
+      transition: all 0.2s; margin-top: 14px;
+      font-family: 'Inter', sans-serif;
+      width: 100%; justify-content: center;
+    }
+
+    .btn-invite:hover { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.4); }
+
+    /* ── INTEGRACIONES ── */
+    .integration-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .integration-row:last-child { border-bottom: none; }
+
+    .int-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .int-icon.wa   { background: rgba(37,211,102,0.12); }
+    .int-icon.ig   { background: rgba(193,53,132,0.12); }
+    .int-icon.tk   { background: rgba(255,255,255,0.06); }
+    .int-icon.mail { background: rgba(76,143,202,0.12); }
+    .int-icon.cal  { background: rgba(201,168,76,0.12); }
+
+    .int-info { flex: 1; }
+    .int-name  { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .int-desc  { font-size: 11px; color: #555; }
+
+    .int-status {
+      font-size: 11px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .int-status.conectado    { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .int-status.desconectado { background: rgba(255,255,255,0.06); color: #555; }
+    .int-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .btn-conectar {
+      font-size: 12px; font-weight: 500;
+      padding: 7px 14px; border-radius: 7px;
+      border: 1px solid rgba(201,168,76,0.25);
+      background: transparent; color: var(--dorado);
+      cursor: pointer; transition: background 0.2s;
+      font-family: 'Inter', sans-serif; white-space: nowrap;
+    }
+
+    .btn-conectar:hover { background: rgba(201,168,76,0.08); }
+    .btn-conectar.desconectar { border-color: rgba(224,85,85,0.25); color: var(--rojo); }
+    .btn-conectar.desconectar:hover { background: rgba(224,85,85,0.06); }
+
+    /* ── NOTIFICACIONES ── */
+    .notif-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .notif-row:last-child { border-bottom: none; }
+    .notif-info { flex: 1; }
+    .notif-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .notif-desc { font-size: 11px; color: #555; }
+
+    /* ── SEGURIDAD ── */
+    .danger-zone {
+      border: 1px solid rgba(224,85,85,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+
+    .danger-title {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--rojo); margin-bottom: 12px;
+    }
+
+    .danger-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(224,85,85,0.1);
+    }
+
+    .danger-row:last-child { border-bottom: none; }
+    .danger-row-info { font-size: 13px; color: #888; }
+    .btn-danger { font-size: 12px; padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(224,85,85,0.3); background: transparent; color: var(--rojo); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+    .btn-danger:hover { background: rgba(224,85,85,0.08); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--dorado);
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s ease; z-index: 999;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Logo upload */
+    .logo-upload {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 18px;
+    }
+
+    .logo-preview {
+      width: 72px; height: 72px; border-radius: 12px;
+      background: rgba(201,168,76,0.06);
+      border: 1px dashed rgba(201,168,76,0.25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+    }
+
+    .logo-preview img { width: 100%; height: 100%; object-fit: contain; }
+
+    .logo-upload-btn {
+      font-size: 12px; padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(201,168,76,0.25); background: transparent;
+      color: var(--dorado); cursor: pointer; transition: background 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .logo-upload-btn:hover { background: rgba(201,168,76,0.08); }
+    .logo-hint { font-size: 11px; color: #444; margin-top: 4px; }
+
+    /* ── APARIENCIA ── */
+    .tema-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .tema-option {
+      border: 2px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .tema-option:hover { transform: translateY(-2px); border-color: rgba(201,168,76,0.3); }
+    .tema-option.selected { border-color: var(--dorado); }
+
+    .tema-option input[type="radio"] { display: none; }
+
+    .tema-preview {
+      height: 100px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Preview oscuro */
+    .prev-oscuro .prev-sidebar { width: 32px; background: #1a1a1a; }
+    .prev-oscuro .prev-body    { flex: 1; background: #111; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .prev-oscuro .prev-bar     { height: 7px; background: #222; border-radius: 3px; }
+    .prev-oscuro .prev-card    { flex: 1; background: #1a1a1a; border-radius: 4px; }
+    .prev-oscuro .prev-accent  { background: #C9A84C; }
+
+    /* Preview claro */
+    .prev-claro .prev-sidebar  { width: 32px; background: #ffffff; border-right: 1px solid #e5e7eb; }
+    .prev-claro .prev-body     { flex: 1; background: #f0f2f5; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .prev-claro .prev-bar      { height: 7px; background: #ffffff; border-radius: 3px; }
+    .prev-claro .prev-card     { flex: 1; background: #ffffff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+    .prev-claro .prev-accent   { background: #b8942e; }
+
+    /* Preview sistema */
+    .prev-sistema .prev-sidebar { width: 32px; background: linear-gradient(180deg, #1a1a1a 50%, #fff 50%); }
+    .prev-sistema .prev-body    { flex: 1; background: linear-gradient(135deg, #111 50%, #f0f2f5 50%); padding: 6px; }
+    .prev-sistema .prev-bar     { height: 7px; background: rgba(201,168,76,0.3); border-radius: 3px; }
+
+    .tema-label {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 500;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .tema-check {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .tema-option.selected .tema-check {
+      background: var(--dorado);
+      border-color: var(--dorado);
+      color: #000;
+    }
+
+    .tema-option.selected .tema-label {
+      color: var(--dorado);
+    }
+
+    html[data-theme="claro"] .tema-label {
+      border-top-color: rgba(0,0,0,0.07);
+    }
+
+    html[data-theme="claro"] .tema-option {
+      border-color: rgba(0,0,0,0.1);
+    }
+
+    html[data-theme="claro"] .tema-check {
+      border-color: rgba(0,0,0,0.2);
+    }
+
+    html[data-theme="claro"] .tema-option.selected {
+      border-color: var(--dorado);
+    }
+
+    .tema-desc {
+      font-size: 11px;
+      color: var(--gris);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"      class="nav-item active"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Tabs lateral -->
+    <div class="settings-sidebar">
+      <div class="settings-title">Ajustes <span>⚙</span></div>
+
+      <div class="s-section">Clínica</div>
+      <button class="s-tab active" onclick="setTab(this,'clinica')">
+        <span class="s-tab-icon">🏥</span> Perfil clínica
+      </button>
+      <button class="s-tab" onclick="setTab(this,'horarios')">
+        <span class="s-tab-icon">🕐</span> Horarios
+      </button>
+
+      <div class="s-section">Sistema</div>
+      <button class="s-tab" onclick="setTab(this,'apariencia')">
+        <span class="s-tab-icon">🎨</span> Apariencia
+      </button>
+      <button class="s-tab" onclick="setTab(this,'usuarios')">
+        <span class="s-tab-icon">👥</span> Usuarios
+      </button>
+      <button class="s-tab" onclick="setTab(this,'integraciones')">
+        <span class="s-tab-icon">🔌</span> Integraciones
+      </button>
+      <button class="s-tab" onclick="setTab(this,'notificaciones')">
+        <span class="s-tab-icon">🔔</span> Notificaciones
+      </button>
+
+      <div class="s-section">Cuenta</div>
+      <button class="s-tab" onclick="setTab(this,'perfil')">
+        <span class="s-tab-icon">👤</span> Mi perfil
+      </button>
+      <button class="s-tab" onclick="setTab(this,'seguridad')">
+        <span class="s-tab-icon">🔒</span> Seguridad
+      </button>
+    </div>
+
+    <!-- Contenido -->
+    <div class="settings-content">
+
+      <!-- ── PERFIL CLÍNICA ── -->
+      <div class="section active" id="sec-clinica">
+        <div class="section-header">
+          <h2>Perfil de la <span>Clínica</span></h2>
+          <p>Información principal del consultorio que aparece en facturas y comunicaciones.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🏥 Datos del consultorio</div>
+
+          <div class="logo-upload">
+            <div class="logo-preview">
+              <img src="assets/logo.png" alt="Logo" id="logoPreview" onerror="this.style.display='none'" />
+            </div>
+            <div>
+              <button class="logo-upload-btn" onclick="document.getElementById('logoFile').click()">Cambiar logo</button>
+              <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="previewLogo(this)" />
+              <div class="logo-hint">PNG o SVG · Máximo 2MB</div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Nombre de la clínica</label>
+              <input type="text" id="cNombre" value="IPS Fernández Odontología y Medicina SAS" />
+            </div>
+            <div class="form-group">
+              <label>NIT / RUT</label>
+              <input type="text" id="cNit" placeholder="900.000.000-0" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono principal</label>
+              <input type="tel" id="cTel" placeholder="+57 300 000 0000" />
+            </div>
+            <div class="form-group">
+              <label>Correo de contacto</label>
+              <input type="email" id="cEmail" placeholder="info@ipsfernandez.com" />
+            </div>
+            <div class="form-group">
+              <label>Sitio web</label>
+              <input type="url" id="cWeb" placeholder="https://ipsfernandez.com" />
+            </div>
+            <div class="form-group full">
+              <label>Dirección</label>
+              <input type="text" id="cDireccion" placeholder="Calle 00 # 00-00, Ciudad" />
+            </div>
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" id="cCiudad" placeholder="Bogotá D.C." />
+            </div>
+            <div class="form-group">
+              <label>Departamento</label>
+              <input type="text" id="cDepto" placeholder="Cundinamarca" />
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardar('clinica')">✓ &nbsp;Guardar cambios</button>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">📋 Información adicional</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Especialidad principal</label>
+              <select id="cEspecialidad">
+                <option>Odontología General</option>
+                <option>Ortodoncia</option>
+                <option>Endodoncia</option>
+                <option>Implantología</option>
+                <option>Odontología Estética</option>
+                <option selected>Odontología y Medicina General</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Régimen</label>
+              <select id="cRegimen">
+                <option>Simplificado</option>
+                <option selected>Común / Responsable de IVA</option>
+                <option>Gran contribuyente</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Mensaje de bienvenida (WhatsApp / chat)</label>
+              <textarea id="cMensaje" rows="3" placeholder="Ej: ¡Hola! Gracias por contactar a IPS Fernández. ¿En qué podemos ayudarle hoy?"></textarea>
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardar('info')">✓ &nbsp;Guardar</button>
+        </div>
+      </div>
+
+      <!-- ── HORARIOS ── -->
+      <div class="section" id="sec-horarios">
+        <div class="section-header">
+          <h2><span>Horarios</span> de atención</h2>
+          <p>Define los días y horas en que la clínica atiende pacientes.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🕐 Horario semanal</div>
+
+          <div style="display:grid;grid-template-columns:140px 1fr 1fr 100px;gap:10px;margin-bottom:10px">
+            <div class="horario-header">Día</div>
+            <div class="horario-header">Apertura</div>
+            <div class="horario-header">Cierre</div>
+            <div class="horario-header">Abierto</div>
+          </div>
+
+          <div id="horariosWrap"></div>
+
+          <button class="btn-save" onclick="guardarHorarios()">✓ &nbsp;Guardar horarios</button>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">📅 Duración de cita por defecto</div>
+          <div class="form-grid" style="max-width:400px">
+            <div class="form-group">
+              <label>Duración (minutos)</label>
+              <select id="duracionCita">
+                <option>15</option>
+                <option>20</option>
+                <option selected>30</option>
+                <option>45</option>
+                <option>60</option>
+                <option>90</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Intervalo entre citas</label>
+              <select id="intervaloCita">
+                <option>0 min</option>
+                <option selected>10 min</option>
+                <option>15 min</option>
+                <option>30 min</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardar('horarios-extra')">✓ &nbsp;Guardar</button>
+        </div>
+      </div>
+
+      <!-- ── USUARIOS ── -->
+      <div class="section" id="sec-usuarios">
+        <div class="section-header">
+          <h2><span>Usuarios</span> del sistema</h2>
+          <p>Gestiona el equipo que tiene acceso al CRM de la clínica.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">👥 Equipo actual</div>
+
+          <div id="usuariosLista">
+            <div class="user-row">
+              <div class="u-avatar">LF</div>
+              <div class="u-info">
+                <div class="u-name">Dr. Leo Fernández</div>
+                <div class="u-email">doctorleofernandez@gmail.com</div>
+              </div>
+              <span class="u-role-badge admin">Administrador</span>
+              <div class="u-actions">
+                <button class="btn-sm">Editar</button>
+              </div>
+            </div>
+            <div class="user-row">
+              <div class="u-avatar" style="background:rgba(76,143,202,0.1);border-color:rgba(76,143,202,0.2);color:var(--azul)">DR</div>
+              <div class="u-info">
+                <div class="u-name">Dr. Residente</div>
+                <div class="u-email">residente@ipsfernandez.com</div>
+              </div>
+              <span class="u-role-badge doctor">Doctor</span>
+              <div class="u-actions">
+                <button class="btn-sm">Editar</button>
+                <button class="btn-sm danger">Eliminar</button>
+              </div>
+            </div>
+            <div class="user-row">
+              <div class="u-avatar" style="background:rgba(76,175,130,0.1);border-color:rgba(76,175,130,0.2);color:var(--verde)">AS</div>
+              <div class="u-info">
+                <div class="u-name">Asistente Clínica</div>
+                <div class="u-email">asistente@ipsfernandez.com</div>
+              </div>
+              <span class="u-role-badge asistente">Asistente</span>
+              <div class="u-actions">
+                <button class="btn-sm">Editar</button>
+                <button class="btn-sm danger">Eliminar</button>
+              </div>
+            </div>
+            <div class="user-row">
+              <div class="u-avatar" style="background:rgba(155,89,182,0.1);border-color:rgba(155,89,182,0.2);color:#9B59B6">RC</div>
+              <div class="u-info">
+                <div class="u-name">Recepcionista</div>
+                <div class="u-email">recepcion@ipsfernandez.com</div>
+              </div>
+              <span class="u-role-badge recep">Recepcionista</span>
+              <div class="u-actions">
+                <button class="btn-sm">Editar</button>
+                <button class="btn-sm danger">Eliminar</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-invite" onclick="invitarUsuario()">+ Invitar nuevo usuario</button>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🔑 Roles y permisos</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:18px;margin-bottom:6px">👑</div>
+              <div style="font-size:12px;font-weight:600;color:var(--dorado)">Administrador</div>
+              <div style="font-size:10px;color:#555;margin-top:4px">Acceso total</div>
+            </div>
+            <div style="background:rgba(76,143,202,0.06);border:1px solid rgba(76,143,202,0.15);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:18px;margin-bottom:6px">🩺</div>
+              <div style="font-size:12px;font-weight:600;color:var(--azul)">Doctor</div>
+              <div style="font-size:10px;color:#555;margin-top:4px">Historia, citas, pacientes</div>
+            </div>
+            <div style="background:rgba(76,175,130,0.06);border:1px solid rgba(76,175,130,0.15);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:18px;margin-bottom:6px">🦷</div>
+              <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
+              <div style="font-size:10px;color:#555;margin-top:4px">Citas y pacientes</div>
+            </div>
+            <div style="background:rgba(155,89,182,0.06);border:1px solid rgba(155,89,182,0.15);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:18px;margin-bottom:6px">📋</div>
+              <div style="font-size:12px;font-weight:600;color:#9B59B6">Recepcionista</div>
+              <div style="font-size:10px;color:#555;margin-top:4px">Agenda y chat</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── APARIENCIA ── -->
+      <div class="section" id="sec-apariencia">
+        <div class="section-header">
+          <h2>Apariencia <span>🎨</span></h2>
+          <p>Personaliza el aspecto visual del CRM según tu preferencia.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🌗 Modo de color</div>
+          <div class="tema-grid" id="temaGrid">
+
+            <!-- Oscuro -->
+            <label class="tema-option" id="opt-oscuro" onclick="elegirTema('oscuro')">
+              <input type="radio" name="tema" value="oscuro" />
+              <div class="tema-preview prev-oscuro">
+                <div class="prev-sidebar"></div>
+                <div class="prev-body">
+                  <div class="prev-bar prev-accent" style="width:55%;height:5px"></div>
+                  <div class="prev-bar"></div>
+                  <div class="prev-card"></div>
+                </div>
+              </div>
+              <div class="tema-label">
+                Oscuro
+                <span class="tema-check">✓</span>
+              </div>
+            </label>
+
+            <!-- Claro -->
+            <label class="tema-option" id="opt-claro" onclick="elegirTema('claro')">
+              <input type="radio" name="tema" value="claro" />
+              <div class="tema-preview prev-claro">
+                <div class="prev-sidebar"></div>
+                <div class="prev-body">
+                  <div class="prev-bar prev-accent" style="width:55%;height:5px"></div>
+                  <div class="prev-bar"></div>
+                  <div class="prev-card"></div>
+                </div>
+              </div>
+              <div class="tema-label">
+                Claro
+                <span class="tema-check">✓</span>
+              </div>
+            </label>
+
+            <!-- Sistema -->
+            <label class="tema-option" id="opt-sistema" onclick="elegirTema('sistema')">
+              <input type="radio" name="tema" value="sistema" />
+              <div class="tema-preview prev-sistema">
+                <div class="prev-sidebar"></div>
+                <div class="prev-body">
+                  <div class="prev-bar" style="width:70%;height:5px;background:rgba(201,168,76,0.5);border-radius:3px"></div>
+                  <div class="prev-bar" style="height:5px;background:rgba(255,255,255,0.12);border-radius:3px"></div>
+                </div>
+              </div>
+              <div class="tema-label">
+                Sistema
+                <span class="tema-check">✓</span>
+              </div>
+            </label>
+
+          </div>
+          <p class="tema-desc" id="temaDesc"></p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🔡 Tipografía y densidad</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Tamaño de fuente</label>
+              <select id="fontSizeSelect" onchange="aplicarFontSize(this.value)">
+                <option value="13">Normal (13px)</option>
+                <option value="14">Mediano (14px)</option>
+                <option value="15">Grande (15px)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Densidad de la interfaz</label>
+              <select id="densidadSelect" onchange="guardarPrefs()">
+                <option value="normal">Normal</option>
+                <option value="compacta">Compacta</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardarPrefs()">✓ &nbsp;Guardar preferencias</button>
+        </div>
+      </div>
+
+      <!-- ── INTEGRACIONES ── -->
+      <div class="section" id="sec-integraciones">
+        <div class="section-header">
+          <h2><span>Integraciones</span></h2>
+          <p>Conecta los canales de comunicación y herramientas externas.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">📡 Canales de mensajería</div>
+
+          <div class="integration-row">
+            <div class="int-icon wa">📱</div>
+            <div class="int-info">
+              <div class="int-name">WhatsApp Cloud API</div>
+              <div class="int-desc">Recibe y envía mensajes de WhatsApp Business directamente desde el CRM.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Conectar</button>
+          </div>
+
+          <div class="integration-row">
+            <div class="int-icon ig">📸</div>
+            <div class="int-info">
+              <div class="int-name">Instagram Direct</div>
+              <div class="int-desc">Centraliza los mensajes de Instagram en el inbox del CRM.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Conectar</button>
+          </div>
+
+          <div class="integration-row">
+            <div class="int-icon tk">🎵</div>
+            <div class="int-info">
+              <div class="int-name">TikTok Business</div>
+              <div class="int-desc">Recibe leads y mensajes desde tus anuncios de TikTok.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Conectar</button>
+          </div>
+
+          <div class="integration-row">
+            <div class="int-icon mail">✉️</div>
+            <div class="int-info">
+              <div class="int-name">Gmail</div>
+              <div class="int-desc">Sincroniza tu correo de Google para gestionar desde el CRM.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Conectar</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🔧 Otras herramientas</div>
+
+          <div class="integration-row">
+            <div class="int-icon cal">📅</div>
+            <div class="int-info">
+              <div class="int-name">Google Calendar</div>
+              <div class="int-desc">Sincroniza las citas del CRM con tu calendario de Google.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Conectar</button>
+          </div>
+
+          <div class="integration-row">
+            <div class="int-icon" style="background:rgba(201,168,76,0.08);font-size:18px">🧾</div>
+            <div class="int-info">
+              <div class="int-name">DIAN / Facturación electrónica</div>
+              <div class="int-desc">Emite facturas electrónicas validadas por la DIAN automáticamente.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
+            <button class="btn-conectar">Configurar</button>
+          </div>
+
+          <div class="integration-row" style="border-bottom:none">
+            <div class="int-icon" style="background:rgba(76,175,130,0.08);font-size:18px">🤖</div>
+            <div class="int-info">
+              <div class="int-name">Bot de respuestas (IA)</div>
+              <div class="int-desc">Responde automáticamente mensajes frecuentes por WhatsApp e Instagram.</div>
+            </div>
+            <span class="int-status desconectado"><span class="int-dot"></span> Inactivo</span>
+            <button class="btn-conectar">Activar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NOTIFICACIONES ── -->
+      <div class="section" id="sec-notificaciones">
+        <div class="section-header">
+          <h2><span>Notificaciones</span></h2>
+          <p>Configura qué alertas y recordatorios recibe el equipo y los pacientes.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🔔 Alertas del sistema</div>
+
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-name">Recordatorio de cita al paciente</div>
+              <div class="notif-desc">Envía WhatsApp automático 24h antes de la cita.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-name">Nueva cita agendada</div>
+              <div class="notif-desc">Notifica al doctor cuando se agenda una nueva cita.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-name">Factura vencida</div>
+              <div class="notif-desc">Alerta cuando una factura supera la fecha de vencimiento.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-name">Nuevo mensaje en inbox</div>
+              <div class="notif-desc">Alerta de sonido cuando llega un mensaje nuevo al chat.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-name">Reporte semanal automático</div>
+              <div class="notif-desc">Envía un resumen de la semana al correo del administrador.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+          </div>
+
+          <div class="notif-row" style="border-bottom:none">
+            <div class="notif-info">
+              <div class="notif-name">Cumpleaños de pacientes</div>
+              <div class="notif-desc">Recordatorio para felicitar pacientes en su cumpleaños.</div>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+
+          <button class="btn-save" onclick="guardar('notificaciones')">✓ &nbsp;Guardar preferencias</button>
+        </div>
+      </div>
+
+      <!-- ── MI PERFIL ── -->
+      <div class="section" id="sec-perfil">
+        <div class="section-header">
+          <h2>Mi <span>Perfil</span></h2>
+          <p>Información personal del usuario actualmente conectado.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">👤 Datos personales</div>
+
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:22px">
+            <div style="width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--dorado);flex-shrink:0">LF</div>
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">Dr. Leo Fernández</div>
+              <div style="font-size:12px;color:#555;margin-top:2px">doctorleofernandez@gmail.com</div>
+              <div style="font-size:11px;margin-top:6px;background:rgba(201,168,76,0.1);color:var(--dorado);padding:2px 10px;border-radius:10px;display:inline-block;font-weight:600">Administrador</div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" value="Leo" />
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" value="Fernández" />
+            </div>
+            <div class="form-group">
+              <label>Correo</label>
+              <input type="email" value="doctorleofernandez@gmail.com" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="tel" placeholder="+57 300 000 0000" />
+            </div>
+            <div class="form-group">
+              <label>Especialidad</label>
+              <input type="text" placeholder="Ej: Odontólogo General" />
+            </div>
+            <div class="form-group">
+              <label>Registro profesional</label>
+              <input type="text" placeholder="TP-00000" />
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardar('perfil')">✓ &nbsp;Actualizar perfil</button>
+        </div>
+      </div>
+
+      <!-- ── SEGURIDAD ── -->
+      <div class="section" id="sec-seguridad">
+        <div class="section-header">
+          <h2><span>Seguridad</span></h2>
+          <p>Gestiona la contraseña y las sesiones activas del sistema.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🔒 Cambiar contraseña</div>
+          <div class="form-grid" style="max-width:420px">
+            <div class="form-group full">
+              <label>Contraseña actual</label>
+              <input type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label>Nueva contraseña</label>
+              <input type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label>Confirmar contraseña</label>
+              <input type="password" placeholder="••••••••" />
+            </div>
+          </div>
+          <button class="btn-save" onclick="guardar('password')">✓ &nbsp;Cambiar contraseña</button>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🛡️ Sesiones activas</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+            <div>
+              <div style="font-size:13px;font-weight:500">Este dispositivo</div>
+              <div style="font-size:11px;color:#555">Mac · Chrome · Medellín, Colombia</div>
+            </div>
+            <span style="font-size:10px;font-weight:600;background:rgba(76,175,130,0.12);color:var(--verde);padding:3px 10px;border-radius:10px">Activa ahora</span>
+          </div>
+          <button class="btn-save" style="background:transparent;border:1px solid rgba(224,85,85,0.3);color:var(--rojo);margin-top:14px" onclick="guardar('sesiones')">
+            Cerrar todas las otras sesiones
+          </button>
+        </div>
+
+        <div class="danger-zone">
+          <div class="danger-title">⚠️ Zona de peligro</div>
+          <div class="danger-row">
+            <div class="danger-row-info">Eliminar todos los datos de prueba</div>
+            <button class="btn-danger" onclick="limpiarDatos()">Limpiar datos</button>
+          </div>
+          <div class="danger-row">
+            <div class="danger-row-info">Cerrar sesión en este dispositivo</div>
+            <button class="btn-danger" onclick="window.location.href='index.html'">Cerrar sesión</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">✓ &nbsp;Cambios guardados</div>
+
+  <script>
+    // ── TABS ──
+    function setTab(btn, id) {
+      document.querySelectorAll('.s-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('sec-' + id).classList.add('active');
+      location.hash = id;
+    }
+
+    // Activar tab por hash en la URL
+    (function() {
+      const hash = location.hash.replace('#', '');
+      if (hash) {
+        const btn = document.querySelector(`[onclick*="'${hash}'"]`);
+        if (btn) { btn.click(); return; }
+      }
+    })();
+
+    // ── HORARIOS ──
+    const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+    const horariosDefault = [
+      { open: '07:00', close: '18:00', activo: true },
+      { open: '07:00', close: '18:00', activo: true },
+      { open: '07:00', close: '18:00', activo: true },
+      { open: '07:00', close: '18:00', activo: true },
+      { open: '07:00', close: '17:00', activo: true },
+      { open: '08:00', close: '13:00', activo: true },
+      { open: '08:00', close: '12:00', activo: false },
+    ];
+
+    const horariosSaved = JSON.parse(localStorage.getItem('horarios_ips') || 'null') || horariosDefault;
+
+    document.getElementById('horariosWrap').innerHTML = dias.map((dia, i) => `
+      <div style="display:grid;grid-template-columns:140px 1fr 1fr 100px;gap:10px;align-items:center;margin-bottom:8px">
+        <div class="horario-day">${dia}</div>
+        <input type="time" id="h_open_${i}" value="${horariosSaved[i].open}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
+        <input type="time" id="h_close_${i}" value="${horariosSaved[i].close}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="h_active_${i}" ${horariosSaved[i].activo ? 'checked' : ''}
+              onchange="toggleDia(${i})" />
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label" id="h_label_${i}">${horariosSaved[i].activo ? 'Abierto' : 'Cerrado'}</span>
+        </div>
+      </div>
+    `).join('');
+
+    function toggleDia(i) {
+      const activo = document.getElementById(`h_active_${i}`).checked;
+      document.getElementById(`h_open_${i}`).disabled  = !activo;
+      document.getElementById(`h_close_${i}`).disabled = !activo;
+      document.getElementById(`h_open_${i}`).style.opacity  = activo ? '1' : '0.3';
+      document.getElementById(`h_close_${i}`).style.opacity = activo ? '1' : '0.3';
+      document.getElementById(`h_label_${i}`).textContent   = activo ? 'Abierto' : 'Cerrado';
+    }
+
+    function guardarHorarios() {
+      const datos = dias.map((_, i) => ({
+        open:   document.getElementById(`h_open_${i}`).value,
+        close:  document.getElementById(`h_close_${i}`).value,
+        activo: document.getElementById(`h_active_${i}`).checked,
+      }));
+      localStorage.setItem('horarios_ips', JSON.stringify(datos));
+      showToast('Horarios guardados');
+    }
+
+    // ── GUARDAR GENÉRICO ──
+    function guardar(seccion) {
+      // Guardar datos de clínica en localStorage
+      if (seccion === 'clinica') {
+        localStorage.setItem('config_clinica', JSON.stringify({
+          nombre: document.getElementById('cNombre').value,
+          nit: document.getElementById('cNit').value,
+          tel: document.getElementById('cTel').value,
+          email: document.getElementById('cEmail').value,
+          web: document.getElementById('cWeb').value,
+          direccion: document.getElementById('cDireccion').value,
+          ciudad: document.getElementById('cCiudad').value,
+        }));
+      }
+      showToast('Cambios guardados');
+    }
+
+    // Cargar datos de clínica si existen
+    const cfgClinica = JSON.parse(localStorage.getItem('config_clinica') || 'null');
+    if (cfgClinica) {
+      if (cfgClinica.nit)       document.getElementById('cNit').value       = cfgClinica.nit;
+      if (cfgClinica.tel)       document.getElementById('cTel').value       = cfgClinica.tel;
+      if (cfgClinica.email)     document.getElementById('cEmail').value     = cfgClinica.email;
+      if (cfgClinica.web)       document.getElementById('cWeb').value       = cfgClinica.web;
+      if (cfgClinica.direccion) document.getElementById('cDireccion').value = cfgClinica.direccion;
+      if (cfgClinica.ciudad)    document.getElementById('cCiudad').value    = cfgClinica.ciudad;
+    }
+
+    // ── INVITAR USUARIO ──
+    function invitarUsuario() {
+      const email = prompt('Correo del nuevo usuario:');
+      if (email) showToast('Invitación enviada a ' + email);
+    }
+
+    // ── LOGO PREVIEW ──
+    function previewLogo(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.getElementById('logoPreview');
+          img.src = e.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // ── LIMPIAR DATOS ──
+    function limpiarDatos() {
+      if (!confirm('¿Eliminar todos los datos de prueba del localStorage? Esta acción no se puede deshacer.')) return;
+      ['pacientes_ips','citas_ips','facturas_ips','tratamientos_ips'].forEach(k => localStorage.removeItem(k));
+      showToast('Datos de prueba eliminados');
+    }
+
+    // ── APARIENCIA ──
+    const TEMAS = {
+      oscuro:  'Fondo oscuro. Ideal para iluminación baja o trabajo nocturno.',
+      claro:   'Fondo blanco. Ideal para espacios bien iluminados y uso diurno.',
+      sistema: 'Sigue automáticamente el modo claro u oscuro de tu dispositivo.',
+    };
+
+    function elegirTema(tema) {
+      // Aplica el tema visualmente
+      window.aplicarTema(tema);
+      // Actualiza las opciones seleccionadas
+      ['oscuro','claro','sistema'].forEach(t => {
+        document.getElementById('opt-' + t).classList.toggle('selected', t === tema);
+      });
+      document.getElementById('temaDesc').textContent = TEMAS[tema];
+      showToast('Tema ' + tema + ' activado');
+    }
+
+    // Marcar el tema actual al cargar
+    const temaActual = localStorage.getItem('tema_ips') || 'oscuro';
+    ['oscuro','claro','sistema'].forEach(t => {
+      document.getElementById('opt-' + t).classList.toggle('selected', t === temaActual);
+    });
+    document.getElementById('temaDesc').textContent = TEMAS[temaActual];
+
+    // ── PREFERENCIAS DE FUENTE ──
+    function aplicarFontSize(px) {
+      document.documentElement.style.fontSize = px + 'px';
+      localStorage.setItem('fontsize_ips', px);
+    }
+
+    function guardarPrefs() {
+      const fs = document.getElementById('fontSizeSelect').value;
+      const den = document.getElementById('densidadSelect').value;
+      aplicarFontSize(fs);
+      localStorage.setItem('densidad_ips', den);
+      showToast('Preferencias guardadas');
+    }
+
+    // Cargar preferencias guardadas
+    const fsSaved = localStorage.getItem('fontsize_ips') || '13';
+    document.getElementById('fontSizeSelect').value = fsSaved;
+    aplicarFontSize(fsSaved);
+    const denSaved = localStorage.getItem('densidad_ips') || 'normal';
+    document.getElementById('densidadSelect').value = denSaved;
+
+    // ── TOAST ──
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = '✓ &nbsp;' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

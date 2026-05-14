@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reportes | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+      --morado: #9B59B6;
+      --naranja: #E67E22;
+      --amarillo: #e0a435;
+    }
+
+    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; }
+
+    /* Topbar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title span { color: var(--dorado); }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    /* Filtro de período */
+    .period-tabs { display: flex; background: var(--negro-panel); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 3px; gap: 2px; }
+    .period-btn { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 6px; border: none; background: transparent; color: var(--gris); cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .period-btn:hover { color: var(--blanco); }
+    .period-btn.active { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .btn-export { font-size: 12px; font-weight: 500; background: transparent; border: 1px solid rgba(201,168,76,0.25); color: var(--dorado); padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+    .btn-export:hover { background: rgba(201,168,76,0.08); }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+
+    .kpi-card { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.1); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+    .kpi-card:hover { border-color: rgba(201,168,76,0.25); }
+    .kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; }
+    .kpi-card.k1::after { background: var(--dorado); }
+    .kpi-card.k2::after { background: var(--verde); }
+    .kpi-card.k3::after { background: var(--azul); }
+    .kpi-card.k4::after { background: var(--morado); }
+
+    .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .kpi-icon { font-size: 22px; }
+    .kpi-trend { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .kpi-trend.up   { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .kpi-trend.down { background: rgba(224,85,85,0.12); color: var(--rojo); }
+    .kpi-trend.neu  { background: rgba(255,255,255,0.06); color: #555; }
+
+    .kpi-value { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .kpi-card.k1 .kpi-value { color: var(--dorado); }
+    .kpi-card.k2 .kpi-value { color: var(--verde); }
+    .kpi-card.k3 .kpi-value { color: var(--azul); }
+    .kpi-card.k4 .kpi-value { color: var(--morado); }
+
+    .kpi-label { font-size: 11px; color: #555; }
+
+    /* ── GRÁFICAS ── */
+    .charts-row { display: grid; gap: 14px; margin-bottom: 14px; }
+    .charts-row.cols-2 { grid-template-columns: 2fr 1fr; }
+    .charts-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .charts-row.cols-2b { grid-template-columns: 1fr 1fr; }
+
+    .chart-card { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.1); border-radius: 12px; padding: 22px; }
+
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .chart-title { font-size: 13px; font-weight: 600; color: var(--blanco); }
+    .chart-sub { font-size: 11px; color: #444; margin-top: 2px; }
+    .chart-badge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: rgba(201,168,76,0.1); color: var(--dorado); }
+
+    .chart-wrap { position: relative; }
+
+    /* ── TABLA TOP TRATAMIENTOS ── */
+    .top-list { display: flex; flex-direction: column; gap: 10px; }
+    .top-item { display: flex; align-items: center; gap: 12px; }
+    .top-rank { font-size: 11px; font-weight: 700; color: #444; width: 18px; text-align: center; flex-shrink: 0; }
+    .top-emoji { font-size: 18px; flex-shrink: 0; }
+    .top-body { flex: 1; min-width: 0; }
+    .top-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-bar-wrap { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+    .top-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--dorado), var(--dorado-claro)); transition: width 0.6s ease; }
+    .top-count { font-size: 12px; font-weight: 600; color: var(--dorado-claro); flex-shrink: 0; }
+
+    /* ── TABLA DE CITAS RECIENTES ── */
+    .recent-table { width: 100%; border-collapse: collapse; }
+    .recent-table thead th { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #555; padding: 0 0 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .recent-table tbody td { padding: 11px 0; font-size: 12px; color: #aaa; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .recent-table tbody tr:last-child td { border-bottom: none; }
+    .rt-name { font-size: 13px; font-weight: 500; color: var(--blanco); }
+    .rt-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .rt-badge.completada { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .rt-badge.pendiente  { background: rgba(224,164,53,0.12); color: var(--amarillo); }
+    .rt-badge.confirmada { background: rgba(76,143,202,0.12); color: var(--azul); }
+    .rt-badge.cancelada  { background: rgba(224,85,85,0.12); color: var(--rojo); }
+
+    /* Donut centro */
+    .donut-center { text-align: center; margin-top: 12px; }
+    .donut-total { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--dorado); }
+    .donut-lbl { font-size: 11px; color: #555; }
+
+    /* Leyenda custom */
+    .legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gris); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-val { margin-left: auto; font-weight: 600; color: var(--blanco); }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item active"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"                 class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <div class="topbar">
+      <h1 class="page-title">Reportes <span>Clínica</span></h1>
+      <div class="topbar-right">
+        <div class="period-tabs">
+          <button class="period-btn" onclick="setPeriod(this,'semana')">Semana</button>
+          <button class="period-btn active" onclick="setPeriod(this,'mes')">Este mes</button>
+          <button class="period-btn" onclick="setPeriod(this,'trimestre')">Trimestre</button>
+          <button class="period-btn" onclick="setPeriod(this,'anio')">Año</button>
+        </div>
+        <button class="btn-export" onclick="exportarReporte()">↓ Exportar PDF</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card k1">
+        <div class="kpi-top">
+          <span class="kpi-icon">💰</span>
+          <span class="kpi-trend up" id="trendIngresos">↑ 0%</span>
+        </div>
+        <div class="kpi-value" id="kpiIngresos">$0</div>
+        <div class="kpi-label">Ingresos del período</div>
+      </div>
+      <div class="kpi-card k2">
+        <div class="kpi-top">
+          <span class="kpi-icon">👥</span>
+          <span class="kpi-trend up" id="trendPacientes">↑ 0%</span>
+        </div>
+        <div class="kpi-value" id="kpiPacientes">0</div>
+        <div class="kpi-label">Pacientes atendidos</div>
+      </div>
+      <div class="kpi-card k3">
+        <div class="kpi-top">
+          <span class="kpi-icon">📅</span>
+          <span class="kpi-trend neu" id="trendCitas">— 0%</span>
+        </div>
+        <div class="kpi-value" id="kpiCitas">0</div>
+        <div class="kpi-label">Citas realizadas</div>
+      </div>
+      <div class="kpi-card k4">
+        <div class="kpi-top">
+          <span class="kpi-icon">🦷</span>
+          <span class="kpi-trend up" id="trendTratamientos">↑ 0%</span>
+        </div>
+        <div class="kpi-value" id="kpiTratamientos">0</div>
+        <div class="kpi-label">Tratamientos activos</div>
+      </div>
+    </div>
+
+    <!-- Fila 1: Ingresos por mes + Citas por estado -->
+    <div class="charts-row cols-2">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Ingresos mensuales</div>
+            <div class="chart-sub">Facturación total por mes — COP</div>
+          </div>
+          <span class="chart-badge" id="badgeIngresos">2026</span>
+        </div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="chartIngresos"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Citas por estado</div>
+            <div class="chart-sub">Distribución del período</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px">
+          <canvas id="chartCitasEstado"></canvas>
+        </div>
+        <div class="donut-center">
+          <div class="donut-total" id="donutTotal">0</div>
+          <div class="donut-lbl">total citas</div>
+        </div>
+        <div class="legend" id="legendCitas"></div>
+      </div>
+    </div>
+
+    <!-- Fila 2: Pacientes nuevos + Top tratamientos + Canales -->
+    <div class="charts-row cols-3">
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Pacientes nuevos</div>
+            <div class="chart-sub">vs. recurrentes</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="chartPacientes"></canvas>
+        </div>
+        <div class="legend" id="legendPacientes" style="margin-top:12px"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Top tratamientos</div>
+            <div class="chart-sub">Más solicitados</div>
+          </div>
+        </div>
+        <div class="top-list" id="topTratamientos"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Canal de origen</div>
+            <div class="chart-sub">De dónde vienen los leads</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="chartCanales"></canvas>
+        </div>
+        <div class="legend" id="legendCanales" style="margin-top:12px"></div>
+      </div>
+
+    </div>
+
+    <!-- Fila 3: Citas recientes -->
+    <div class="charts-row cols-2b">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Citas recientes</div>
+            <div class="chart-sub">Últimas del período</div>
+          </div>
+          <a href="citas.html" style="font-size:11px;color:var(--dorado);text-decoration:none;opacity:0.7">Ver todas →</a>
+        </div>
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Tipo</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="recentCitas"></tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Facturas recientes</div>
+            <div class="chart-sub">Últimas del período</div>
+          </div>
+          <a href="facturacion.html" style="font-size:11px;color:var(--dorado);text-decoration:none;opacity:0.7">Ver todas →</a>
+        </div>
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Concepto</th>
+              <th>Valor</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="recentFacturas"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // ── DATOS DESDE LOCALSTORAGE ──
+    const pacientes    = JSON.parse(localStorage.getItem('pacientes_ips')    || '[]');
+    const citas        = JSON.parse(localStorage.getItem('citas_ips')        || '[]');
+    const facturas     = JSON.parse(localStorage.getItem('facturas_ips')     || '[]');
+    const tratamientos = JSON.parse(localStorage.getItem('tratamientos_ips') || '[]');
+
+    // Colores de marca
+    const C = {
+      dorado:  '#C9A84C',
+      doradoT: 'rgba(201,168,76,0.15)',
+      verde:   '#4CAF82',
+      verdeT:  'rgba(76,175,130,0.15)',
+      azul:    '#4C8FCA',
+      azulT:   'rgba(76,143,202,0.15)',
+      morado:  '#9B59B6',
+      moradoT: 'rgba(155,89,182,0.15)',
+      rojo:    '#e05555',
+      rojoT:   'rgba(224,85,85,0.15)',
+      amarillo:'#e0a435',
+      grid:    'rgba(255,255,255,0.05)',
+      text:    '#666',
+    };
+
+    // Defaults globales Chart.js
+    Chart.defaults.color = C.text;
+    Chart.defaults.borderColor = C.grid;
+    Chart.defaults.font.family = 'Inter';
+
+    // ── KPI ──
+    const totalFacturado = facturas.reduce((s,f) => s + Number(f.valor||0), 0);
+    const citasCompletadas = citas.filter(c => c.estado === 'completada').length;
+    const tratActivos = tratamientos.filter(t => t.estado === 'activo').length;
+
+    document.getElementById('kpiIngresos').textContent    = '$' + totalFacturado.toLocaleString('es-CO');
+    document.getElementById('kpiPacientes').textContent   = pacientes.length;
+    document.getElementById('kpiCitas').textContent       = citas.length;
+    document.getElementById('kpiTratamientos').textContent = tratActivos || tratamientos.length;
+
+    // ── CHART 1: Ingresos por mes (barras) ──
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+    // Agrupar facturas por mes
+    const ingresosPorMes = new Array(12).fill(0);
+    facturas.forEach(f => {
+      if (f.fecha) {
+        const m = parseInt(f.fecha.split('-')[1]) - 1;
+        ingresosPorMes[m] += Number(f.valor || 0);
+      }
+    });
+
+    // Si no hay datos reales, mostrar datos de demostración
+    const hayFacturas = facturas.length > 0;
+    const datosIngresos = hayFacturas ? ingresosPorMes : [
+      1200000, 1850000, 2100000, 1750000, 2400000, 2800000,
+      2200000, 3100000, 2700000, 3400000, 2900000, 3800000
+    ];
+
+    new Chart(document.getElementById('chartIngresos'), {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [{
+          label: 'Ingresos (COP)',
+          data: datosIngresos,
+          backgroundColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : C.doradoT),
+          borderColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : 'rgba(201,168,76,0.3)'),
+          borderWidth: 1,
+          borderRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString('es-CO') }
+        }},
+        scales: {
+          x: { grid: { color: C.grid } },
+          y: { grid: { color: C.grid }, ticks: { callback: v => '$' + (v/1000000).toFixed(1)+'M' } }
+        }
+      }
+    });
+
+    // ── CHART 2: Citas por estado (donut) ──
+    const estadosCitas = { confirmada: 0, pendiente: 0, completada: 0, cancelada: 0 };
+    citas.forEach(c => { if (estadosCitas[c.estado] !== undefined) estadosCitas[c.estado]++; });
+    const hayCitas = citas.length > 0;
+    const datosCitas = hayCitas
+      ? Object.values(estadosCitas)
+      : [45, 30, 18, 7];
+    const totalC = datosCitas.reduce((a,b)=>a+b,0);
+
+    document.getElementById('donutTotal').textContent = totalC;
+
+    new Chart(document.getElementById('chartCitasEstado'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Confirmadas','Pendientes','Completadas','Canceladas'],
+        datasets: [{
+          data: datosCitas,
+          backgroundColor: [C.azul, C.amarillo, C.verde, C.rojo],
+          borderColor: '#1a1a1a',
+          borderWidth: 3,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/totalC*100)}%)` }
+        }}
+      }
+    });
+
+    const coloresCitas = [C.azul, C.amarillo, C.verde, C.rojo];
+    const labelsCitas  = ['Confirmadas','Pendientes','Completadas','Canceladas'];
+    document.getElementById('legendCitas').innerHTML = labelsCitas.map((l,i) => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${coloresCitas[i]}"></div>
+        ${l}
+        <span class="legend-val">${datosCitas[i]}</span>
+      </div>
+    `).join('');
+
+    // ── CHART 3: Pacientes nuevos vs recurrentes (donut) ──
+    const nuevos      = hayFacturas ? Math.floor(pacientes.length * 0.4) : 62;
+    const recurrentes = hayFacturas ? pacientes.length - nuevos : 38;
+    const datosPac = [nuevos || 62, recurrentes || 38];
+
+    new Chart(document.getElementById('chartPacientes'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Nuevos','Recurrentes'],
+        datasets: [{
+          data: datosPac,
+          backgroundColor: [C.dorado, C.morado],
+          borderColor: '#1a1a1a',
+          borderWidth: 3,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    document.getElementById('legendPacientes').innerHTML = `
+      <div class="legend-item"><div class="legend-dot" style="background:${C.dorado}"></div>Nuevos pacientes<span class="legend-val">${datosPac[0]}</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:${C.morado}"></div>Recurrentes<span class="legend-val">${datosPac[1]}</span></div>
+    `;
+
+    // ── TOP TRATAMIENTOS ──
+    const topTrat = tratamientos.length > 0
+      ? tratamientos.slice(0, 5).map((t, i) => ({ nombre: t.nombre, emoji: t.emoji || '🦷', count: Math.max(1, 20 - i * 3) }))
+      : [
+          { emoji:'⚙️', nombre:'Ortodoncia fija', count: 24 },
+          { emoji:'😁', nombre:'Blanqueamiento dental', count: 18 },
+          { emoji:'🦷', nombre:'Limpieza dental', count: 32 },
+          { emoji:'🔬', nombre:'Endodoncia', count: 11 },
+          { emoji:'🏥', nombre:'Implante dental', count: 9 },
+        ];
+
+    const maxCount = Math.max(...topTrat.map(t => t.count));
+    document.getElementById('topTratamientos').innerHTML = topTrat.map((t, i) => `
+      <div class="top-item">
+        <div class="top-rank">${i + 1}</div>
+        <div class="top-emoji">${t.emoji}</div>
+        <div class="top-body">
+          <div class="top-name">${t.nombre}</div>
+          <div class="top-bar-wrap">
+            <div class="top-bar" style="width:${Math.round(t.count/maxCount*100)}%"></div>
+          </div>
+        </div>
+        <div class="top-count">${t.count}</div>
+      </div>
+    `).join('');
+
+    // ── CHART 4: Canal de origen ──
+    const datosCanales = [55, 25, 12, 8];
+    new Chart(document.getElementById('chartCanales'), {
+      type: 'doughnut',
+      data: {
+        labels: ['WhatsApp','Instagram','Referido','TikTok'],
+        datasets: [{
+          data: datosCanales,
+          backgroundColor: ['#25D366', '#C13584', C.dorado, '#fff'],
+          borderColor: '#1a1a1a',
+          borderWidth: 3,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    document.getElementById('legendCanales').innerHTML = [
+      { color:'#25D366', label:'WhatsApp', val: datosCanales[0] + '%' },
+      { color:'#C13584', label:'Instagram', val: datosCanales[1] + '%' },
+      { color: C.dorado, label:'Referido',  val: datosCanales[2] + '%' },
+      { color:'#fff',    label:'TikTok',    val: datosCanales[3] + '%' },
+    ].map(l => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${l.color}"></div>
+        ${l.label}
+        <span class="legend-val">${l.val}</span>
+      </div>
+    `).join('');
+
+    // ── CITAS RECIENTES ──
+    const mesesCortos = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    function fmtFecha(iso) {
+      if (!iso) return '—';
+      const [y,m,d] = iso.split('-');
+      return `${d} ${mesesCortos[+m-1]}`;
+    }
+
+    const citasRecientes = [...citas].sort((a,b) => (b.fecha||'').localeCompare(a.fecha||'')).slice(0, 6);
+    document.getElementById('recentCitas').innerHTML = citasRecientes.length
+      ? citasRecientes.map(c => `
+          <tr>
+            <td><div class="rt-name">${c.paciente || '—'}</div></td>
+            <td>${c.tipoCita || 'Consulta'}</td>
+            <td>${fmtFecha(c.fecha)}</td>
+            <td><span class="rt-badge ${c.estado}">${c.estado}</span></td>
+          </tr>
+        `).join('')
+      : `<tr><td colspan="4" style="text-align:center;padding:24px;color:#333">Sin citas registradas</td></tr>`;
+
+    // ── FACTURAS RECIENTES ──
+    const facturasRecientes = [...facturas].slice(0, 6);
+    document.getElementById('recentFacturas').innerHTML = facturasRecientes.length
+      ? facturasRecientes.map(f => `
+          <tr>
+            <td><div class="rt-name">${f.paciente || '—'}</div></td>
+            <td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.concepto || '—'}</td>
+            <td style="font-family:'Playfair Display',serif;color:var(--dorado-claro)">$${Number(f.valor||0).toLocaleString('es-CO')}</td>
+            <td><span class="rt-badge ${f.estado}">${f.estado}</span></td>
+          </tr>
+        `).join('')
+      : `<tr><td colspan="4" style="text-align:center;padding:24px;color:#333">Sin facturas registradas</td></tr>`;
+
+    // ── PERÍODO ──
+    function setPeriod(btn, period) {
+      document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // En producción aquí se re-filtrarían los datos por período
+    }
+
+    // ── EXPORTAR (placeholder) ──
+    function exportarReporte() {
+      alert('Función de exportación PDF estará disponible al conectar el backend.');
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

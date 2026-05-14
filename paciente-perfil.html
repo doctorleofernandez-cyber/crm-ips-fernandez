@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil Paciente | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4CAF82;
+      --amarillo: #e0a435;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+    }
+
+    body {
+      background: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar-s { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px;
+      color: #555;
+    }
+
+    .breadcrumb a { color: #555; text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--dorado); }
+    .breadcrumb span { color: var(--blanco); }
+
+    /* ── LAYOUT DOS COLUMNAS ── */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 0;
+      flex: 1;
+    }
+
+    /* ── COLUMNA IZQUIERDA — Tarjeta de contacto ── */
+    .contact-card {
+      border-right: 1px solid rgba(255,255,255,0.05);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .avatar-section { text-align: center; }
+
+    .pac-avatar-lg {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 2px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--dorado);
+      margin: 0 auto 12px;
+    }
+
+    .pac-name-lg {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pac-doc-lg { font-size: 12px; color: var(--gris); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 10px;
+    }
+
+    .status-badge.activo   { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .status-badge.inactivo { background: rgba(255,255,255,0.06); color: #555; }
+    .status-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* Acciones rápidas */
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: transparent;
+      color: var(--gris);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .quick-btn:hover { background: rgba(201,168,76,0.06); color: var(--blanco); border-color: rgba(201,168,76,0.2); }
+    .quick-btn.primary { background: rgba(201,168,76,0.1); color: var(--dorado); border-color: rgba(201,168,76,0.25); }
+    .quick-btn.primary:hover { background: rgba(201,168,76,0.18); }
+    .quick-icon { font-size: 15px; }
+
+    /* Info personal */
+    .info-section { display: flex; flex-direction: column; gap: 4px; }
+
+    .info-title {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .info-row:last-child { border-bottom: none; }
+
+    .info-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.8px; }
+    .info-val   { font-size: 13px; color: var(--blanco); }
+    .info-val.gold { color: var(--dorado); }
+
+    /* Tags */
+    .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid rgba(201,168,76,0.2);
+      color: var(--dorado);
+      background: rgba(201,168,76,0.06);
+    }
+
+    /* ── COLUMNA DERECHA — Tabs ── */
+    .detail-area { display: flex; flex-direction: column; }
+
+    .tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 28px;
+    }
+
+    .tab-btn {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 16px 18px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--gris);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tab-btn:hover { color: var(--blanco); }
+    .tab-btn.active { color: var(--dorado); border-bottom-color: var(--dorado); }
+
+    .tab-content { display: none; padding: 28px; flex: 1; }
+    .tab-content.active { display: block; }
+
+    /* Sección dentro de tab */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-link {
+      font-size: 11px;
+      color: var(--dorado);
+      text-decoration: none;
+      font-weight: 500;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .section-link:hover { opacity: 1; }
+
+    /* Resumen overview */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .ov-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .ov-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .ov-value { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--dorado); }
+    .ov-sub   { font-size: 11px; color: #444; margin-top: 4px; }
+
+    /* Lista de items (citas, facturas) */
+    .item-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: var(--negro-panel);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .item-row:hover { border-color: rgba(201,168,76,0.2); }
+
+    .item-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(201,168,76,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .item-body { flex: 1; min-width: 0; }
+    .item-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .item-sub   { font-size: 11px; color: #555; }
+    .item-right { text-align: right; flex-shrink: 0; }
+    .item-val   { font-size: 13px; font-weight: 600; color: var(--dorado-claro); }
+    .item-date  { font-size: 11px; color: #444; margin-top: 2px; }
+
+    /* Badge inline */
+    .ibadge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .ibadge.verde     { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .ibadge.amarillo  { background: rgba(224,164,53,0.12); color: var(--amarillo); }
+    .ibadge.rojo      { background: rgba(224,85,85,0.12); color: var(--rojo); }
+    .ibadge.azul      { background: rgba(76,143,202,0.12); color: var(--azul); }
+
+    /* Conversaciones */
+    .conv-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .conv-row:last-child { border-bottom: none; }
+
+    .conv-ch {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0;
+    }
+
+    .conv-ch.wa { background: rgba(37,211,102,0.1); }
+    .conv-ch.ig { background: rgba(193,53,132,0.1); }
+
+    .conv-body { flex: 1; }
+    .conv-top  { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .conv-canal { font-size: 11px; color: #555; }
+    .conv-time  { font-size: 10px; color: #444; margin-left: auto; }
+    .conv-msg   { font-size: 12px; color: #888; }
+
+    /* Alergias / notas */
+    .alerta-box {
+      background: rgba(224,85,85,0.06);
+      border: 1px solid rgba(224,85,85,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #cc8888;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    /* Estado vacío */
+    .empty-tab {
+      text-align: center;
+      padding: 48px 24px;
+      color: #333;
+    }
+
+    .empty-tab-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.3; }
+    .empty-tab-text { font-size: 13px; }
+
+    /* ── EDITAR PERFIL MODAL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      padding: 32px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none;
+      color: #555; font-size: 18px; cursor: pointer;
+    }
+
+    .modal-close:hover { color: var(--blanco); }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .modal-title span { color: var(--dorado); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+
+    .form-group label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dorado);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px; color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      outline: none; resize: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #444; }
+    .form-group select option { background: #1a1a1a; }
+
+    .modal-footer {
+      display: flex; justify-content: flex-end; gap: 10px;
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .btn-cancel {
+      padding: 10px 20px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--gris);
+      font-size: 13px; cursor: pointer;
+    }
+
+    .btn-cancel:hover { color: var(--blanco); }
+
+    .btn-guardar {
+      padding: 10px 24px; border-radius: 8px;
+      border: none; background: var(--dorado);
+      color: var(--negro); font-size: 13px;
+      font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-guardar:hover { opacity: 0.85; }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html" class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="#"         class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
+      <a href="#"             class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="pacientes.html" class="nav-item active"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="citas.html"     class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html" class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html"              class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar-s">LF</div>
+        <div>
+          <div class="user-name">Dr. Leo Fernandez</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="pacientes.html">Contactos</a>
+      <span style="color:#333">›</span>
+      <span id="breadName">—</span>
+    </div>
+
+    <div class="profile-layout">
+
+      <!-- ── COLUMNA IZQUIERDA ── -->
+      <div class="contact-card">
+
+        <div class="avatar-section">
+          <div class="pac-avatar-lg" id="avatarLg">—</div>
+          <div class="pac-name-lg"   id="nombreLg">—</div>
+          <div class="pac-doc-lg"    id="docLg">—</div>
+          <div>
+            <span class="status-badge activo" id="statusBadge">
+              <span class="status-badge-dot"></span> Activo
+            </span>
+          </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="quick-actions">
+          <button class="quick-btn primary" onclick="irACitas()">
+            <span class="quick-icon">📅</span> Nueva cita
+          </button>
+          <button class="quick-btn" onclick="irAFactura()">
+            <span class="quick-icon">💰</span> Nueva factura
+          </button>
+          <button class="quick-btn" onclick="irAChat()">
+            <span class="quick-icon">💬</span> Enviar mensaje
+          </button>
+          <button class="quick-btn" onclick="abrirModal()">
+            <span class="quick-icon">✎</span> Editar perfil
+          </button>
+        </div>
+
+        <!-- Info personal -->
+        <div class="info-section">
+          <div class="info-title">Información personal</div>
+          <div class="info-row">
+            <div class="info-label">Fecha de nacimiento</div>
+            <div class="info-val" id="infNac">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Teléfono</div>
+            <div class="info-val gold" id="infTel">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Correo</div>
+            <div class="info-val" id="infEmail">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Tipo de sangre</div>
+            <div class="info-val" id="infSangre">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">EPS / Seguro</div>
+            <div class="info-val" id="infEps">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Ciudad</div>
+            <div class="info-val" id="infCiudad">—</div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="info-section">
+          <div class="info-title">Etiquetas</div>
+          <div class="tags-wrap" id="tagsWrap">
+            <span style="font-size:12px;color:#333">Sin etiquetas</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── COLUMNA DERECHA — Tabs ── -->
+      <div class="detail-area">
+
+        <div class="tabs-bar">
+          <button class="tab-btn active" onclick="setTab('resumen')">Resumen</button>
+          <button class="tab-btn" onclick="setTab('citas')">Citas</button>
+          <button class="tab-btn" onclick="setTab('tratamientos')">Tratamientos</button>
+          <button class="tab-btn" onclick="setTab('facturas')">Facturas</button>
+          <button class="tab-btn" onclick="setTab('conversaciones')">Conversaciones</button>
+          <button class="tab-btn" onclick="setTab('notas')">Notas</button>
+        </div>
+
+        <!-- TAB: RESUMEN -->
+        <div class="tab-content active" id="tab-resumen">
+          <div class="overview-grid">
+            <div class="ov-card">
+              <div class="ov-label">Total citas</div>
+              <div class="ov-value" id="ovCitas">0</div>
+              <div class="ov-sub">Histórico</div>
+            </div>
+            <div class="ov-card">
+              <div class="ov-label">Próxima cita</div>
+              <div class="ov-value" id="ovProxima" style="font-size:16px;padding-top:6px">—</div>
+              <div class="ov-sub" id="ovProximaSub">Sin citas pendientes</div>
+            </div>
+            <div class="ov-card">
+              <div class="ov-label">Facturado total</div>
+              <div class="ov-value" id="ovFacturado">$0</div>
+              <div class="ov-sub">Histórico</div>
+            </div>
+            <div class="ov-card">
+              <div class="ov-label">Saldo pendiente</div>
+              <div class="ov-value" id="ovPendiente" style="color:var(--amarillo)">$0</div>
+              <div class="ov-sub">Por cobrar</div>
+            </div>
+          </div>
+
+          <!-- Alergias -->
+          <div id="alertaAlergias" style="display:none;margin-bottom:20px">
+            <div class="alerta-box">
+              <span>⚠️</span>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--rojo);margin-bottom:2px">ALERGIAS / ADVERTENCIAS</div>
+                <div id="alertaText">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Últimas citas -->
+          <div class="section-title">
+            Últimas citas
+            <a href="citas.html" class="section-link">Ver todas →</a>
+          </div>
+          <div class="item-list" id="resumenCitas">
+            <div class="empty-tab">
+              <div class="empty-tab-icon">📅</div>
+              <div class="empty-tab-text">Sin citas registradas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CITAS -->
+        <div class="tab-content" id="tab-citas">
+          <div class="item-list" id="listaCitas">
+            <div class="empty-tab">
+              <div class="empty-tab-icon">📅</div>
+              <div class="empty-tab-text">Sin citas registradas para este paciente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: TRATAMIENTOS -->
+        <div class="tab-content" id="tab-tratamientos">
+          <div class="empty-tab">
+            <div class="empty-tab-icon">🦷</div>
+            <div class="empty-tab-text">Sin tratamientos registrados</div>
+          </div>
+        </div>
+
+        <!-- TAB: FACTURAS -->
+        <div class="tab-content" id="tab-facturas">
+          <div class="item-list" id="listaFacturas">
+            <div class="empty-tab">
+              <div class="empty-tab-icon">💰</div>
+              <div class="empty-tab-text">Sin facturas registradas para este paciente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CONVERSACIONES -->
+        <div class="tab-content" id="tab-conversaciones">
+          <div class="empty-tab">
+            <div class="empty-tab-icon">💬</div>
+            <div class="empty-tab-text">Sin conversaciones vinculadas</div>
+          </div>
+        </div>
+
+        <!-- TAB: NOTAS -->
+        <div class="tab-content" id="tab-notas">
+          <div style="margin-bottom:16px">
+            <textarea id="notasText" rows="4"
+              style="width:100%;background:var(--negro-panel);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--blanco);font-family:'Inter',sans-serif;outline:none;resize:vertical;transition:border-color 0.2s"
+              placeholder="Escribe una nota clínica o comentario…"
+              onfocus="this.style.borderColor='rgba(201,168,76,0.35)'"
+              onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></textarea>
+            <button onclick="guardarNota()"
+              style="margin-top:8px;padding:8px 18px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:7px;color:var(--dorado);font-size:12px;font-weight:600;cursor:pointer">
+              Guardar nota
+            </button>
+          </div>
+          <div id="notasList" class="item-list"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL EDITAR PERFIL ── -->
+  <div class="overlay" id="overlay" onclick="cerrarOverlay(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+      <div class="modal-title">Editar <span>Perfil</span></div>
+
+      <form id="editForm" onsubmit="guardarEdicion(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="eNombre" placeholder="Nombre completo" required />
+          </div>
+          <div class="form-group">
+            <label>Documento</label>
+            <input type="text" id="eDocumento" placeholder="CC / NIT" />
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="eTelefono" placeholder="+57 300 000 0000" />
+          </div>
+          <div class="form-group">
+            <label>Correo</label>
+            <input type="email" id="eEmail" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label>Fecha de nacimiento</label>
+            <input type="date" id="eNacimiento" />
+          </div>
+          <div class="form-group">
+            <label>Tipo de sangre</label>
+            <select id="eSangre">
+              <option value="">—</option>
+              <option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option>
+              <option>O+</option><option>O-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>EPS / Seguro</label>
+            <input type="text" id="eEps" placeholder="Nombre de la EPS" />
+          </div>
+          <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" id="eCiudad" placeholder="Ciudad de residencia" />
+          </div>
+          <div class="form-group full">
+            <label>Alergias / Advertencias</label>
+            <textarea id="eAlergias" rows="2" placeholder="Ej: Alérgico a la penicilina…"></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Etiquetas (separadas por coma)</label>
+            <input type="text" id="eTags" placeholder="Ej: Ortodoncia, VIP, Recurrente" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ── CARGAR DATOS DEL PACIENTE ──
+    const params  = new URLSearchParams(location.search);
+    const pacId   = params.get('id');
+    let pacientes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
+    let pac       = pacientes.find(p => p.id === pacId) || null;
+
+    // Si no hay ID o no existe, mostrar perfil de demostración vacío
+    if (!pac) {
+      pac = {
+        id: 'demo', nombre: 'Paciente Demo', documento: 'CC 000000000',
+        telefono: '', email: '', nacimiento: '', sangre: '', eps: '',
+        ciudad: '', alergias: '', tags: ''
+      };
+    }
+
+    renderPerfil();
+    cargarCitas();
+    cargarFacturas();
+    cargarNotas();
+
+    function renderPerfil() {
+      const ini = pac.nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+      document.getElementById('avatarLg').textContent   = ini;
+      document.getElementById('nombreLg').textContent   = pac.nombre;
+      document.getElementById('docLg').textContent      = pac.documento || '—';
+      document.getElementById('breadName').textContent  = pac.nombre;
+      document.getElementById('infNac').textContent     = pac.nacimiento ? formatFecha(pac.nacimiento) : '—';
+      document.getElementById('infTel').textContent     = pac.telefono   || '—';
+      document.getElementById('infEmail').textContent   = pac.email      || '—';
+      document.getElementById('infSangre').textContent  = pac.sangre     || '—';
+      document.getElementById('infEps').textContent     = pac.eps        || '—';
+      document.getElementById('infCiudad').textContent  = pac.ciudad     || '—';
+
+      // Alergias
+      if (pac.alergias) {
+        document.getElementById('alertaAlergias').style.display = 'block';
+        document.getElementById('alertaText').textContent = pac.alergias;
+      }
+
+      // Tags
+      const tw = document.getElementById('tagsWrap');
+      if (pac.tags) {
+        tw.innerHTML = pac.tags.split(',').map(t =>
+          `<span class="tag">${t.trim()}</span>`
+        ).join('');
+      }
+    }
+
+    // ── CITAS VINCULADAS ──
+    function cargarCitas() {
+      const citas = JSON.parse(localStorage.getItem('citas_ips') || '[]')
+        .filter(c => c.pacienteId === pacId || c.paciente === pac.nombre);
+
+      document.getElementById('ovCitas').textContent = citas.length;
+
+      const proximas = citas.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada')
+        .sort((a,b) => a.fecha.localeCompare(b.fecha));
+
+      if (proximas.length) {
+        document.getElementById('ovProxima').textContent    = formatFecha(proximas[0].fecha);
+        document.getElementById('ovProximaSub').textContent = proximas[0].tipoCita || 'Cita pendiente';
+      }
+
+      const html = citas.length ? citas.slice(0,5).map(c => `
+        <div class="item-row">
+          <div class="item-icon">📅</div>
+          <div class="item-body">
+            <div class="item-title">${c.tipoCita || 'Cita médica'}</div>
+            <div class="item-sub">${c.hora || ''} · ${c.doctor || 'Dr. Fernández'}</div>
+          </div>
+          <div class="item-right">
+            <span class="ibadge ${estadoColor(c.estado)}">${c.estado}</span>
+            <div class="item-date">${formatFecha(c.fecha)}</div>
+          </div>
+        </div>
+      `).join('') : `<div class="empty-tab"><div class="empty-tab-icon">📅</div><div class="empty-tab-text">Sin citas registradas</div></div>`;
+
+      document.getElementById('resumenCitas').innerHTML = html;
+      document.getElementById('listaCitas').innerHTML   = html;
+    }
+
+    // ── FACTURAS VINCULADAS ──
+    function cargarFacturas() {
+      const facts = JSON.parse(localStorage.getItem('facturas_ips') || '[]')
+        .filter(f => f.paciente.toLowerCase().includes(pac.nombre.split(' ')[0].toLowerCase()));
+
+      const total    = facts.reduce((s,f) => s + Number(f.valor), 0);
+      const pendiente = facts.filter(f=>f.estado==='pendiente').reduce((s,f)=>s+Number(f.valor),0);
+
+      document.getElementById('ovFacturado').textContent = '$' + total.toLocaleString('es-CO');
+      document.getElementById('ovPendiente').textContent = '$' + pendiente.toLocaleString('es-CO');
+
+      const html = facts.length ? facts.map(f => `
+        <div class="item-row">
+          <div class="item-icon">🧾</div>
+          <div class="item-body">
+            <div class="item-title">${f.concepto}</div>
+            <div class="item-sub">${f.numero}</div>
+          </div>
+          <div class="item-right">
+            <div class="item-val">$${Number(f.valor).toLocaleString('es-CO')}</div>
+            <div class="item-date"><span class="ibadge ${f.estado==='cobrado'?'verde':f.estado==='vencido'?'rojo':'amarillo'}">${f.estado}</span></div>
+          </div>
+        </div>
+      `).join('') : `<div class="empty-tab"><div class="empty-tab-icon">💰</div><div class="empty-tab-text">Sin facturas registradas</div></div>`;
+
+      document.getElementById('listaFacturas').innerHTML = html;
+    }
+
+    // ── NOTAS ──
+    function cargarNotas() {
+      const key   = 'notas_pac_' + (pacId || 'demo');
+      const notas = JSON.parse(localStorage.getItem(key) || '[]');
+      renderNotas(notas);
+    }
+
+    function guardarNota() {
+      const txt = document.getElementById('notasText').value.trim();
+      if (!txt) return;
+      const key   = 'notas_pac_' + (pacId || 'demo');
+      const notas = JSON.parse(localStorage.getItem(key) || '[]');
+      notas.unshift({ id: Date.now(), texto: txt, fecha: new Date().toISOString() });
+      localStorage.setItem(key, JSON.stringify(notas));
+      document.getElementById('notasText').value = '';
+      renderNotas(notas);
+    }
+
+    function renderNotas(notas) {
+      document.getElementById('notasList').innerHTML = notas.length
+        ? notas.map(n => `
+            <div class="item-row">
+              <div class="item-icon">📝</div>
+              <div class="item-body">
+                <div class="item-title" style="font-weight:400;color:#ccc">${n.texto}</div>
+              </div>
+              <div class="item-right">
+                <div class="item-date">${formatFechaHora(n.fecha)}</div>
+              </div>
+            </div>
+          `).join('')
+        : `<div class="empty-tab"><div class="empty-tab-icon">📝</div><div class="empty-tab-text">Sin notas clínicas</div></div>`;
+    }
+
+    // ── TABS ──
+    function setTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+    }
+
+    // ── MODAL EDITAR ──
+    function abrirModal() {
+      document.getElementById('eNombre').value    = pac.nombre     || '';
+      document.getElementById('eDocumento').value = pac.documento  || '';
+      document.getElementById('eTelefono').value  = pac.telefono   || '';
+      document.getElementById('eEmail').value     = pac.email      || '';
+      document.getElementById('eNacimiento').value= pac.nacimiento || '';
+      document.getElementById('eSangre').value    = pac.sangre     || '';
+      document.getElementById('eEps').value       = pac.eps        || '';
+      document.getElementById('eCiudad').value    = pac.ciudad     || '';
+      document.getElementById('eAlergias').value  = pac.alergias   || '';
+      document.getElementById('eTags').value      = pac.tags       || '';
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    function cerrarModal() { document.getElementById('overlay').classList.remove('open'); }
+    function cerrarOverlay(e) { if (e.target.id === 'overlay') cerrarModal(); }
+
+    function guardarEdicion(e) {
+      e.preventDefault();
+      pac.nombre     = document.getElementById('eNombre').value.trim();
+      pac.documento  = document.getElementById('eDocumento').value.trim();
+      pac.telefono   = document.getElementById('eTelefono').value.trim();
+      pac.email      = document.getElementById('eEmail').value.trim();
+      pac.nacimiento = document.getElementById('eNacimiento').value;
+      pac.sangre     = document.getElementById('eSangre').value;
+      pac.eps        = document.getElementById('eEps').value.trim();
+      pac.ciudad     = document.getElementById('eCiudad').value.trim();
+      pac.alergias   = document.getElementById('eAlergias').value.trim();
+      pac.tags       = document.getElementById('eTags').value.trim();
+
+      // Actualizar en localStorage
+      const idx = pacientes.findIndex(p => p.id === pac.id);
+      if (idx !== -1) {
+        pacientes[idx] = pac;
+        localStorage.setItem('pacientes_ips', JSON.stringify(pacientes));
+      }
+      cerrarModal();
+      renderPerfil();
+    }
+
+    // ── NAVEGACIÓN RÁPIDA ──
+    function irACitas()  { location.href = 'citas.html'; }
+    function irAFactura(){ location.href = 'facturacion.html'; }
+    function irAChat()   { location.href = 'chat.html'; }
+
+    // ── UTILS ──
+    function formatFecha(iso) {
+      if (!iso) return '—';
+      const [y,m,d] = iso.split('-');
+      const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      return `${d} ${meses[+m-1]} ${y}`;
+    }
+
+    function formatFechaHora(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('es-CO',{day:'2-digit',month:'short'}) + ' ' +
+             d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    function estadoColor(e) {
+      return { confirmada:'verde', pendiente:'amarillo', completada:'azul', cancelada:'rojo' }[e] || 'azul';
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

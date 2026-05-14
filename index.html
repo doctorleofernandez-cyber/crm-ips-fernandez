@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRM | IPS Fernández O&M</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: #1a1a1a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --blanco-suave: #f5f5f5;
+      --gris: #888888;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Fondo decorativo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, #1a1400 0%, #000000 60%);
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 600px at 80% 20%, rgba(201,168,76,0.04) 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      padding: 0 24px;
+    }
+
+    .login-card {
+      background: var(--negro-panel);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: 16px;
+      padding: 48px 40px;
+      box-shadow:
+        0 0 60px rgba(201,168,76,0.08),
+        0 24px 48px rgba(0,0,0,0.6);
+    }
+
+    /* Header */
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-placeholder {
+      width: 120px;
+      height: auto;
+      margin: 0 auto 20px;
+      display: block;
+      filter: drop-shadow(0 0 16px rgba(201,168,76,0.25));
+    }
+
+    .login-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--blanco);
+      letter-spacing: 0.5px;
+      line-height: 1.3;
+    }
+
+    .login-header h1 span {
+      color: var(--dorado);
+    }
+
+    .login-header p {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--gris);
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Línea decorativa */
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+      margin: 16px auto 0;
+    }
+
+    /* Formulario */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--dorado);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--blanco);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-group input::placeholder {
+      color: #444;
+    }
+
+    .form-group input:focus {
+      border-color: var(--dorado);
+      background: rgba(201,168,76,0.05);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+
+    /* Olvidé contraseña */
+    .forgot {
+      text-align: right;
+      margin-top: -12px;
+      margin-bottom: 28px;
+    }
+
+    .forgot a {
+      font-size: 12px;
+      color: var(--gris);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot a:hover { color: var(--dorado); }
+
+    /* Botón */
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-claro) 50%, var(--dorado) 100%);
+      background-size: 200% auto;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--negro);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+      background-position: right center;
+      box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    .login-footer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .login-footer p {
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 1px;
+    }
+
+    .login-footer span {
+      color: var(--dorado);
+      opacity: 0.7;
+    }
+
+    /* Animación de entrada */
+    .login-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-card">
+
+      <div class="login-header">
+        <img src="assets/logo.png" alt="IPS Fernández O&M" class="logo-placeholder" />
+        <h1>IPS Fernández <span>O&M</span></h1>
+        <p>Sistema de Gestión</p>
+        <div class="divider"></div>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="tucorreo@ejemplo.com" />
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" placeholder="••••••••" />
+        </div>
+
+        <div class="forgot">
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="btn-login">Ingresar al sistema</button>
+      </form>
+
+      <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          window.location.href = 'dashboard.html';
+        });
+      </script>
+
+      <div class="login-footer">
+        <p>© 2026 <span>IPS Fernández O&M</span> — Todos los derechos reservados</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

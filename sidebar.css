@@ -1,0 +1,113 @@
+/* ── SIDEBAR: HOVER EXPAND + ACORDEÓN ── */
+
+/* Transiciones */
+.sidebar {
+  transition: width 0.22s ease;
+  overflow: hidden;
+}
+.main { transition: margin-left 0.22s ease; }
+
+/* ── Estado base: colapsado (solo íconos) ── */
+.sidebar.collapsed { width: 68px; }
+
+/* Ocultar todo el texto del logo — solo queda el ícono/imagen */
+.sidebar.collapsed .sidebar-logo > div,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .logo-sub        { display: none; }
+.sidebar.collapsed .sidebar-logo    { justify-content: center; padding: 18px 10px; }
+
+.sidebar.collapsed .nav-section     { opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden; }
+.sidebar.collapsed .nav-item        { font-size: 0; justify-content: center; padding: 10px 0; }
+.sidebar.collapsed .nav-item.section-hidden { display: flex !important; }
+.sidebar.collapsed .nav-icon        { font-size: 16px; }
+.sidebar.collapsed .nav-badge       { display: none; }
+.sidebar.collapsed .section-chevron { display: none; }
+
+.sidebar.collapsed .user-name,
+.sidebar.collapsed .user-role       { display: none; }
+.sidebar.collapsed .sidebar-footer  { padding: 14px 10px; }
+.sidebar.collapsed .user-info       { justify-content: center; }
+.sidebar.collapsed .user-av,
+.sidebar.collapsed .user-avatar     { margin: 0 auto; }
+
+/* ── Hover: expandir temporalmente ── */
+.sidebar.collapsed:hover {
+  width: 220px;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+  z-index: 200;
+}
+.sidebar.collapsed:hover .sidebar-logo > div,
+.sidebar.collapsed:hover .logo-text,
+.sidebar.collapsed:hover .logo-sub      { display: block; }
+.sidebar.collapsed:hover .sidebar-logo  { justify-content: flex-start; padding: 22px 18px; }
+
+.sidebar.collapsed:hover .nav-section   { opacity: 1; height: auto; padding: 8px 10px 3px; margin-top: 4px; overflow: visible; }
+.sidebar.collapsed:hover .nav-item      { font-size: 12.5px; justify-content: flex-start; padding: 9px 10px; }
+.sidebar.collapsed:hover .nav-item.section-hidden { display: none !important; }
+.sidebar.collapsed:hover .nav-icon      { font-size: 14px; }
+.sidebar.collapsed:hover .nav-badge     { display: flex; }
+.sidebar.collapsed:hover .section-chevron { display: inline; }
+
+.sidebar.collapsed:hover .user-name,
+.sidebar.collapsed:hover .user-role     { display: block; }
+.sidebar.collapsed:hover .sidebar-footer { padding: 14px 18px; }
+.sidebar.collapsed:hover .user-info     { justify-content: flex-start; }
+.sidebar.collapsed:hover .user-av,
+.sidebar.collapsed:hover .user-avatar   { margin: 0; }
+
+/* ── SEPARADOR / ÍTEM FIJO ── */
+.nav-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 8px 10px 6px;
+}
+.sidebar.collapsed .nav-divider { margin: 6px 8px; }
+
+/* ── ACORDEÓN DE SECCIONES ── */
+.nav-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.section-chevron {
+  margin-left: auto;
+  font-size: 9px;
+  color: #555;
+  transition: transform 0.2s ease;
+  padding-right: 2px;
+}
+.nav-section.closed .section-chevron { transform: rotate(-90deg); }
+.nav-item.section-hidden              { display: none; }
+
+/* ── BOTÓN PIN (anclar expandido) ── */
+.sidebar-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid rgba(201,168,76,0.2);
+  cursor: pointer;
+  color: #666;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  margin: 6px auto 10px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.sidebar-collapse-btn:hover {
+  color: #C9A84C;
+  border-color: rgba(201,168,76,0.5);
+  background: rgba(201,168,76,0.08);
+}
+.sidebar-collapse-btn .collapse-icon {
+  font-size: 12px;
+  display: block;
+  line-height: 1;
+}
+/* Cuando está "anclado" (no collapsed), el pin se ve dorado */
+.sidebar:not(.collapsed) .sidebar-collapse-btn {
+  color: #C9A84C;
+  border-color: rgba(201,168,76,0.4);
+}
