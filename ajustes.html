@@ -13,7 +13,7 @@
     :root {
       --negro: #000000;
       --negro-suave: #111111;
-      --negro-panel: #1a1a1a;
+      --negro-panel: rgba(14,14,22,0.82);
       --negro-input: #141414;
       --dorado: #C9A84C;
       --dorado-claro: #e2c47a;
@@ -25,7 +25,7 @@
       --amarillo: #e0a435;
     }
 
-    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+    body { background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%); font-family: 'Inter', sans-serif; color: #1a1208; display: flex; min-height: 100vh; }
 
     /* ── SIDEBAR ── */
     .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; }
@@ -207,7 +207,7 @@
     .user-row {
       display: flex; align-items: center; gap: 14px;
       padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
 
     .user-row:last-child { border-bottom: none; }
@@ -267,7 +267,7 @@
     .integration-row {
       display: flex; align-items: center; gap: 16px;
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
 
     .integration-row:last-child { border-bottom: none; }
@@ -315,7 +315,7 @@
     .notif-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
 
     .notif-row:last-child { border-bottom: none; }
@@ -488,6 +488,7 @@
       margin-top: 6px;
       line-height: 1.5;
     }
+    .config-card, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>

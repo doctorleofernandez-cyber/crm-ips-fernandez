@@ -10,11 +10,11 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --negro: #000000; --negro-suave: #111111; --negro-panel: #1a1a1a; --negro-input: #141414;
+      --negro: #000000; --negro-suave: #111111; --negro-panel: rgba(14,14,22,0.82); --negro-input: #141414;
       --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
       --verde: #4CAF82; --rojo: #e05555; --azul: #4C8FCA; --amarillo: #e0a435; --morado: #9B59B6;
     }
-    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+    body { background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%); font-family: 'Inter', sans-serif; color: #1a1208; display: flex; min-height: 100vh; }
 
     .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
     .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
@@ -40,14 +40,14 @@
 
     .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
     .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
     .btn-nuevo { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); cursor: pointer; transition: all 0.2s; }
     .btn-nuevo:hover { opacity: 0.88; transform: translateY(-1px); }
 
     /* KPI */
     .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
-    .kpi-card { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.1); border-radius: 12px; padding: 18px 20px; }
+    .kpi-card { background: rgba(14,14,22,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,168,76,0.14); border-radius: 12px; padding: 18px 20px; }
     .kpi-label { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
     .kpi-value { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
     .kpi-sub { font-size: 11px; color: var(--gris); }
@@ -57,16 +57,16 @@
     .kpi-morado{ color: var(--morado); }
 
     /* Tabla de campañas */
-    .table-card { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.1); border-radius: 14px; overflow: hidden; }
-    .table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .table-card { background: rgba(14,14,22,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,168,76,0.14); border-radius: 14px; overflow: hidden; }
+    .table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid rgba(0,0,0,0.07); }
     .table-header h3 { font-size: 14px; font-weight: 600; }
-    .search-input { background: var(--negro-input); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 14px; font-size: 12.5px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; width: 220px; }
+    .search-input { background: rgba(255,255,255,0.65); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 8px 14px; font-size: 12.5px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; width: 220px; }
     .search-input::placeholder { color: #333; }
     .search-input:focus { border-color: rgba(201,168,76,0.3); }
 
     table { width: 100%; border-collapse: collapse; }
-    thead th { padding: 12px 20px; font-size: 10px; font-weight: 600; color: #444; letter-spacing: 2px; text-transform: uppercase; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    thead th { padding: 12px 20px; font-size: 10px; font-weight: 600; color: #444; letter-spacing: 2px; text-transform: uppercase; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    tbody tr { border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(201,168,76,0.04); }
     td { padding: 14px 20px; font-size: 13px; color: var(--blanco); vertical-align: middle; }
@@ -96,7 +96,7 @@
     .modal-sub { font-size: 12.5px; color: var(--gris); margin-bottom: 24px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
-    input[type="text"], input[type="datetime-local"], select, textarea { background: var(--negro-input); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; resize: none; transition: border-color 0.2s; width: 100%; }
+    input[type="text"], input[type="datetime-local"], select, textarea { background: rgba(255,255,255,0.65); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; resize: none; transition: border-color 0.2s; width: 100%; }
     input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
     input::placeholder, textarea::placeholder { color: #333; }
     select option { background: #1a1a1a; }
@@ -116,6 +116,7 @@
 
     .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
+    .modal, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>

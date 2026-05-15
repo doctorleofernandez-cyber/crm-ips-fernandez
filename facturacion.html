@@ -13,7 +13,7 @@
     :root {
       --negro: #000000;
       --negro-suave: #111111;
-      --negro-panel: #1a1a1a;
+      --negro-panel: rgba(14,14,22,0.82);
       --dorado: #C9A84C;
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
@@ -24,9 +24,9 @@
     }
 
     body {
-      background-color: var(--negro);
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
       font-family: 'Inter', sans-serif;
-      color: var(--blanco);
+      color: #1a1208;
       min-height: 100vh;
       display: flex;
     }
@@ -102,6 +102,7 @@
       font-family: 'Playfair Display', serif;
       font-size: 24px;
       font-weight: 700;
+      color: #1a1208;
     }
 
     .page-title span { color: var(--dorado); }
@@ -270,7 +271,7 @@
     }
 
     tbody tr {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       transition: background 0.15s;
       cursor: pointer;
     }
@@ -515,6 +516,10 @@
     }
 
     .btn-guardar:hover { opacity: 0.85; }
+    .stat-card, .table-wrap, .modal { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .search-wrap { background: rgba(255,255,255,0.65) !important; border: 1px solid rgba(0,0,0,0.10) !important; }
+    .search-wrap input { color: #1a1208 !important; }
+    .search-wrap input::placeholder { color: #b0a090 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>

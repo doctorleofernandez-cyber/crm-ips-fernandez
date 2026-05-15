@@ -13,7 +13,7 @@
     :root {
       --negro: #000000;
       --negro-suave: #111111;
-      --negro-panel: #1a1a1a;
+      --negro-panel: rgba(14,14,22,0.82);
       --dorado: #C9A84C;
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
@@ -26,9 +26,9 @@
     }
 
     body {
-      background: var(--negro);
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
       font-family: 'Inter', sans-serif;
-      color: var(--blanco);
+      color: #1a1208;
       display: flex;
       min-height: 100vh;
     }
@@ -69,7 +69,7 @@
     .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
 
     .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
     .topbar-actions { display: flex; gap: 10px; }
 
@@ -282,7 +282,7 @@
 
     table { width: 100%; border-collapse: collapse; }
     thead th { padding: 13px 16px; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #555; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; cursor: pointer; }
+    tbody tr { border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s; cursor: pointer; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(201,168,76,0.04); }
     tbody td { padding: 13px 16px; font-size: 13px; color: var(--blanco); vertical-align: middle; }
@@ -359,6 +359,10 @@
     .btn-cancel:hover { color: var(--blanco); }
     .btn-guardar { padding: 10px 24px; border-radius: 8px; border: none; background: var(--dorado); color: var(--negro); font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
     .btn-guardar:hover { opacity: 0.85; }
+    .stat-card, .t-card { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .search-wrap { background: rgba(255,255,255,0.65) !important; border: 1px solid rgba(0,0,0,0.10) !important; }
+    .search-wrap input { color: #1a1208 !important; }
+    .search-wrap input::placeholder { color: #b0a090 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>

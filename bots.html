@@ -10,11 +10,11 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --negro: #000000; --negro-suave: #111111; --negro-panel: #1a1a1a; --negro-input: #141414;
+      --negro: #000000; --negro-suave: #111111; --negro-panel: rgba(14,14,22,0.82); --negro-input: #141414;
       --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
       --verde: #4CAF82; --rojo: #e05555; --azul: #4C8FCA; --morado: #9B59B6; --amarillo: #e0a435;
     }
-    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+    body { background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%); font-family: 'Inter', sans-serif; color: #1a1208; display: flex; min-height: 100vh; }
 
     .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
     .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
@@ -40,7 +40,7 @@
 
     .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
     .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
 
     .btn-nuevo { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); cursor: pointer; transition: all 0.2s; }
@@ -135,6 +135,7 @@
 
     .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
+    .bot-card, .modal, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>

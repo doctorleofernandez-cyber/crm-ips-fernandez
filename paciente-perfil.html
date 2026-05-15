@@ -13,7 +13,7 @@
     :root {
       --negro: #000000;
       --negro-suave: #111111;
-      --negro-panel: #1a1a1a;
+      --negro-panel: rgba(14,14,22,0.82);
       --dorado: #C9A84C;
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
@@ -25,9 +25,9 @@
     }
 
     body {
-      background: var(--negro);
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
       font-family: 'Inter', sans-serif;
-      color: var(--blanco);
+      color: #1a1208;
       display: flex;
       min-height: 100vh;
     }
@@ -481,6 +481,24 @@
     }
 
     .btn-guardar:hover { opacity: 0.85; }
+
+    /* ── OVERRIDES FONDO CREMA ── */
+    .breadcrumb { border-bottom: 1px solid rgba(0,0,0,0.07); color: #9c8c72; }
+    .breadcrumb a { color: #9c8c72; }
+    .breadcrumb span { color: #1a1208; }
+    .contact-card { border-right: 1px solid rgba(0,0,0,0.07); }
+    .tabs-bar { border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .info-row { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .info-label { color: #9c8c72; }
+    .info-val { color: #1a1208; }
+    .info-title { color: #9c8c72; }
+    .tab-btn { color: #9c8c72; }
+    .tab-btn:hover { color: #1a1208; }
+    .quick-btn { border: 1px solid rgba(0,0,0,0.09); color: #6b5c42; }
+    .quick-btn:hover { background: rgba(201,168,76,0.07); color: #1a1208; border-color: rgba(201,168,76,0.25); }
+    .ov-card, .item-row, .modal { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .ov-sub { color: #9c8c72; }
+    .item-row { border: 1px solid rgba(0,0,0,0.07); }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>
