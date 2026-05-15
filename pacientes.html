@@ -23,9 +23,9 @@
     }
 
     body {
-      background-color: var(--negro);
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
       font-family: 'Inter', sans-serif;
-      color: var(--blanco);
+      color: #1a1208;
       min-height: 100vh;
     }
 
@@ -107,7 +107,7 @@
       margin-bottom: 28px;
     }
 
-    .page-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
 
     .btn-nuevo {
@@ -135,40 +135,40 @@
 
     .search-wrap input {
       width: 100%;
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.10);
       border-radius: 8px;
       padding: 11px 16px 11px 40px;
-      font-size: 13px; color: var(--blanco);
+      font-size: 13px; color: #1a1208;
       font-family: 'Inter', sans-serif;
       outline: none; transition: border-color 0.2s;
     }
-    .search-wrap input::placeholder { color: #444; }
-    .search-wrap input:focus { border-color: rgba(201,168,76,0.4); }
+    .search-wrap input::placeholder { color: #b0a090; }
+    .search-wrap input:focus { border-color: rgba(201,168,76,0.45); }
 
     .search-icon {
       position: absolute; left: 14px; top: 50%;
       transform: translateY(-50%);
-      font-size: 14px; color: #444; pointer-events: none;
+      font-size: 14px; color: #b0a090; pointer-events: none;
     }
 
     .filter-select {
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.10);
       border-radius: 8px;
       padding: 11px 14px;
-      font-size: 13px; color: var(--gris);
+      font-size: 13px; color: #5a4e3a;
       font-family: 'Inter', sans-serif;
       outline: none; cursor: pointer;
       appearance: none;
       min-width: 140px;
     }
-    .filter-select:focus { border-color: rgba(201,168,76,0.4); }
+    .filter-select:focus { border-color: rgba(201,168,76,0.45); }
 
     /* ── TABLA ───────────────────────────────── */
     .table-wrap {
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.12);
+      background: rgba(255,255,255,0.60);
+      border: 1px solid rgba(0,0,0,0.08);
       border-radius: 12px;
       overflow: hidden;
     }
@@ -176,39 +176,39 @@
     .table-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
 
-    .table-info { font-size: 12px; color: var(--gris); }
-    .table-info span { color: var(--dorado); font-weight: 600; }
+    .table-info { font-size: 12px; color: #9c8c72; }
+    .table-info span { color: var(--dorado); font-weight: 600; filter: brightness(0.82); }
 
     table { width: 100%; border-collapse: collapse; }
 
     thead th {
       padding: 12px 20px;
       font-size: 10px; font-weight: 600;
-      color: #444; letter-spacing: 2px;
+      color: #9c8c72; letter-spacing: 2px;
       text-transform: uppercase;
       text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
 
     tbody tr {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       transition: background 0.15s;
       cursor: pointer;
     }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: rgba(201,168,76,0.04); }
+    tbody tr:hover { background: rgba(201,168,76,0.07); }
 
     td {
       padding: 14px 20px;
-      font-size: 13px; color: var(--blanco);
+      font-size: 13px; color: #1a1208;
       vertical-align: middle;
     }
 
     .td-name { font-weight: 500; }
-    .td-doc { color: var(--gris); font-size: 12px; }
+    .td-doc { color: #9c8c72; font-size: 12px; }
 
     .avatar-cell {
       display: flex; align-items: center; gap: 12px;
@@ -236,20 +236,20 @@
 
     .btn-icon {
       width: 30px; height: 30px; border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      color: var(--gris); font-size: 13px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.50);
+      color: #9c8c72; font-size: 13px;
       cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center;
     }
-    .btn-icon:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-icon:hover { border-color: rgba(201,168,76,0.4); color: #7a5c1e; }
     .btn-icon.del:hover { border-color: rgba(224,84,84,0.3); color: var(--rojo); }
 
     .empty-state {
-      text-align: center; padding: 64px 24px; color: #333;
+      text-align: center; padding: 64px 24px; color: #c4b49a;
     }
     .empty-state p { font-size: 13px; letter-spacing: 1px; margin-top: 8px; }
-    .empty-state .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.3; }
+    .empty-state .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.35; }
 
     /* ── MODAL ───────────────────────────────── */
     .overlay {
@@ -347,13 +347,13 @@
 
     .btn-cancel {
       padding: 10px 22px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: none; color: var(--gris);
+      border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.5); color: #5a4e3a;
       font-size: 12px; font-weight: 600;
       letter-spacing: 1px; text-transform: uppercase;
       cursor: pointer; transition: all 0.2s;
     }
-    .btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: var(--blanco); }
+    .btn-cancel:hover { border-color: rgba(0,0,0,0.20); color: #1a1208; }
 
     .btn-guardar {
       padding: 10px 26px; border-radius: 8px;
@@ -404,20 +404,20 @@
     <a href="chat.html" class="nav-item">
       <span class="nav-icon">💬</span> Inbox de chat
     </a>
-    <a href="#" class="nav-item">
+    <a href="correo.html" class="nav-item">
       <span class="nav-icon">✉️</span> Inbox de correo
     </a>
-    <a href="#" class="nav-item">
+    <a href="chats-equipo.html" class="nav-item">
       <span class="nav-icon">👥</span> Chats de equipo
     </a>
 
     <div class="nav-section">Pipelines</div>
     <a href="pipeline.html" class="nav-item">
-      <span class="nav-icon">◈</span> Leo Fernández
+      <span class="nav-icon">◈</span> IPS Fernández O & M
     </a>
-    <a href="#" class="nav-item">
+    <div class="nav-item active">
       <span class="nav-icon">◇</span> Todos los leads
-    </a>
+    </div>
 
     <div class="nav-section">Insights</div>
     <a href="insights.html" class="nav-item">
@@ -437,8 +437,8 @@
     <a href="citas.html" class="nav-item">
       <span class="nav-icon">📅</span> Calendario
     </a>
-    <a href="#" class="nav-item">
-      <span class="nav-icon">◇</span> Facturación
+    <a href="facturacion.html" class="nav-item">
+      <span class="nav-icon">💰</span> Facturación
     </a>
 
       <div class="nav-divider"></div>

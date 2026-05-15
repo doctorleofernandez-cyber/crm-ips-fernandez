@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chats de Equipo | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-panel: #1a1a1a;
+      --negro-medio: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+    }
+
+    body {
+      background-color: var(--negro);
+      font-family: 'Inter', sans-serif;
+      color: var(--blanco);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── PANEL CANALES ── */
+    .canales-sidebar {
+      width: 220px; flex-shrink: 0; height: 100vh;
+      background: rgba(10,10,10,0.98);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      display: flex; flex-direction: column;
+    }
+
+    .cs-header {
+      padding: 18px 16px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .cs-header-title { font-size: 13px; font-weight: 700; color: var(--blanco); margin-bottom: 10px; }
+    .cs-search {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 7px; padding: 6px 10px;
+    }
+    .cs-search input { background: none; border: none; outline: none; font-size: 11.5px; color: var(--blanco); font-family: 'Inter', sans-serif; width: 100%; }
+    .cs-search input::placeholder { color: #3a3a3a; }
+
+    .cs-section { font-size: 9px; color: #3a3a3a; letter-spacing: 2px; text-transform: uppercase; padding: 14px 16px 5px; }
+
+    .btn-nuevo-canal {
+      margin: 0 12px 8px;
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 12px; border-radius: 7px;
+      background: rgba(201,168,76,0.10); border: 1px solid rgba(201,168,76,0.2);
+      color: var(--dorado); font-size: 11.5px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .btn-nuevo-canal:hover { background: rgba(201,168,76,0.18); }
+
+    .canal-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 16px; cursor: pointer; transition: background 0.15s;
+      font-size: 12.5px; color: var(--gris);
+    }
+    .canal-item:hover { background: rgba(255,255,255,0.03); color: var(--blanco); }
+    .canal-item.active { background: rgba(201,168,76,0.08); color: var(--blanco); }
+
+    .canal-hash { font-size: 15px; color: #3a3a3a; }
+    .canal-item.active .canal-hash { color: var(--dorado); }
+    .canal-unread { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--dorado); color: #000; padding: 1px 6px; border-radius: 10px; }
+
+    .miembros-list { padding: 4px 0; flex: 1; overflow-y: auto; }
+    .miembro-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 16px; cursor: pointer; transition: background 0.15s;
+      font-size: 12px; color: #555;
+    }
+    .miembro-item:hover { background: rgba(255,255,255,0.03); color: var(--blanco); }
+    .miembro-item.active { color: var(--blanco); }
+    .m-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .m-status.online  { background: #4CAF82; }
+    .m-status.away    { background: #e0a435; }
+    .m-status.offline { background: #3a3a3a; }
+
+    /* ── LISTA DE MENSAJES ── */
+    .msg-list {
+      flex: 1; height: 100vh;
+      display: flex; flex-direction: column;
+      background: #0c0c0c;
+    }
+
+    .ml-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .ml-canal-name { font-size: 14px; font-weight: 600; }
+    .ml-canal-hash { color: var(--dorado); margin-right: 2px; }
+    .ml-desc { font-size: 11px; color: #3a3a3a; margin-left: 4px; }
+    .ml-actions { margin-left: auto; display: flex; gap: 8px; }
+    .ml-btn { font-size: 12px; color: #444; cursor: pointer; background: none; border: none; padding: 4px 8px; border-radius: 5px; transition: color 0.15s; }
+    .ml-btn:hover { color: var(--dorado); }
+
+    .mensajes { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 2px; }
+    .mensajes::-webkit-scrollbar { width: 4px; }
+    .mensajes::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.12); border-radius: 2px; }
+
+    .msg-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+    .msg-group:hover .msg-actions { opacity: 1; }
+
+    .msg-row { display: flex; align-items: flex-start; gap: 12px; padding: 3px 6px; border-radius: 6px; transition: background 0.1s; position: relative; }
+    .msg-row:hover { background: rgba(255,255,255,0.02); }
+
+    .msg-avatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--dorado); flex-shrink: 0; margin-top: 2px; }
+    .msg-avatar.alt { background: rgba(100,100,180,0.15); border-color: rgba(100,100,180,0.2); color: #8888cc; }
+    .msg-avatar.alt2 { background: rgba(80,160,80,0.15); border-color: rgba(80,160,80,0.2); color: #88cc88; }
+
+    .msg-content { flex: 1; }
+    .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+    .msg-autor { font-size: 13px; font-weight: 600; color: var(--blanco); }
+    .msg-hora { font-size: 10px; color: #333; }
+    .msg-text { font-size: 13px; color: rgba(255,255,255,0.78); line-height: 1.55; }
+    .msg-text code { background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+
+    .msg-continued { padding-left: 46px; }
+    .msg-continued .msg-text { font-size: 13px; color: rgba(255,255,255,0.78); line-height: 1.55; padding: 2px 6px; border-radius: 5px; }
+    .msg-continued .msg-text:hover { background: rgba(255,255,255,0.02); }
+
+    .msg-actions { position: absolute; right: 8px; top: 2px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+    .msg-action-btn { font-size: 12px; background: rgba(30,30,30,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: 5px; padding: 3px 7px; cursor: pointer; color: var(--gris); transition: color 0.15s; }
+    .msg-action-btn:hover { color: var(--dorado); }
+
+    .date-divider { text-align: center; margin: 16px 0 8px; position: relative; }
+    .date-divider span { font-size: 10px; color: #2a2a2a; background: #0c0c0c; padding: 0 12px; letter-spacing: 1px; position: relative; z-index: 1; }
+    .date-divider::before { content:''; position:absolute; left:0; right:0; top:50%; height:1px; background: rgba(255,255,255,0.05); }
+
+    /* ── INPUT ── */
+    .msg-input-wrap {
+      padding: 12px 20px 16px;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .msg-input-box {
+      display: flex; align-items: flex-end; gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+    .msg-input-box:focus-within { border-color: rgba(201,168,76,0.3); }
+
+    .msg-input-box textarea {
+      flex: 1; background: none; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px; color: var(--blanco);
+      resize: none; max-height: 120px; line-height: 1.5;
+    }
+    .msg-input-box textarea::placeholder { color: #333; }
+
+    .input-tools { display: flex; gap: 6px; align-items: center; }
+    .tool-btn { font-size: 16px; background: none; border: none; cursor: pointer; color: #3a3a3a; transition: color 0.15s; padding: 2px; }
+    .tool-btn:hover { color: var(--dorado); }
+
+    .btn-send {
+      width: 34px; height: 34px; border-radius: 8px; border: none;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      color: #000; font-size: 15px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; transition: opacity 0.2s; flex-shrink: 0;
+    }
+    .btn-send:hover { opacity: 0.88; }
+  </style>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR PRINCIPAL ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"         class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="correo.html"       class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="chats-equipo.html" class="nav-item active"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html"  class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+    </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">Administrador</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── PANEL CANALES ── -->
+  <div class="canales-sidebar">
+    <div class="cs-header">
+      <div class="cs-header-title">👥 Equipo IPS</div>
+      <div class="cs-search">
+        <span style="color:#3a3a3a;font-size:11px">🔍</span>
+        <input type="text" placeholder="Buscar..." />
+      </div>
+    </div>
+
+    <div class="cs-section">Canales</div>
+    <button class="btn-nuevo-canal" onclick="nuevoCanal()">＋ Nuevo canal</button>
+
+    <div class="canal-item active" onclick="selCanal(this,'general')">
+      <span class="canal-hash">#</span> general
+      <span class="canal-unread">3</span>
+    </div>
+    <div class="canal-item" onclick="selCanal(this,'clinica')">
+      <span class="canal-hash">#</span> clínica
+    </div>
+    <div class="canal-item" onclick="selCanal(this,'admin')">
+      <span class="canal-hash">#</span> administración
+    </div>
+    <div class="canal-item" onclick="selCanal(this,'marketing')">
+      <span class="canal-hash">#</span> marketing
+    </div>
+
+    <div class="cs-section">Mensajes directos</div>
+    <div class="miembros-list">
+      <div class="miembro-item active" onclick="selMiembro(this,'valentina')">
+        <span class="m-status online"></span> Valentina IA
+      </div>
+      <div class="miembro-item" onclick="selMiembro(this,'recepcion')">
+        <span class="m-status online"></span> Recepción
+      </div>
+      <div class="miembro-item" onclick="selMiembro(this,'asistente')">
+        <span class="m-status away"></span> Asistente
+      </div>
+      <div class="miembro-item" onclick="selMiembro(this,'contabilidad')">
+        <span class="m-status offline"></span> Contabilidad
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ÁREA DE MENSAJES ── -->
+  <div class="msg-list">
+    <div class="ml-header">
+      <span class="ml-canal-hash">#</span>
+      <span class="ml-canal-name" id="canalName">general</span>
+      <span class="ml-desc" id="canalDesc">— Canal general del equipo IPS Fernández</span>
+      <div class="ml-actions">
+        <button class="ml-btn" title="Buscar">🔍</button>
+        <button class="ml-btn" title="Miembros">👥 4</button>
+        <button class="ml-btn" title="Ajustes">⚙</button>
+      </div>
+    </div>
+
+    <div class="mensajes" id="mensajes">
+
+      <div class="date-divider"><span>HOY — 14 DE MAYO 2026</span></div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar">LF</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Dr. Leo Fernández</span>
+              <span class="msg-hora">9:02 am</span>
+            </div>
+            <div class="msg-text">Buenos días equipo 👋 Hoy tenemos 8 citas programadas. Por favor revisar que todo esté listo desde las 7am.</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar alt">RC</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Recepción</span>
+              <span class="msg-hora">9:08 am</span>
+            </div>
+            <div class="msg-text">Entendido Doctor. Ya confirmamos 6 de las 8 citas por WhatsApp. Las otras 2 no responden aún.</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar alt2">VA</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Valentina IA</span>
+              <span class="msg-hora">9:09 am</span>
+            </div>
+            <div class="msg-text">He enviado recordatorio automático a los 2 pacientes pendientes. Si no confirman en 1 hora, les llamaré. 🤖</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar">LF</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Dr. Leo Fernández</span>
+              <span class="msg-hora">9:15 am</span>
+            </div>
+            <div class="msg-text">Perfecto Valentina, gracias. Recepción, ¿ya llegaron los insumos de ortodoncia que pedimos?</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar alt">RC</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Recepción</span>
+              <span class="msg-hora">9:22 am</span>
+            </div>
+            <div class="msg-text">Sí, llegaron esta mañana. Ya están en la sala 2 listos. ✅</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-group">
+        <div class="msg-row">
+          <div class="msg-avatar">LF</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Dr. Leo Fernández</span>
+              <span class="msg-hora">9:25 am</span>
+            </div>
+            <div class="msg-text">Excelente. Recuerden que hoy tenemos junta de equipo a las 6pm. 📋</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="msg-input-wrap">
+      <div class="msg-input-box">
+        <div class="input-tools">
+          <button class="tool-btn" title="Adjuntar">📎</button>
+          <button class="tool-btn" title="Emoji">😊</button>
+        </div>
+        <textarea id="msgInput" rows="1" placeholder="Mensaje en #general..." onkeydown="enviarMensaje(event)" oninput="autoResize(this)"></textarea>
+        <button class="btn-send" onclick="enviarPorBtn()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selCanal(el, nombre) {
+      document.querySelectorAll('.canal-item').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('.miembro-item').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      el.querySelector('.canal-unread')?.remove();
+      const descripciones = {
+        general: '— Canal general del equipo IPS Fernández',
+        clinica: '— Coordinación clínica y procedimientos',
+        admin: '— Temas administrativos y financieros',
+        marketing: '— Campañas y comunicación externa',
+      };
+      document.getElementById('canalName').textContent = nombre;
+      document.getElementById('canalDesc').textContent = descripciones[nombre] || '';
+      document.querySelector('.msg-input-box textarea').placeholder = `Mensaje en #${nombre}...`;
+    }
+
+    function selMiembro(el, nombre) {
+      document.querySelectorAll('.canal-item').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('.miembro-item').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      const nombres = { valentina: 'Valentina IA', recepcion: 'Recepción', asistente: 'Asistente', contabilidad: 'Contabilidad' };
+      document.getElementById('canalName').textContent = nombres[nombre];
+      document.getElementById('canalDesc').textContent = '— Mensaje directo';
+      document.querySelector('.msg-input-box textarea').placeholder = `Mensaje a ${nombres[nombre]}...`;
+    }
+
+    function nuevoCanal() {
+      const nombre = prompt('Nombre del nuevo canal:');
+      if (!nombre) return;
+      const list = document.querySelector('.canal-item');
+      const el = document.createElement('div');
+      el.className = 'canal-item';
+      el.innerHTML = `<span class="canal-hash">#</span> ${nombre.toLowerCase().replace(/\s+/g,'-')}`;
+      el.onclick = function() { selCanal(this, nombre); };
+      list.parentNode.insertBefore(el, list.nextSibling);
+    }
+
+    function enviarMensaje(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarPorBtn(); }
+    }
+
+    function enviarPorBtn() {
+      const input = document.getElementById('msgInput');
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      const ahora = new Date();
+      const hora = ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+
+      const grupo = document.createElement('div');
+      grupo.className = 'msg-group';
+      grupo.innerHTML = `
+        <div class="msg-row">
+          <div class="msg-avatar">LF</div>
+          <div class="msg-content">
+            <div class="msg-meta">
+              <span class="msg-autor">Dr. Leo Fernández</span>
+              <span class="msg-hora">${hora}</span>
+            </div>
+            <div class="msg-text">${texto.replace(/</g,'&lt;')}</div>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">👍</button>
+            <button class="msg-action-btn">↩</button>
+          </div>
+        </div>`;
+
+      document.getElementById('mensajes').appendChild(grupo);
+      input.value = '';
+      input.style.height = 'auto';
+      input.scrollTop = 0;
+      grupo.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

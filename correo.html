@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inbox de Correo | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-panel: #1a1a1a;
+      --negro-medio: #141414;
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+    }
+
+    body {
+      background: #fdf8f0;
+      font-family: 'Inter', sans-serif;
+      color: #1a1208;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR PRINCIPAL ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0; height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+    }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── PANEL CORREO ── */
+    .correo-sidebar {
+      width: 200px; flex-shrink: 0; height: 100vh;
+      background: #f0e8d8;
+      border-right: 1px solid rgba(0,0,0,0.08);
+      display: flex; flex-direction: column;
+      padding: 20px 12px;
+      gap: 4px;
+    }
+
+    .cs-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); margin-bottom: 12px; padding: 0 6px; filter: brightness(0.82); }
+
+    .btn-redactar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      border: none; color: #000; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      margin-bottom: 16px; transition: opacity 0.2s;
+    }
+    .btn-redactar:hover { opacity: 0.88; }
+
+    .cs-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: 7px;
+      font-size: 12px; color: #6b5c42;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .cs-item:hover { background: rgba(0,0,0,0.05); color: #1a1208; }
+    .cs-item.active { background: rgba(201,168,76,0.18); color: #7a5c1e; }
+    .cs-icon { font-size: 14px; width: 18px; text-align: center; }
+    .cs-count { margin-left: auto; font-size: 10px; font-weight: 600; background: rgba(201,168,76,0.15); color: var(--dorado); padding: 1px 7px; border-radius: 10px; }
+
+    /* ── LISTA DE CORREOS ── */
+    .email-list {
+      width: 320px; flex-shrink: 0; height: 100vh;
+      background: #faf5ea;
+      border-right: 1px solid rgba(0,0,0,0.07);
+      display: flex; flex-direction: column;
+    }
+
+    .el-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    .el-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #1a1208; }
+
+    .el-search {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.60);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 7px; padding: 7px 12px;
+    }
+    .el-search input { background: none; border: none; outline: none; font-size: 12px; color: #1a1208; font-family: 'Inter', sans-serif; width: 100%; }
+    .el-search input::placeholder { color: #aaa; }
+
+    .email-items { flex: 1; overflow-y: auto; }
+    .email-items::-webkit-scrollbar { width: 3px; }
+    .email-items::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+
+    .email-item {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      cursor: pointer; transition: background 0.15s;
+      position: relative;
+    }
+    .email-item:hover { background: rgba(0,0,0,0.04); }
+    .email-item.active { background: rgba(201,168,76,0.14); border-left: 2px solid var(--dorado); }
+    .email-item.unread .ei-remitente { color: #1a1208; font-weight: 600; }
+    .email-item.unread .ei-asunto { color: #3a2e1c; font-weight: 500; }
+
+    .ei-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .ei-remitente { font-size: 12.5px; color: #5a4e3a; }
+    .ei-hora { font-size: 10px; color: #9c8c72; }
+    .ei-asunto { font-size: 12px; color: #5a4e3a; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ei-preview { font-size: 11px; color: #9c8c72; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ei-unread-dot { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--dorado); }
+
+    /* ── VISTA DE CORREO ── */
+    .email-view {
+      flex: 1; height: 100vh;
+      display: flex; flex-direction: column;
+      background: #fdf8f0;
+    }
+
+    .ev-toolbar {
+      padding: 14px 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .ev-btn {
+      font-size: 11px; padding: 6px 14px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.55);
+      color: #5a4e3a; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.15s;
+    }
+    .ev-btn:hover { border-color: rgba(201,168,76,0.4); color: #7a5c1e; }
+    .ev-btn.primary { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
+
+    .ev-content { flex: 1; overflow-y: auto; padding: 28px 32px; }
+    .ev-content::-webkit-scrollbar { width: 4px; }
+    .ev-content::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+
+    .ev-asunto { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; color: #1a1208; }
+
+    .ev-meta {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.07);
+      margin-bottom: 24px;
+    }
+
+    .ev-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--dorado); flex-shrink: 0;
+    }
+
+    .ev-from { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: #1a1208; }
+    .ev-addr { font-size: 11px; color: #9c8c72; }
+    .ev-date { margin-left: auto; font-size: 11px; color: #9c8c72; white-space: nowrap; }
+
+    .ev-body { font-size: 13.5px; line-height: 1.8; color: #3a2e1c; }
+    .ev-body p { margin-bottom: 14px; }
+
+    .ev-reply {
+      padding: 16px 32px 24px;
+      border-top: 1px solid rgba(0,0,0,0.07);
+      flex-shrink: 0;
+    }
+
+    .ev-reply-box {
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 10px; padding: 14px 16px;
+    }
+
+    .ev-reply-to { font-size: 10px; color: #9c8c72; margin-bottom: 8px; }
+    .ev-reply-box textarea {
+      width: 100%; background: none; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      color: #1a1208; resize: none; min-height: 72px;
+    }
+    .ev-reply-box textarea::placeholder { color: #bbb; }
+    .ev-reply-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+
+    .btn-enviar {
+      padding: 8px 20px; border-radius: 7px; border: none;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      color: #000; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s;
+    }
+    .btn-enviar:hover { opacity: 0.88; }
+
+    .empty-state {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: #2a2a2a;
+    }
+    .empty-state span { font-size: 48px; }
+    .empty-state p { font-size: 13px; letter-spacing: 0.5px; }
+  </style>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR PRINCIPAL ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Sistema CRM</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
+
+      <div class="nav-section">Comunicaciones</div>
+      <a href="chat.html"    class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
+      <a href="correo.html"  class="nav-item active"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="chats-equipo.html"            class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+
+      <div class="nav-section">Pipelines</div>
+      <a href="pipeline.html"  class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+
+      <div class="nav-section">Insights</div>
+      <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
+
+      <div class="nav-section">IA &amp; Automatización</div>
+      <a href="agente-ia.html"  class="nav-item"><span class="nav-icon">🤖</span> Agente de IA</a>
+      <a href="bots.html"       class="nav-item"><span class="nav-icon">⚡</span> Bots</a>
+      <a href="plantillas.html" class="nav-item"><span class="nav-icon">📝</span> Plantillas</a>
+      <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
+
+      <div class="nav-section">Gestión</div>
+      <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
+      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
+      <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+      <a href="reportes.html"     class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+    </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">Administrador</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── PANEL CORREO ── -->
+  <div class="correo-sidebar">
+    <div class="cs-title">Correo</div>
+    <button class="btn-redactar" onclick="abrirRedactar()">✏️ &nbsp;Redactar</button>
+
+    <div class="cs-item active" onclick="filtrarBandeja('entrada')">
+      <span class="cs-icon">📥</span> Bandeja de entrada
+      <span class="cs-count">3</span>
+    </div>
+    <div class="cs-item" onclick="filtrarBandeja('enviados')">
+      <span class="cs-icon">📤</span> Enviados
+    </div>
+    <div class="cs-item" onclick="filtrarBandeja('borradores')">
+      <span class="cs-icon">📝</span> Borradores
+    </div>
+    <div class="cs-item" onclick="filtrarBandeja('destacados')">
+      <span class="cs-icon">⭐</span> Destacados
+    </div>
+    <div class="cs-item" onclick="filtrarBandeja('spam')">
+      <span class="cs-icon">🚫</span> Spam
+    </div>
+    <div class="cs-item" onclick="filtrarBandeja('eliminados')">
+      <span class="cs-icon">🗑️</span> Eliminados
+    </div>
+  </div>
+
+  <!-- ── LISTA DE CORREOS ── -->
+  <div class="email-list">
+    <div class="el-header">
+      <div class="el-title">Bandeja de entrada</div>
+      <div class="el-search">
+        <span style="color:#444;font-size:12px">🔍</span>
+        <input type="text" placeholder="Buscar correos..." />
+      </div>
+    </div>
+
+    <div class="email-items" id="emailItems">
+
+      <div class="email-item unread active" onclick="verCorreo(0)">
+        <div class="ei-unread-dot"></div>
+        <div class="ei-top">
+          <span class="ei-remitente">María González</span>
+          <span class="ei-hora">10:42 am</span>
+        </div>
+        <div class="ei-asunto">Consulta sobre tratamiento de ortodoncia</div>
+        <div class="ei-preview">Buenas tardes, quisiera saber más información sobre los precios y...</div>
+      </div>
+
+      <div class="email-item unread" onclick="verCorreo(1)">
+        <div class="ei-unread-dot"></div>
+        <div class="ei-top">
+          <span class="ei-remitente">Carlos Mejía</span>
+          <span class="ei-hora">9:15 am</span>
+        </div>
+        <div class="ei-asunto">Confirmación cita blanqueamiento dental</div>
+        <div class="ei-preview">Doctor, le escribo para confirmar mi cita del próximo martes a las...</div>
+      </div>
+
+      <div class="email-item unread" onclick="verCorreo(2)">
+        <div class="ei-unread-dot"></div>
+        <div class="ei-top">
+          <span class="ei-remitente">Ana Rodríguez</span>
+          <span class="ei-hora">Ayer</span>
+        </div>
+        <div class="ei-asunto">Solicitud de historia clínica</div>
+        <div class="ei-preview">Estimados, requiero copia de mi historia clínica para trámite de...</div>
+      </div>
+
+      <div class="email-item" onclick="verCorreo(3)">
+        <div class="ei-top">
+          <span class="ei-remitente">Seguros Sura</span>
+          <span class="ei-hora">Lun</span>
+        </div>
+        <div class="ei-asunto">Actualización tarifas convenio 2026</div>
+        <div class="ei-preview">Estimados aliados, les informamos sobre las actualizaciones en el...</div>
+      </div>
+
+      <div class="email-item" onclick="verCorreo(4)">
+        <div class="ei-top">
+          <span class="ei-remitente">Pedro Vargas</span>
+          <span class="ei-hora">Vie</span>
+        </div>
+        <div class="ei-asunto">Pregunta sobre implantes dentales</div>
+        <div class="ei-preview">Buen día, me recomendaron su clínica para implantes. Quisiera...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── VISTA DE CORREO ── -->
+  <div class="email-view" id="emailView">
+
+    <div class="ev-toolbar" id="evToolbar" style="display:none">
+      <button class="ev-btn primary" onclick="responder()">↩ Responder</button>
+      <button class="ev-btn" onclick="reenviar()">→ Reenviar</button>
+      <button class="ev-btn" onclick="archivar()">📁 Archivar</button>
+      <button class="ev-btn" onclick="eliminar()">🗑 Eliminar</button>
+    </div>
+
+    <div id="evEmpty" class="empty-state">
+      <span>✉️</span>
+      <p>Selecciona un correo para leerlo</p>
+    </div>
+
+    <div id="evBody" style="display:none; flex:1; display:none; flex-direction:column; overflow:hidden;">
+      <div class="ev-content">
+        <div class="ev-asunto" id="evAsunto"></div>
+        <div class="ev-meta">
+          <div class="ev-avatar" id="evAvatar"></div>
+          <div>
+            <div class="ev-from" id="evFrom"></div>
+            <div class="ev-addr" id="evAddr"></div>
+          </div>
+          <div class="ev-date" id="evDate"></div>
+        </div>
+        <div class="ev-body" id="evBodyText"></div>
+      </div>
+      <div class="ev-reply">
+        <div class="ev-reply-box">
+          <div class="ev-reply-to" id="evReplyTo"></div>
+          <textarea placeholder="Escribe tu respuesta..."></textarea>
+          <div class="ev-reply-actions">
+            <button class="ev-btn" onclick="descartarRespuesta()">Descartar</button>
+            <button class="btn-enviar">✉️ Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const correos = [
+      {
+        remitente: 'María González', inicial: 'MG',
+        email: 'mariagonzalez@gmail.com',
+        asunto: 'Consulta sobre tratamiento de ortodoncia',
+        fecha: '14 de mayo, 2026 — 10:42 am',
+        cuerpo: `<p>Buenas tardes,</p><p>Quisiera saber más información sobre los precios y tiempos estimados del tratamiento de ortodoncia. Tengo 28 años y me han dicho que aún podría realizarlo.</p><p>¿Tienen disponibilidad para una valoración esta semana? Quedo atenta a su respuesta.</p><p>Muchas gracias,<br/>María González</p>`
+      },
+      {
+        remitente: 'Carlos Mejía', inicial: 'CM',
+        email: 'carlosmejia@hotmail.com',
+        asunto: 'Confirmación cita blanqueamiento dental',
+        fecha: '14 de mayo, 2026 — 9:15 am',
+        cuerpo: `<p>Doctor, le escribo para confirmar mi cita del próximo martes a las 3:00 pm para el blanqueamiento dental.</p><p>¿Debo tener alguna preparación especial antes del procedimiento? ¿Puedo comer normalmente ese día?</p><p>Gracias de antemano.</p><p>Atentamente,<br/>Carlos Mejía</p>`
+      },
+      {
+        remitente: 'Ana Rodríguez', inicial: 'AR',
+        email: 'anarodriguez@outlook.com',
+        asunto: 'Solicitud de historia clínica',
+        fecha: '13 de mayo, 2026 — 4:30 pm',
+        cuerpo: `<p>Estimados,</p><p>Por medio de la presente requiero copia de mi historia clínica para un trámite de seguro médico. Fui atendida en su clínica en marzo de 2025.</p><p>¿Cuál es el procedimiento para solicitarla? ¿Tiene algún costo?</p><p>Quedo a la espera de su respuesta.</p><p>Cordialmente,<br/>Ana Rodríguez<br/>CC: 1.023.456.789</p>`
+      },
+      {
+        remitente: 'Seguros Sura', inicial: 'SS',
+        email: 'aliados@sura.com.co',
+        asunto: 'Actualización tarifas convenio 2026',
+        fecha: '12 de mayo, 2026 — 11:00 am',
+        cuerpo: `<p>Estimados aliados,</p><p>Les informamos sobre las actualizaciones en el manual tarifario del convenio para el segundo semestre de 2026. Los nuevos valores entran en vigencia a partir del 1 de julio.</p><p>Adjuntamos el documento con el detalle de los cambios. Para dudas, comuníquese con su ejecutivo de cuenta.</p><p>Atentamente,<br/>Equipo de Aliados — Seguros Sura</p>`
+      },
+      {
+        remitente: 'Pedro Vargas', inicial: 'PV',
+        email: 'pedrovargas@gmail.com',
+        asunto: 'Pregunta sobre implantes dentales',
+        fecha: '9 de mayo, 2026 — 2:15 pm',
+        cuerpo: `<p>Buen día,</p><p>Me recomendaron su clínica para implantes dentales. Perdí un molar hace 6 meses y quisiera saber si soy candidato para un implante.</p><p>¿Qué exámenes necesito traer para la valoración? ¿Manejan planes de pago?</p><p>Gracias,<br/>Pedro Vargas</p>`
+      },
+    ];
+
+    let correoActivo = null;
+
+    function verCorreo(idx) {
+      correoActivo = idx;
+      const c = correos[idx];
+
+      document.querySelectorAll('.email-item').forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+        if (i === idx) el.classList.remove('unread');
+      });
+
+      document.getElementById('evEmpty').style.display = 'none';
+      document.getElementById('evToolbar').style.display = 'flex';
+
+      const evBody = document.getElementById('evBody');
+      evBody.style.display = 'flex';
+      evBody.style.flexDirection = 'column';
+      evBody.style.overflow = 'hidden';
+      evBody.style.flex = '1';
+
+      document.getElementById('evAsunto').textContent = c.asunto;
+      document.getElementById('evAvatar').textContent = c.inicial;
+      document.getElementById('evFrom').textContent = c.remitente;
+      document.getElementById('evAddr').textContent = c.email;
+      document.getElementById('evDate').textContent = c.fecha;
+      document.getElementById('evBodyText').innerHTML = c.cuerpo;
+      document.getElementById('evReplyTo').textContent = 'Para: ' + c.email;
+    }
+
+    function filtrarBandeja(tipo) {
+      document.querySelectorAll('.cs-item').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    function abrirRedactar() { alert('Módulo de redacción — disponible con integración de email'); }
+    function responder()    { document.querySelector('.ev-reply-box textarea').focus(); }
+    function reenviar()     { alert('Reenviar — disponible con integración de email'); }
+    function archivar()     { alert('Correo archivado'); }
+    function eliminar()     { alert('Correo eliminado'); }
+    function descartarRespuesta() { document.querySelector('.ev-reply-box textarea').value = ''; }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

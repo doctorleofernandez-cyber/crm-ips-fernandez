@@ -14,9 +14,12 @@
       --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
       --verde: #4CAF82; --rojo: #e05555; --azul: #4C8FCA; --amarillo: #e0a435;
     }
-    body { background: var(--negro); font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh; }
+    body {
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
+      font-family: 'Inter', sans-serif; color: var(--blanco); display: flex; min-height: 100vh;
+    }
 
-    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: rgba(14,14,22,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; z-index: 100; }
     .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
     .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
     .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
@@ -40,73 +43,81 @@
 
     .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
     .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
     .btn-nuevo { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--negro); cursor: pointer; transition: all 0.2s; }
     .btn-nuevo:hover { opacity: 0.88; transform: translateY(-1px); }
 
     /* Filtros */
     .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    .filter-chip { padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-    .filter-chip:hover { border-color: rgba(201,168,76,0.3); color: var(--blanco); }
-    .filter-chip.active { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .filter-chip { padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.60); color: #5a4e3a; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; backdrop-filter: blur(8px); }
+    .filter-chip:hover { border-color: rgba(201,168,76,0.5); color: #1a1208; background: rgba(201,168,76,0.08); }
+    .filter-chip.active { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.4); color: var(--dorado); }
 
     /* Grid de plantillas */
-    .plantillas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+    .plantillas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
 
     .plantilla-card {
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.1);
-      border-radius: 14px;
+      background: rgba(8,8,16,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
       overflow: hidden;
-      transition: all 0.2s;
+      transition: all 0.25s;
     }
-    .plantilla-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+    .plantilla-card:hover {
+      border-color: rgba(201,168,76,0.28);
+      background: rgba(8,8,16,0.85);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
 
     .p-header {
       padding: 16px 18px;
       display: flex; align-items: center; gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(201,168,76,0.03);
     }
-    .p-cat-icon { font-size: 20px; }
+    .p-cat-icon { font-size: 22px; }
     .p-cat-name { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; }
-    .p-name { font-size: 14px; font-weight: 600; }
+    .p-name { font-size: 13.5px; font-weight: 600; color: var(--blanco); }
     .p-status { margin-left: auto; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
-    .ps-aprobada  { background: rgba(76,175,130,0.1); color: var(--verde); }
-    .ps-pendiente { background: rgba(224,164,53,0.1); color: var(--amarillo); }
-    .ps-local     { background: rgba(76,143,202,0.1); color: var(--azul); }
+    .ps-aprobada  { background: rgba(201,168,76,0.15); color: var(--dorado); border: 1px solid rgba(201,168,76,0.28); }
+    .ps-pendiente { background: rgba(224,164,53,0.15); color: #f0be60; border: 1px solid rgba(224,164,53,0.2); }
+    .ps-local     { background: rgba(76,143,202,0.15); color: #7ab4e0; border: 1px solid rgba(76,143,202,0.2); }
 
     /* Burbuja de WhatsApp preview */
     .p-preview {
       padding: 14px 18px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.18);
     }
     .wa-bubble {
-      background: rgba(37,211,102,0.08);
-      border: 1px solid rgba(37,211,102,0.12);
-      border-radius: 12px 12px 12px 0;
-      padding: 10px 14px;
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.20);
+      border-radius: 0 12px 12px 12px;
+      padding: 11px 14px;
       font-size: 12.5px;
-      line-height: 1.6;
-      color: #d0d0d0;
+      line-height: 1.65;
+      color: #e8e8e8;
       max-width: 100%;
       position: relative;
     }
-    .wa-bubble .wa-time { font-size: 10px; color: #555; text-align: right; margin-top: 4px; }
-    .wa-vars { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-    .wa-var { font-size: 10px; background: rgba(201,168,76,0.1); color: var(--dorado); padding: 2px 8px; border-radius: 4px; }
+    .wa-bubble .wa-time { font-size: 10px; color: rgba(255,255,255,0.35); text-align: right; margin-top: 5px; }
+    .wa-vars { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .wa-var { font-size: 10px; background: rgba(201,168,76,0.12); color: var(--dorado); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(201,168,76,0.18); }
 
-    .p-footer { padding: 12px 18px; display: flex; gap: 8px; align-items: center; }
-    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
-    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
-    .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
+    .p-footer { padding: 12px 18px; display: flex; gap: 8px; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); }
+    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.03); color: var(--gris); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .btn-sm:hover { border-color: rgba(201,168,76,0.35); color: var(--dorado); background: rgba(201,168,76,0.06); }
+    .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); background: rgba(224,85,85,0.05); }
     .p-canales { margin-left: auto; display: flex; gap: 4px; }
     .canal-ico { font-size: 13px; }
 
     /* Modal */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-start; justify-content:center; padding-top:60px; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); z-index:200; align-items:flex-start; justify-content:center; padding-top:60px; }
     .modal-overlay.show { display:flex; }
-    .modal { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 32px; width: 680px; max-height: 85vh; overflow-y: auto; }
+    .modal { background: rgba(16,16,26,0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(201,168,76,0.2); border-radius: 18px; padding: 32px; width: 680px; max-height: 85vh; overflow-y: auto; }
     .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
     .modal-title span { color: var(--dorado); }
     .modal-sub { font-size: 12.5px; color: var(--gris); margin-bottom: 24px; }
@@ -118,7 +129,7 @@
     input::placeholder, textarea::placeholder { color: #333; }
     select option { background: #1a1a1a; }
 
-    .preview-box { background: rgba(37,211,102,0.04); border: 1px solid rgba(37,211,102,0.1); border-radius: 12px; padding: 16px; min-height: 120px; font-size: 13px; line-height: 1.6; color: #d0d0d0; }
+    .preview-box { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.15); border-radius: 12px; padding: 16px; min-height: 120px; font-size: 13px; line-height: 1.6; color: #d0d0d0; }
     .preview-label { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
 
     .vars-hint { font-size: 11px; color: var(--gris); margin-top: 6px; }
@@ -150,11 +161,11 @@
       <a href="dashboard.html"  class="nav-item"><span class="nav-icon">⊞</span> Inicio</a>
       <div class="nav-section">Comunicaciones</div>
       <a href="chat.html"       class="nav-item"><span class="nav-icon">💬</span> Inbox de chat <span class="nav-badge">0</span></a>
-      <a href="#"               class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
-      <a href="#"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
+      <a href="correo.html"               class="nav-item"><span class="nav-icon">✉️</span> Inbox de correo <span class="nav-badge alt">0</span></a>
+      <a href="chats-equipo.html"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
       <div class="nav-section">Pipelines</div>
-      <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> Leo Fernández</a>
-      <a href="#"               class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
       <div class="nav-section">Insights</div>
       <a href="insights.html"   class="nav-item"><span class="nav-icon">◈</span> Panel</a>
       <div class="nav-section">IA & Automatización</div>
@@ -176,7 +187,7 @@
     <div class="sidebar-footer">
       <div class="user-info">
         <div class="user-av">LF</div>
-        <div><div class="user-name">Dr. Leo Fernandez</div><div class="user-role">doctorleofernandez</div></div>
+        <div><div class="user-name">IPS Fernández O & M</div><div class="user-role">doctorleofernandez</div></div>
       </div>
     </div>
   </aside>
@@ -339,6 +350,61 @@
           <button class="btn-sm" onclick="editarPlantilla('Reactivación 6 meses')">✏ Editar</button>
           <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
           <div class="p-canales"><span class="canal-ico">📱</span></div>
+        </div>
+      </div>
+
+      <!-- Informativa — Horarios y servicios -->
+      <div class="plantilla-card" data-cat="informativa">
+        <div class="p-header">
+          <span class="p-cat-icon">ℹ️</span>
+          <div><div class="p-cat-name">Informativa</div><div class="p-name">Horarios y servicios disponibles</div></div>
+          <span class="p-status ps-aprobada">Aprobada WhatsApp</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b> 👋 Te compartimos nuestra información:<br/><br/>
+            🕐 <b>Horarios de atención:</b><br/>
+            Lunes a viernes: 7:00 am – 6:00 pm<br/>
+            Sábados: 8:00 am – 1:00 pm<br/><br/>
+            🦷 <b>Servicios:</b> Odontología general, ortodoncia, implantes, medicina general y más.<br/><br/>
+            📍 Estamos en {{direccion}}.<br/>
+            ¿En qué te podemos ayudar hoy?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{direccion}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Horarios y servicios')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Horarios y servicios')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Informativa — Preparación para cita -->
+      <div class="plantilla-card" data-cat="informativa">
+        <div class="p-header">
+          <span class="p-cat-icon">📋</span>
+          <div><div class="p-cat-name">Informativa</div><div class="p-name">Indicaciones previas a la cita</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            ¡Hola <b>{{nombre}}</b>! 😊 Para tu cita del <b>{{fecha}}</b> ten en cuenta:<br/><br/>
+            ✅ Llega 10 minutos antes<br/>
+            ✅ Trae tu documento de identidad<br/>
+            ✅ Si tienes exámenes previos, tráelos<br/>
+            ✅ En caso de cita odontológica, cepíllate antes de venir<br/><br/>
+            Cualquier duda, escríbenos. ¡Te esperamos! 🦷
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{fecha}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Indicaciones previas')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Indicaciones previas')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
         </div>
       </div>
 
