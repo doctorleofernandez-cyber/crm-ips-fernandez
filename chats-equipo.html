@@ -199,6 +199,31 @@
     }
     .btn-send:hover { opacity: 0.88; }
     .sidebar { background: #0e0e16 !important; }
+
+    /* ── RESPONSIVE: vista de chats de equipo en móvil ── */
+    @media (max-width: 760px) {
+      /* Las columnas se apilan una debajo de otra y la página hace scroll */
+      body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-top: 56px;
+      }
+      .canales-sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 45vh;
+        border-right: none;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+      }
+      .msg-list {
+        width: 100%;
+        height: auto;
+        min-height: 55vh;
+      }
+    }
   </style>
   <link rel="stylesheet" href="sidebar.css" />
 </head>
@@ -254,6 +279,7 @@
           <div class="user-role">doctorleofernandez</div>
         </div>
       </div>
+      <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
     </div>
   </aside>
 

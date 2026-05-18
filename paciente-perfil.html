@@ -500,6 +500,26 @@
     .ov-sub { color: #9c8c72; }
     .item-row { border: 1px solid rgba(0,0,0,0.07); }
     .sidebar { background: #0e0e16 !important; }
+
+    /* ── RESPONSIVE: ficha de paciente en móvil ── */
+    @media (max-width: 760px) {
+      body {
+        display: block;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      .main {
+        min-height: 100vh;
+      }
+      /* La columna lateral de la ficha pasa a ocupar todo el ancho */
+      .profile-layout {
+        display: block;
+      }
+      .contact-card,
+      .detail-area {
+        width: 100% !important;
+      }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>
@@ -557,6 +577,7 @@
           <div class="user-role">doctorleofernandez</div>
         </div>
       </div>
+      <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
     </div>
   </aside>
 

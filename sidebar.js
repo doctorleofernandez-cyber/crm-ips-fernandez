@@ -76,4 +76,57 @@
     if (!pinned) setMargin(false);
   });
 
+
+  /* ── MENÚ MÓVIL (OFF-CANVAS) ── */
+  // En pantallas pequeñas el menú está fuera de pantalla; un botón
+  // hamburguesa lo despliega encima del contenido, con una capa oscura detrás.
+
+  // Botón hamburguesa
+  var hamburger = document.createElement('button');
+  hamburger.className = 'mobile-menu-btn';
+  hamburger.setAttribute('aria-label', 'Abrir menú');
+  hamburger.innerHTML = '☰';
+
+  // Capa oscura (overlay)
+  var overlay = document.createElement('div');
+  overlay.className = 'sidebar-overlay';
+
+  document.body.appendChild(hamburger);
+  document.body.appendChild(overlay);
+
+  function openMobileMenu() {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('show');
+    hamburger.innerHTML = '✕';
+    hamburger.setAttribute('aria-label', 'Cerrar menú');
+  }
+
+  function closeMobileMenu() {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('show');
+    hamburger.innerHTML = '☰';
+    hamburger.setAttribute('aria-label', 'Abrir menú');
+  }
+
+  hamburger.addEventListener('click', function () {
+    if (sidebar.classList.contains('mobile-open')) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  });
+
+  // Tocar la capa oscura cierra el menú
+  overlay.addEventListener('click', closeMobileMenu);
+
+  // Al navegar (tocar un enlace del menú) se cierra solo
+  sidebar.querySelectorAll('.nav-item').forEach(function (item) {
+    item.addEventListener('click', closeMobileMenu);
+  });
+
+  // Si se agranda la ventana a escritorio, cerrar el menú móvil
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 760) closeMobileMenu();
+  });
+
 })();

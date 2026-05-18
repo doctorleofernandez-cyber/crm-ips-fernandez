@@ -510,6 +510,22 @@
       margin: 10px 0;
     }
     .sidebar { background: #0e0e16 !important; }
+
+    /* ── RESPONSIVE: panel de insights en móvil ── */
+    /* Mantiene el tema oceánico (video de fondo, azul-cian) y solo lo adapta */
+    @media (max-width: 760px) {
+      body { overflow-x: hidden; }
+      .main {
+        width: 100%;
+      }
+      /* Deja sitio arriba para el botón hamburguesa */
+      .content { padding: 64px 14px 24px; }
+      /* La rejilla de tarjetas pasa a una sola columna */
+      .cards-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto !important;
+      }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>
@@ -600,6 +616,7 @@
           <div class="user-role">doctorleofernandez</div>
         </div>
       </div>
+      <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
     </div>
   </aside>
 

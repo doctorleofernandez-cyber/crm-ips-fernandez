@@ -490,6 +490,21 @@
     }
     .config-card, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
     .sidebar { background: #0e0e16 !important; }
+
+    /* ── RESPONSIVE: ajustes en móvil ── */
+    @media (max-width: 760px) {
+      /* El panel de pestañas y el contenido se apilan */
+      .main { display: block; }
+      .settings-sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 14px;
+      }
+      .settings-content { padding: 20px 14px; }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 </head>
@@ -545,6 +560,7 @@
           <div class="user-role">doctorleofernandez</div>
         </div>
       </div>
+      <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
     </div>
   </aside>
 

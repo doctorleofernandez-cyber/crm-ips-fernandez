@@ -13,15 +13,29 @@ Se creó un **agente personalizado** que actúa como ingeniero frontend experto:
 - **Cómo usarlo:** pedir, por ejemplo, *"usa el revisor-frontend para revisar el CRM"*
 - Conoce el estilo visual oficial del proyecto y explica todo en español claro
 
-### 2. Carpeta de resúmenes organizada
+### 2. Dos agentes más creados
+Se crearon otros dos agentes personalizados, guardados también en `.claude/agents/`:
+- **`backend-supabase`** — ingeniero backend experto en Supabase: diseña la base de datos, conecta las páginas a datos reales y configura el login. *Aún no se ha usado.*
+- **`disenador-uxui`** — diseñador UX/UI: evalúa y mejora el aspecto y la usabilidad. *Aún no se ha usado.*
+
+### 3. Carpeta de resúmenes organizada
 Los resúmenes de cada sesión se movieron a una carpeta dedicada `resúmenes/` para no mezclarlos con el código. A partir de ahora, aquí van también los informes que entregan los agentes.
 
-### 3. Primera revisión completa del frontend
-Se ejecutó el agente sobre todo el CRM. **Resultado: 11 páginas corregidas, sin commit.**
+### 4. Primera revisión completa del frontend
+Se ejecutó el agente `revisor-frontend` sobre todo el CRM. **Resultado: 11 páginas corregidas** (ver informe — parte 1).
+
+### 5. Sesión guardada en el historial (commit)
+Toda la sesión se guardó en el commit **`753a784`** (17 archivos): las 11 correcciones del frontend, los 2 agentes nuevos y la carpeta de resúmenes. Es el punto de respaldo limpio antes de seguir.
+
+### 6. Pendientes del frontend resueltos
+Con el agente `revisor-frontend` se completaron 2 de los 3 pendientes (ver informe — parte 2):
+- ✅ Botón "Cerrar sesión" uniforme en las 17 páginas internas.
+- ✅ Adaptación a móvil (responsive) de las 18 páginas.
+- ↪️ Diseño de `insights.html`: el Dr. Leo decidió **mantenerlo como está** (diseño oceánico intencional).
 
 ---
 
-## 📋 Informe del agente — Revisión del frontend
+## 📋 Informe del agente — Revisión del frontend (parte 1)
 
 Se revisaron las 18 páginas `.html` y los 4 archivos compartidos (`sidebar.css`, `sidebar.js`, `tema.js`, `light-theme.css`).
 
@@ -49,38 +63,85 @@ Aparecían textos distintos según la página (incluso un rol mal puesto en `ins
 **6. Fondo de `correo.html` fuera de la guía**
 Usaba crema plano en vez del degradado oficial. Corregido a `linear-gradient(145deg, #fdf8f0, #f7f1e4, #faf5ea)`.
 
-### 🟡 Importante — pendiente (propuesta, requiere decisión del Dr. Leo)
+### 🟢 Importante — pendientes, ya resueltos (ver parte 2)
 
-**7. `insights.html` tiene un diseño visual completamente distinto**
-Usa fondo de video oceánico, base negra y paleta azul-cian en vez del crema/glass dark/dorado. Decisión pendiente: ¿alinearlo al resto del CRM o es intencional?
+**7. `insights.html` tiene un diseño visual completamente distinto** — *Decidido:* el Dr. Leo eligió **mantener** el diseño oceánico actual (es intencional).
 
-**8. Botón "Cerrar sesión" ausente en 13 de 17 páginas internas**
-Solo lo tienen `dashboard`, `citas`, `pacientes` y `ajustes`. Propuesta: añadirlo de forma uniforme en las 13 faltantes.
+**8. Botón "Cerrar sesión" ausente en 13 de 17 páginas internas** — *Resuelto:* se añadió de forma uniforme (ver parte 2).
 
-**9. Ninguna página es responsive (móvil)**
-Ninguna de las 18 páginas tiene `@media queries`; en un teléfono el contenido se desborda. Propuesta: una sesión dedicada para la adaptación móvil.
+**9. Ninguna página es responsive (móvil)** — *Resuelto:* las 18 páginas se adaptaron a móvil (ver parte 2).
 
 ### 🔵 Menor — observaciones (sin acción urgente)
 
 - **10.** `index.html` (login) no carga `tema.js` ni `light-theme.css` — aceptable, es una pantalla oscura a propósito.
 - **11.** "¿Olvidaste tu contraseña?" en el login tiene `href="#"` — marcador de posición hasta que haya backend.
 - **12.** Pequeñas variaciones en nombres de clases (`user-avatar`, `user-avatar-s`, `user-av`) — funciona, conviene unificar a futuro.
-- **13.** CSS repetido en cada `.html` — no es un error, pero es la causa raíz de las inconsistencias; conviene mover los estilos comunes a un CSS compartido.
+- **13.** CSS repetido en cada `.html` — no es un error, pero es la causa raíz de las inconsistencias; conviene mover los estilos comunes a un CSS compartido. *(Parcialmente atendido en la parte 2: el estilo del botón "Cerrar sesión" y todo el sistema responsive se centralizaron en `sidebar.css`.)*
 
-### Resumen del agente
-
-**Archivos modificados (11, sin commit):** `chat.html`, `chats-equipo.html`, `citas.html`, `correo.html`, `dashboard.html`, `facturacion.html`, `insights.html`, `paciente-perfil.html`, `pacientes.html`, `pipeline.html`, `tratamientos.html`.
+**Archivos modificados en la parte 1 (11):** `chat.html`, `chats-equipo.html`, `citas.html`, `correo.html`, `dashboard.html`, `facturacion.html`, `insights.html`, `paciente-perfil.html`, `pacientes.html`, `pipeline.html`, `tratamientos.html`.
 
 **Recomendación principal:** la causa raíz de la mayoría de inconsistencias es que cada página repite su propio CSS y su propio menú. Lo más rentable a futuro sería mover el menú lateral y los estilos comunes a archivos compartidos.
 
 ---
 
+## 📋 Informe del agente — Cerrar sesión y responsive (parte 2)
+
+Se completaron las dos tareas aprobadas por el Dr. Leo. El enfoque fue **centralizar** lo común en los archivos compartidos (`sidebar.css` y `sidebar.js`) para que el cambio sea mínimo, consistente y fácil de mantener.
+
+### TAREA A — Botón "Cerrar sesión" uniforme
+
+**Qué se encontró:** antes solo 4 páginas tenían el botón, implementado de forma distinta entre sí (estilos "a mano" en `dashboard`, valores diferentes en `citas`/`pacientes`, y en `ajustes` solo dentro de la "zona de peligro", no en el menú).
+
+**Patrón unificado elegido:** un botón `Cerrar sesión` en el pie del menú lateral (`sidebar-footer`), debajo de los datos del usuario, que al hacer clic lleva a `index.html` (login) — igual que en las páginas que ya lo tenían. El estilo se centralizó en `sidebar.css` (clase `.logout-btn`). Con el menú colapsado se muestra como una flecha `→`.
+
+**Qué se hizo:**
+- Botón añadido a las **13 páginas** que no lo tenían: `paciente-perfil`, `tratamientos`, `facturacion`, `pipeline`, `chat`, `chats-equipo`, `correo`, `insights`, `agente-ia`, `bots`, `plantillas`, `difusiones`, `reportes`.
+- Añadido **también a `ajustes.html`** en el pie del menú (antes solo en la "zona de peligro", que se dejó intacta).
+- En `dashboard`, `citas` y `pacientes` se quitó el CSS local del botón, ya redundante.
+- `index.html` (login) **no** lleva botón.
+- **Resultado:** las 17 páginas internas tienen el botón idéntico, en la misma posición.
+
+### TAREA B — Adaptación a móvil (responsive)
+
+**Puntos de quiebre elegidos:**
+- **Tablet — hasta 1024 px:** el contenido pasa a ocupar todo el ancho.
+- **Móvil — hasta 760 px:** menú oculto con botón hamburguesa; todo a una sola columna.
+
+**Comportamiento del menú en móvil (off-canvas con hamburguesa):**
+- El menú lateral queda fuera de pantalla por defecto.
+- Aparece un botón hamburguesa (☰) fijo arriba a la izquierda, negro con borde dorado.
+- Al tocarlo, el menú se desliza por encima del contenido, con una capa oscura detrás.
+- Se cierra al tocar la capa oscura, una opción del menú, o de nuevo la hamburguesa.
+- En escritorio **nada cambia**; la lógica se añadió a `sidebar.js` sin romper lo existente.
+
+**Reorganización del contenido en móvil** (reglas en `sidebar.css`): rejillas de tarjetas y columnas múltiples pasan a una sola columna; las tablas se desplazan dentro de su panel; se evita el desplazamiento horizontal de la página.
+
+**Páginas con diseño especial (ajustes `@media` propios):** `chat`, `correo`, `chats-equipo` (apilan lista + conversación), `pipeline` (kanban conserva su scroll horizontal), `paciente-perfil` (ficha a ancho completo), `ajustes` (pestañas reorganizadas), `insights` (mantiene su diseño oceánico, solo se hizo usable en móvil).
+
+### Archivos modificados en la parte 2 (19)
+
+- **Compartidos (2):** `sidebar.css` (estilo del botón + sistema responsive completo), `sidebar.js` (lógica del menú móvil).
+- **Botón "Cerrar sesión" añadido (14):** `paciente-perfil`, `tratamientos`, `facturacion`, `pipeline`, `chat`, `chats-equipo`, `correo`, `insights`, `agente-ia`, `bots`, `plantillas`, `difusiones`, `reportes`, `ajustes`.
+- **Limpieza de CSS redundante (3):** `dashboard`, `citas`, `pacientes`.
+- **Reglas `@media` propias (7):** `chat`, `correo`, `chats-equipo`, `pipeline`, `paciente-perfil`, `insights`, `ajustes`.
+
+### Cómo probar que funciona
+1. **Cerrar sesión:** abrir cualquier página interna → al pie del menú aparece "→ Cerrar sesión" → al hacer clic lleva al login.
+2. **Móvil:** reducir mucho el ancho de la ventana (o F12 → icono de teléfono). Debe aparecer el botón ☰, el menú entra deslizándose, el contenido ocupa todo el ancho sin barra horizontal, y las tarjetas se ven una debajo de otra.
+3. **Escritorio:** comprobar que en pantalla grande nada cambió.
+
+### Notas del agente
+- **Verificación visual real pendiente:** el entorno no tiene navegador de pruebas; conviene que el Dr. Leo abra las páginas en un teléfono real o en el modo móvil del navegador. La estructura HTML/CSS/JS quedó verificada.
+- **Hallazgo nuevo (fuera de alcance):** en `pipeline.html` la segunda columna del kanban usa un color **verde** (`#4CAF82`), lo que contradice la guía visual ("sin verde"). No se cambió por estar fuera de las tareas; queda anotado.
+
+---
+
 ## 📋 Pendiente para la próxima sesión
 
-1. Decidir sobre el diseño de `insights.html` (hallazgo 7)
-2. Decidir si se añade "Cerrar sesión" a las 13 páginas faltantes (hallazgo 8)
-3. Planear la adaptación móvil / responsive (hallazgo 9)
-4. Considerar mover el menú y CSS comunes a archivos compartidos (recomendación del agente)
+1. **Revisar en un teléfono real** las páginas adaptadas a móvil (verificación visual).
+2. **Corregir el color verde** de la segunda columna del kanban en `pipeline.html` (hallazgo nuevo del agente).
+3. **Estrenar los agentes nuevos:** `backend-supabase` (conectar el CRM a una base de datos real) o `disenador-uxui` (mejorar diseño y experiencia).
+4. A futuro: unificar nombres de clases (hallazgo 12) y seguir moviendo CSS común a archivos compartidos (hallazgo 13).
 
 ---
 
@@ -88,9 +149,11 @@ Ninguna de las 18 páginas tiene `@media queries`; en un teléfono el contenido 
 
 | Archivo | Descripción |
 |---|---|
-| `.claude/agents/revisor-frontend.md` | Agente ingeniero frontend — NUEVO |
-| `resúmenes/` | Carpeta con los resúmenes de cada sesión — NUEVO |
-| `sidebar.css` / `sidebar.js` | Sidebar colapsable compartido |
+| `.claude/agents/revisor-frontend.md` | Agente ingeniero frontend |
+| `.claude/agents/backend-supabase.md` | Agente ingeniero backend Supabase — sin usar aún |
+| `.claude/agents/disenador-uxui.md` | Agente diseñador UX/UI — sin usar aún |
+| `resúmenes/` | Carpeta con los resúmenes de cada sesión |
+| `sidebar.css` / `sidebar.js` | Sidebar colapsable + botón "Cerrar sesión" + sistema responsive |
 | `tema.js` / `light-theme.css` | Sistema de tema claro / oscuro |
 | `dashboard.html` | Panel principal |
-| `insights.html` | Panel de estadísticas (diseño oceánico, pendiente de revisión) |
+| `insights.html` | Panel de estadísticas (diseño oceánico, decisión: se mantiene) |

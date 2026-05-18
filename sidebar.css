@@ -111,3 +111,188 @@
   color: #C9A84C;
   border-color: rgba(201,168,76,0.4);
 }
+
+/* ── BOTÓN "CERRAR SESIÓN" (pie del menú lateral) ── */
+/* Estilo unificado para todas las páginas del CRM */
+.logout-btn {
+  display: block;
+  margin-top: 12px;
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #6b5c3e;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.logout-btn:hover { color: #C9A84C; }
+
+/* Cuando el menú está colapsado, el botón se muestra centrado y compacto */
+.sidebar.collapsed .logout-btn {
+  text-align: center;
+  font-size: 0;
+  padding: 4px 0;
+}
+.sidebar.collapsed .logout-btn::before {
+  content: "→";
+  font-size: 14px;
+}
+.sidebar.collapsed:hover .logout-btn {
+  text-align: left;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+.sidebar.collapsed:hover .logout-btn::before { content: ""; font-size: 0; }
+
+/* ════════════════════════════════════════════════════ */
+/* ── RESPONSIVE: MENÚ MÓVIL (OFF-CANVAS) ───────────── */
+/* ════════════════════════════════════════════════════ */
+
+/* Botón hamburguesa — oculto en escritorio, visible en móvil */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 320;
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
+  border: 1px solid rgba(201,168,76,0.35);
+  background: #0e0e16;
+  color: #C9A84C;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+}
+
+/* Capa oscura detrás del menú abierto en móvil */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 290;
+}
+.sidebar-overlay.show { display: block; }
+
+/* ── TABLET: hasta 1024px ── */
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 0 !important;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+/* ── MÓVIL: hasta 760px ── */
+@media (max-width: 760px) {
+  /* El menú lateral sale de pantalla por defecto */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 240px !important;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 300;
+  }
+  /* Al añadir la clase .mobile-open, el menú entra deslizándose */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  /* En móvil el menú siempre se muestra expandido (con texto) */
+  .sidebar.collapsed.mobile-open,
+  .sidebar.mobile-open {
+    width: 240px !important;
+  }
+  .sidebar.collapsed.mobile-open .nav-section,
+  .sidebar.mobile-open .nav-section { opacity: 1; height: auto; padding: 8px 10px 3px; overflow: visible; }
+  .sidebar.collapsed.mobile-open .nav-item,
+  .sidebar.mobile-open .nav-item { font-size: 12.5px; justify-content: flex-start; padding: 9px 10px; }
+  .sidebar.collapsed.mobile-open .nav-icon,
+  .sidebar.mobile-open .nav-icon { font-size: 14px; }
+  .sidebar.collapsed.mobile-open .logo-text,
+  .sidebar.collapsed.mobile-open .logo-sub,
+  .sidebar.collapsed.mobile-open .sidebar-logo > div,
+  .sidebar.mobile-open .logo-text,
+  .sidebar.mobile-open .logo-sub { display: block; }
+  .sidebar.collapsed.mobile-open .sidebar-logo { justify-content: flex-start; padding: 22px 18px; }
+  .sidebar.collapsed.mobile-open .user-name,
+  .sidebar.collapsed.mobile-open .user-role { display: block; }
+  .sidebar.collapsed.mobile-open .logout-btn {
+    text-align: left;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .sidebar.collapsed.mobile-open .logout-btn::before { content: ""; font-size: 0; }
+  .sidebar.collapsed.mobile-open .nav-badge { display: flex; }
+
+  /* El botón de anclar no tiene sentido en móvil */
+  .sidebar-collapse-btn { display: none; }
+
+  /* El contenido ocupa todo el ancho */
+  .main {
+    margin-left: 0 !important;
+    padding: 70px 14px 28px;
+  }
+
+  /* Mostrar la hamburguesa */
+  .mobile-menu-btn { display: flex; }
+
+  /* ── Rejillas y columnas múltiples → una sola columna ── */
+  .stats-grid,
+  .panels,
+  .kpi-grid,
+  .kpi-row,
+  .estado-grid,
+  .cards-grid,
+  .overview-grid,
+  .tema-grid,
+  .bots-grid,
+  .plantillas-grid,
+  .templates-grid,
+  .two-col,
+  .form-grid,
+  .form-grid.cols3,
+  .form-row,
+  .form-row.three,
+  .charts-row,
+  .charts-row.cols-2,
+  .charts-row.cols-2b,
+  .charts-row.cols-3,
+  .profile-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+  }
+
+  /* La ficha de paciente deja de ser un panel lateral fijo */
+  .profile-layout { display: block !important; }
+
+  /* ── Tablas: permitir desplazamiento horizontal solo dentro del panel ── */
+  /* Así la página no se desborda; la tabla ancha se ve con scroll propio */
+  .table-wrap,
+  .tabla-wrap,
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table { min-width: 520px; }
+
+  /* ── Barras superiores: que envuelvan en vez de desbordar ── */
+  .topbar,
+  .topbar-right {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Evitar cualquier desplazamiento horizontal de la página */
+  html, body { max-width: 100%; overflow-x: hidden; }
+}
