@@ -45,6 +45,8 @@
       display: flex; align-items: center; gap: 12px;
     }
     .sidebar-logo img { width: 48px; height: auto; filter: drop-shadow(0 0 8px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
     .logo-sub { font-size: 10px; color: #555; letter-spacing: 1.5px; text-transform: uppercase; }
     .nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; }
     .nav-section { font-size: 10px; color: #383838; letter-spacing: 2px; text-transform: uppercase; padding: 12px 10px 4px; margin-top: 6px; }
@@ -205,7 +207,10 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <img src="assets/logo.png" alt="IPS Fernández" />
-    <div class="logo-sub">Sistema CRM</div>
+    <div>
+      <div class="logo-text">IPS Fernández <span>O&M</span></div>
+      <div class="logo-sub">Sistema CRM</div>
+    </div>
   </div>
   <nav class="nav">
     <div class="nav-section">Principal</div>
@@ -232,7 +237,9 @@
     <div class="nav-section">Gestión</div>
     <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
     <a href="citas.html"     class="nav-item active"><span class="nav-icon">📅</span> Calendario</a>
+    <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
     <a href="facturacion.html" class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
+    <a href="reportes.html" class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
 
       <div class="nav-divider"></div>
       <a href="ajustes.html"              class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
@@ -242,8 +249,8 @@
     <div class="user-info">
       <div class="user-avatar">LF</div>
       <div>
-        <div class="user-name">Dr. Fernández</div>
-        <div class="user-role">Administrador</div>
+        <div class="user-name">IPS Fernández O & M</div>
+        <div class="user-role">doctorleofernandez</div>
       </div>
     </div>
     <button class="logout-btn" onclick="window.location.href='index.html'">→ Cerrar sesión</button>
