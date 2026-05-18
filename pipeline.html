@@ -81,7 +81,7 @@
 
     .nav-section {
       font-size: 9px;
-      color: #444;
+      color: #8c8472;
       letter-spacing: 2px;
       text-transform: uppercase;
       padding: 10px 10px 4px;
@@ -257,10 +257,12 @@
       flex-shrink: 0;
     }
 
-    .column:nth-child(1) .column-header { border-color: rgba(201,168,76,0.5); }
-    .column:nth-child(2) .column-header { border-color: #4CAF82; }
-    .column:nth-child(3) .column-header { border-color: #4C8FCA; }
-    .column:nth-child(4) .column-header { border-color: #9B59B6; }
+    /* Franja superior de cada columna — progresión dorada (sin verde):
+       el avance del lead se nota por la intensidad del dorado */
+    .column:nth-child(1) .column-header { border-color: rgba(201,168,76,0.30); }
+    .column:nth-child(2) .column-header { border-color: rgba(201,168,76,0.55); }
+    .column:nth-child(3) .column-header { border-color: rgba(201,168,76,0.80); }
+    .column:nth-child(4) .column-header { border-color: #C9A84C; }
 
     .col-title {
       font-size: 11px;
@@ -344,6 +346,7 @@
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
+<link rel="stylesheet" href="crm.css" />
 </head>
 <body>
 

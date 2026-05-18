@@ -19,7 +19,7 @@
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
       --gris: #888888;
-      --verde: #4CAF82;
+      --verde: #a8893f;
       --rojo: #e05555;
       --azul: #4C8FCA;
       --morado: #9B59B6;
@@ -39,7 +39,7 @@
     .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
     .nav::-webkit-scrollbar { width: 3px; }
     .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
-    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
     .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
     .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
     .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
@@ -77,25 +77,22 @@
     .kpi-card { background: rgba(14,14,22,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,168,76,0.14); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; transition: border-color 0.2s; }
     .kpi-card:hover { border-color: rgba(201,168,76,0.25); }
     .kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; }
-    .kpi-card.k1::after { background: var(--dorado); }
-    .kpi-card.k2::after { background: var(--verde); }
-    .kpi-card.k3::after { background: var(--azul); }
-    .kpi-card.k4::after { background: var(--morado); }
+    .kpi-card.k1::after,
+    .kpi-card.k2::after,
+    .kpi-card.k3::after,
+    .kpi-card.k4::after { background: var(--dorado); }
 
     .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
     .kpi-icon { font-size: 22px; }
     .kpi-trend { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
-    .kpi-trend.up   { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .kpi-trend.up   { background: rgba(168,137,63,0.12); color: var(--verde); }
     .kpi-trend.down { background: rgba(224,85,85,0.12); color: var(--rojo); }
-    .kpi-trend.neu  { background: rgba(255,255,255,0.06); color: #555; }
+    .kpi-trend.neu  { background: rgba(255,255,255,0.06); color: #9a9180; }
 
     .kpi-value { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-    .kpi-card.k1 .kpi-value { color: var(--dorado); }
-    .kpi-card.k2 .kpi-value { color: var(--verde); }
-    .kpi-card.k3 .kpi-value { color: var(--azul); }
-    .kpi-card.k4 .kpi-value { color: var(--morado); }
+    .kpi-card .kpi-value { color: var(--dorado); }
 
-    .kpi-label { font-size: 11px; color: #555; }
+    .kpi-label { font-size: 11px; color: #9a9180; }
 
     /* ── GRÁFICAS ── */
     .charts-row { display: grid; gap: 14px; margin-bottom: 14px; }
@@ -107,7 +104,7 @@
 
     .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .chart-title { font-size: 13px; font-weight: 600; color: var(--blanco); }
-    .chart-sub { font-size: 11px; color: #444; margin-top: 2px; }
+    .chart-sub { font-size: 11px; color: #8c8472; margin-top: 2px; }
     .chart-badge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: rgba(201,168,76,0.1); color: var(--dorado); }
 
     .chart-wrap { position: relative; }
@@ -115,7 +112,7 @@
     /* ── TABLA TOP TRATAMIENTOS ── */
     .top-list { display: flex; flex-direction: column; gap: 10px; }
     .top-item { display: flex; align-items: center; gap: 12px; }
-    .top-rank { font-size: 11px; font-weight: 700; color: #444; width: 18px; text-align: center; flex-shrink: 0; }
+    .top-rank { font-size: 11px; font-weight: 700; color: #8c8472; width: 18px; text-align: center; flex-shrink: 0; }
     .top-emoji { font-size: 18px; flex-shrink: 0; }
     .top-body { flex: 1; min-width: 0; }
     .top-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -125,12 +122,12 @@
 
     /* ── TABLA DE CITAS RECIENTES ── */
     .recent-table { width: 100%; border-collapse: collapse; }
-    .recent-table thead th { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #555; padding: 0 0 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .recent-table thead th { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #9a9180; padding: 0 0 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .recent-table tbody td { padding: 11px 0; font-size: 12px; color: #aaa; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
     .recent-table tbody tr:last-child td { border-bottom: none; }
     .rt-name { font-size: 13px; font-weight: 500; color: var(--blanco); }
     .rt-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
-    .rt-badge.completada { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .rt-badge.completada { background: rgba(168,137,63,0.12); color: var(--verde); }
     .rt-badge.pendiente  { background: rgba(224,164,53,0.12); color: var(--amarillo); }
     .rt-badge.confirmada { background: rgba(76,143,202,0.12); color: var(--azul); }
     .rt-badge.cancelada  { background: rgba(224,85,85,0.12); color: var(--rojo); }
@@ -138,7 +135,7 @@
     /* Donut centro */
     .donut-center { text-align: center; margin-top: 12px; }
     .donut-total { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--dorado); }
-    .donut-lbl { font-size: 11px; color: #555; }
+    .donut-lbl { font-size: 11px; color: #9a9180; }
 
     /* Leyenda custom */
     .legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
@@ -148,6 +145,7 @@
     .sidebar { background: #0e0e16 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
+<link rel="stylesheet" href="crm.css" />
 </head>
 <body>
 
@@ -389,8 +387,8 @@
     const C = {
       dorado:  '#C9A84C',
       doradoT: 'rgba(201,168,76,0.15)',
-      verde:   '#4CAF82',
-      verdeT:  'rgba(76,175,130,0.15)',
+      verde:   '#a8893f',
+      verdeT:  'rgba(168,137,63,0.15)',
       azul:    '#4C8FCA',
       azulT:   'rgba(76,143,202,0.15)',
       morado:  '#9B59B6',
@@ -566,7 +564,7 @@
         labels: ['WhatsApp','Instagram','Referido','TikTok'],
         datasets: [{
           data: datosCanales,
-          backgroundColor: ['#25D366', '#C13584', C.dorado, '#fff'],
+          backgroundColor: ['#a8893f', '#C13584', C.dorado, '#fff'],
           borderColor: '#1a1a1a',
           borderWidth: 3,
           hoverOffset: 4,
@@ -580,7 +578,7 @@
     });
 
     document.getElementById('legendCanales').innerHTML = [
-      { color:'#25D366', label:'WhatsApp', val: datosCanales[0] + '%' },
+      { color:'#a8893f', label:'WhatsApp', val: datosCanales[0] + '%' },
       { color:'#C13584', label:'Instagram', val: datosCanales[1] + '%' },
       { color: C.dorado, label:'Referido',  val: datosCanales[2] + '%' },
       { color:'#fff',    label:'TikTok',    val: datosCanales[3] + '%' },

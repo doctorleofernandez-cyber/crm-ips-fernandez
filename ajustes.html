@@ -19,7 +19,7 @@
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
       --gris: #888888;
-      --verde: #4CAF82;
+      --verde: #a8893f;
       --rojo: #e05555;
       --azul: #4C8FCA;
       --amarillo: #e0a435;
@@ -37,7 +37,7 @@
     .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
     .nav::-webkit-scrollbar { width: 3px; }
     .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
-    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
     .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
     .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
     .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
@@ -74,7 +74,7 @@
 
     .settings-title span { color: var(--dorado); }
 
-    .s-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 6px; }
+    .s-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 6px; }
 
     .s-tab {
       display: flex; align-items: center; gap: 10px;
@@ -148,7 +148,7 @@
     }
 
     input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
-    input::placeholder, textarea::placeholder { color: #333; }
+    input::placeholder, textarea::placeholder { color: #7c7565; }
     select option { background: #1a1a1a; }
 
     /* Botón guardar */
@@ -172,7 +172,7 @@
     }
 
     .horario-day { font-size: 13px; font-weight: 500; }
-    .horario-header { font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .horario-header { font-size: 10px; color: #8c8472; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
 
     .toggle-wrap { display: flex; align-items: center; gap: 8px; }
 
@@ -224,7 +224,7 @@
 
     .u-info { flex: 1; }
     .u-name { font-size: 13px; font-weight: 600; }
-    .u-email { font-size: 11px; color: #555; }
+    .u-email { font-size: 11px; color: #9a9180; }
 
     .u-role-badge {
       font-size: 10px; font-weight: 600;
@@ -233,7 +233,7 @@
 
     .u-role-badge.admin   { background: rgba(201,168,76,0.12); color: var(--dorado); }
     .u-role-badge.doctor  { background: rgba(76,143,202,0.12); color: var(--azul); }
-    .u-role-badge.asistente { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .u-role-badge.asistente { background: rgba(168,137,63,0.12); color: var(--verde); }
     .u-role-badge.recep   { background: rgba(155,89,182,0.12); color: #9B59B6; }
 
     .u-actions { display: flex; gap: 6px; }
@@ -278,7 +278,7 @@
       font-size: 20px; flex-shrink: 0;
     }
 
-    .int-icon.wa   { background: rgba(37,211,102,0.12); }
+    .int-icon.wa   { background: rgba(168,137,63,0.12); }
     .int-icon.ig   { background: rgba(193,53,132,0.12); }
     .int-icon.tk   { background: rgba(255,255,255,0.06); }
     .int-icon.mail { background: rgba(76,143,202,0.12); }
@@ -286,7 +286,7 @@
 
     .int-info { flex: 1; }
     .int-name  { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-    .int-desc  { font-size: 11px; color: #555; }
+    .int-desc  { font-size: 11px; color: #9a9180; }
 
     .int-status {
       font-size: 11px; font-weight: 600;
@@ -294,8 +294,8 @@
       display: flex; align-items: center; gap: 5px;
     }
 
-    .int-status.conectado    { background: rgba(76,175,130,0.12); color: var(--verde); }
-    .int-status.desconectado { background: rgba(255,255,255,0.06); color: #555; }
+    .int-status.conectado    { background: rgba(168,137,63,0.12); color: var(--verde); }
+    .int-status.desconectado { background: rgba(255,255,255,0.06); color: #9a9180; }
     .int-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
     .btn-conectar {
@@ -321,7 +321,7 @@
     .notif-row:last-child { border-bottom: none; }
     .notif-info { flex: 1; }
     .notif-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-    .notif-desc { font-size: 11px; color: #555; }
+    .notif-desc { font-size: 11px; color: #9a9180; }
 
     /* ── SEGURIDAD ── */
     .danger-zone {
@@ -388,7 +388,7 @@
     }
 
     .logo-upload-btn:hover { background: rgba(201,168,76,0.08); }
-    .logo-hint { font-size: 11px; color: #444; margin-top: 4px; }
+    .logo-hint { font-size: 11px; color: #8c8472; margin-top: 4px; }
 
     /* ── APARIENCIA ── */
     .tema-grid {
@@ -507,6 +507,7 @@
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
+<link rel="stylesheet" href="crm.css" />
 </head>
 <body>
 
@@ -779,7 +780,7 @@
               </div>
             </div>
             <div class="user-row">
-              <div class="u-avatar" style="background:rgba(76,175,130,0.1);border-color:rgba(76,175,130,0.2);color:var(--verde)">AS</div>
+              <div class="u-avatar" style="background:rgba(168,137,63,0.1);border-color:rgba(168,137,63,0.2);color:var(--verde)">AS</div>
               <div class="u-info">
                 <div class="u-name">Asistente Clínica</div>
                 <div class="u-email">asistente@ipsfernandez.com</div>
@@ -820,7 +821,7 @@
               <div style="font-size:12px;font-weight:600;color:var(--azul)">Doctor</div>
               <div style="font-size:10px;color:#555;margin-top:4px">Historia, citas, pacientes</div>
             </div>
-            <div style="background:rgba(76,175,130,0.06);border:1px solid rgba(76,175,130,0.15);border-radius:8px;padding:14px;text-align:center">
+            <div style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
               <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
               <div style="font-size:10px;color:#555;margin-top:4px">Citas y pacientes</div>
@@ -997,7 +998,7 @@
           </div>
 
           <div class="integration-row" style="border-bottom:none">
-            <div class="int-icon" style="background:rgba(76,175,130,0.08);font-size:18px">🤖</div>
+            <div class="int-icon" style="background:rgba(168,137,63,0.08);font-size:18px">🤖</div>
             <div class="int-info">
               <div class="int-name">Bot de respuestas (IA)</div>
               <div class="int-desc">Responde automáticamente mensajes frecuentes por WhatsApp e Instagram.</div>
@@ -1152,7 +1153,7 @@
               <div style="font-size:13px;font-weight:500">Este dispositivo</div>
               <div style="font-size:11px;color:#555">Mac · Chrome · Medellín, Colombia</div>
             </div>
-            <span style="font-size:10px;font-weight:600;background:rgba(76,175,130,0.12);color:var(--verde);padding:3px 10px;border-radius:10px">Activa ahora</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(168,137,63,0.12);color:var(--verde);padding:3px 10px;border-radius:10px">Activa ahora</span>
           </div>
           <button class="btn-save" style="background:transparent;border:1px solid rgba(224,85,85,0.3);color:var(--rojo);margin-top:14px" onclick="guardar('sesiones')">
             Cerrar todas las otras sesiones

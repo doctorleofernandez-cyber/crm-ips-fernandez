@@ -42,6 +42,11 @@ Tras analizar qué le faltaba al proyecto, se crearon cuatro agentes nuevos en `
 
 **Total: 7 agentes.** Los 3 anteriores cubren código, diseño y datos; estos 4 cubren funcionamiento, legalidad, textos y capacitación.
 
+### 8. Diseño visual unificado (agente disenador-uxui)
+Se ejecutó el agente `disenador-uxui` para homogeneizar el CRM y hacerlo agradable a la vista (ver informe — parte 3). Se creó el archivo compartido **`crm.css`** que unifica el estilo de las 17 páginas internas. `insights.html` se rehízo al estilo oficial y se quitó el verde del kanban.
+
+**Cambio de decisión:** lo dicho en la sección 6 sobre `insights.html` quedó sin efecto. El Dr. Leo decidió **alinearla al resto del CRM** para lograr homogeneidad total.
+
 ---
 
 ## 📋 Informe del agente — Revisión del frontend (parte 1)
@@ -145,16 +150,48 @@ Se completaron las dos tareas aprobadas por el Dr. Leo. El enfoque fue **central
 
 ---
 
+## 📋 Informe del agente — Diseño visual unificado (parte 3)
+
+El agente `disenador-uxui` homogeneizó todo el CRM para que se vea bonito, parejo y descanse la vista.
+
+### Diagnóstico
+El problema era **estructural**, no de gusto: cada página repetía su propio CSS con valores distintos. Convivían **3 estilos de panel** diferentes, sidebars de anchos distintos (220px vs 240px), títulos en 4 tamaños, **76 textos en gris oscuro casi ilegibles**, y verde en 11 páginas (contra la guía de marca). `insights.html` tenía además un error de código (un `<script>` sin cerrar).
+
+### Solución — archivo `crm.css`
+Se creó el archivo compartido **`crm.css`**, la "guía de estilo viva" del CRM. Se carga en las 17 páginas internas y unifica de golpe: paneles y tarjetas (mismo glass dark, radio, sombra), botones (primario dorado / secundario), tipografía (Playfair Display 25px en títulos, Inter en texto), tablas, formularios y modales. Protege el tema claro: si se activa, devuelve el control a `light-theme.css`.
+
+### Cambios principales
+- **`insights.html`** — reescrita por completo: del diseño oceánico azul con video al estilo oficial crema + glass dark + dorado. Conserva su contenido (filtros, 9 tarjetas, gráfico). Corregido el error del `<script>`.
+- **`pipeline.html`** — quitada la columna verde del kanban; las 4 columnas usan ahora una progresión de dorado.
+- **Verde eliminado** de las 11 páginas donde aparecía (reemplazado por dorado-oliva sobrio donde marcaba un estado).
+- **76 textos** grises oscuros aclarados para que se lean cómodos (confort visual).
+- Sidebars unificados a 220px y rellenos a 36px en `citas`, `dashboard`, `pacientes`.
+- Tarjetas de resumen de `reportes` y `tratamientos` unificadas a acento dorado.
+- `paciente-perfil.html` — la ficha pasó de mitad clara/mitad oscura a un único panel coherente.
+
+### Decisión del Dr. Leo
+**Gráficas de `reportes.html`:** se mantienen **multicolor** (cada porción un color), porque en una gráfica el color es información, no decoración. La regla "todo en dorado" aplica a botones y bordes, no a la codificación de datos.
+
+### Archivos
+- **Nuevo:** `crm.css`
+- **Modificados (17):** `insights` (reescrita), `pipeline`, `dashboard`, `pacientes`, `citas`, `tratamientos`, `reportes`, `facturacion`, `agente-ia`, `ajustes`, `bots`, `difusiones`, `plantillas`, `correo`, `chat`, `chats-equipo`, `paciente-perfil`.
+- **Sin tocar:** `sidebar.css`, `sidebar.js`, `tema.js`, `light-theme.css` (el responsive queda intacto) e `index.html` (login).
+
+### Notas del agente
+- El responsive (menú móvil y @media) se verificó intacto a 1440px y 760px.
+- Recomendación a futuro: mover progresivamente el CSS viejo repetido de cada página a `crm.css` para aligerar los archivos (hoy `crm.css` ya unifica lo visible; el CSS viejo queda dentro de cada página sin estorbar).
+
+---
+
 ## 📋 Pendiente para la próxima sesión
 
-1. **Revisar en un teléfono real** las páginas adaptadas a móvil (verificación visual).
-2. **Corregir el color verde** de la segunda columna del kanban en `pipeline.html` (hallazgo nuevo del agente).
-3. **Estrenar los agentes nuevos.** Hay 6 sin usar; orden sugerido:
+1. **Revisar el CRM** en computador y en un teléfono real (verificación visual del diseño nuevo y del modo móvil).
+2. **Estrenar los agentes nuevos.** Quedan 5 sin usar; orden sugerido:
    - `calidad-qa` — probar que todo funciona (recomendado para empezar).
    - `backend-supabase` — conectar el CRM a una base de datos real.
    - `cumplimiento-datos` — clave en cuanto se guarden datos reales.
-   - `redaccion-contenido`, `disenador-uxui`, `documentacion-manual` — pulido, diseño y manual.
-4. A futuro: unificar nombres de clases (hallazgo 12) y seguir moviendo CSS común a archivos compartidos (hallazgo 13).
+   - `redaccion-contenido` y `documentacion-manual` — textos y manual de uso.
+3. A futuro: unificar nombres de clases (hallazgo 12) y mover el CSS viejo repetido a `crm.css` (hallazgo 13 + recomendación de la parte 3).
 
 ---
 
@@ -164,14 +201,15 @@ Se completaron las dos tareas aprobadas por el Dr. Leo. El enfoque fue **central
 |---|---|
 | `.claude/agents/` | Carpeta con los 7 agentes del proyecto (ver abajo) |
 | · `revisor-frontend.md` | Ingeniero frontend — revisa el código |
-| · `disenador-uxui.md` | Diseñador UX/UI — revisa el diseño *(sin usar)* |
+| · `disenador-uxui.md` | Diseñador UX/UI — revisa el diseño *(ya usado)* |
 | · `backend-supabase.md` | Ingeniero backend Supabase — base de datos *(sin usar)* |
 | · `calidad-qa.md` | Calidad y pruebas (QA) *(sin usar)* |
 | · `cumplimiento-datos.md` | Cumplimiento legal y protección de datos *(sin usar)* |
 | · `redaccion-contenido.md` | Redacción y contenido *(sin usar)* |
 | · `documentacion-manual.md` | Documentación y manual de uso *(sin usar)* |
 | `resúmenes/` | Carpeta con los resúmenes de cada sesión |
+| `crm.css` | Guía de estilo viva — unifica el diseño de las 17 páginas internas |
 | `sidebar.css` / `sidebar.js` | Sidebar colapsable + botón "Cerrar sesión" + sistema responsive |
 | `tema.js` / `light-theme.css` | Sistema de tema claro / oscuro |
 | `dashboard.html` | Panel principal |
-| `insights.html` | Panel de estadísticas (diseño oceánico, decisión: se mantiene) |
+| `insights.html` | Panel de estadísticas (alineado al estilo oficial del CRM) |

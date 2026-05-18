@@ -18,7 +18,7 @@
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
       --gris: #888888;
-      --verde: #4CAF82;
+      --verde: #a8893f;
       --rojo: #e05555;
       --azul: #4C8FCA;
       --morado: #9B59B6;
@@ -51,7 +51,7 @@
     .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
     .nav::-webkit-scrollbar { width: 3px; }
     .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
-    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
     .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
     .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
     .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
@@ -108,18 +108,16 @@
       width: 3px; height: 100%;
     }
 
-    .stat-card.s1::before { background: var(--dorado); }
-    .stat-card.s2::before { background: var(--verde); }
-    .stat-card.s3::before { background: var(--azul); }
-    .stat-card.s4::before { background: var(--morado); }
+    .stat-card.s1::before,
+    .stat-card.s2::before,
+    .stat-card.s3::before,
+    .stat-card.s4::before { background: var(--dorado); }
 
     .stat-icon { font-size: 22px; margin-bottom: 10px; }
     .stat-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gris); margin-bottom: 6px; }
     .stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--dorado); line-height: 1; }
-    .stat-card.s2 .stat-value { color: var(--verde); }
-    .stat-card.s3 .stat-value { color: var(--azul); }
-    .stat-card.s4 .stat-value { color: var(--morado); }
-    .stat-sub { font-size: 11px; color: #555; margin-top: 4px; }
+    
+    .stat-sub { font-size: 11px; color: #9a9180; margin-top: 4px; }
 
     /* ── TOOLBAR ── */
     .toolbar {
@@ -136,7 +134,7 @@
     }
 
     .search-wrap input { background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--blanco); width: 100%; }
-    .search-wrap input::placeholder { color: #444; }
+    .search-wrap input::placeholder { color: #8c8472; }
 
     .cat-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 
@@ -239,7 +237,7 @@
     }
 
     /* colores por categoría */
-    .cat-preventivo  { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .cat-preventivo  { background: rgba(168,137,63,0.12); color: var(--verde); }
     .cat-estetica    { background: rgba(201,168,76,0.12); color: var(--dorado); }
     .cat-rehabilitacion { background: rgba(76,143,202,0.12); color: var(--azul); }
     .cat-cirugia     { background: rgba(224,85,85,0.12); color: var(--rojo); }
@@ -247,7 +245,7 @@
     .cat-endodoncia  { background: rgba(230,126,34,0.12); color: var(--naranja); }
 
     .t-duration {
-      font-size: 11px; color: #555;
+      font-size: 11px; color: #9a9180;
       display: flex; align-items: center; gap: 4px;
     }
 
@@ -281,7 +279,7 @@
     }
 
     table { width: 100%; border-collapse: collapse; }
-    thead th { padding: 13px 16px; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #555; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    thead th { padding: 13px 16px; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #9a9180; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
     tbody tr { border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s; cursor: pointer; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(201,168,76,0.04); }
@@ -294,7 +292,7 @@
     .btn-act.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
 
     /* Estado vacío */
-    .empty-state { text-align: center; padding: 72px 24px; color: #2a2a2a; }
+    .empty-state { text-align: center; padding: 72px 24px; color: #7c7565; }
     .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
     .empty-text { font-size: 13px; }
 
@@ -313,7 +311,7 @@
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #555; font-size: 18px; cursor: pointer; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #9a9180; font-size: 18px; cursor: pointer; }
     .modal-close:hover { color: var(--blanco); }
     .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; }
     .modal-title span { color: var(--dorado); }
@@ -339,7 +337,7 @@
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
-    .form-group input::placeholder, .form-group textarea::placeholder { color: #444; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #8c8472; }
     .form-group select option { background: #1a1a1a; }
 
     /* Selector de emoji */
@@ -366,6 +364,7 @@
     .sidebar { background: #0e0e16 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
+<link rel="stylesheet" href="crm.css" />
 </head>
 <body>
 

@@ -1,0 +1,469 @@
+/* ══════════════════════════════════════════════════════════
+   SISTEMA VISUAL UNIFICADO — CRM IPS Fernández O&M
+   ------------------------------------------------------------
+   Este archivo define el estilo común de TODAS las páginas:
+   sidebar, encabezados, paneles, botones, tablas, badges,
+   formularios y modales. Se carga después de los <style> de
+   cada página, así que homogeneiza sin tener que reescribir
+   el HTML de cada vista.
+
+   Reglas de marca:
+   - Fondo crema  : linear-gradient(145deg,#fdf8f0,#f7f1e4,#faf5ea)
+   - Panel oscuro : rgba(8,8,16,0.72) + blur (glass dark)
+   - Sidebar      : negro sólido #0e0e16
+   - Dorado       : #C9A84C  (claro #e2c47a)
+   - Texto crema  : #1a1208   Subtexto: #9c8c72 / #5a4e3a
+   - Tipografías  : Playfair Display (títulos) + Inter (texto)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 1. VARIABLES DE DISEÑO ──────────────────────────────── */
+:root {
+  /* Marca */
+  --crm-dorado:        #C9A84C;
+  --crm-dorado-claro:  #e2c47a;
+  --crm-dorado-oscuro: #7a5c1e;   /* dorado legible sobre fondo claro */
+
+  /* Superficies */
+  --crm-sidebar:       #0e0e16;
+  --crm-panel:         rgba(8,8,16,0.72);   /* glass dark */
+  --crm-panel-borde:   rgba(255,255,255,0.10);
+  --crm-panel-hover:   rgba(201,168,76,0.30);
+
+  /* Texto sobre panel oscuro */
+  --crm-texto-claro:   #f3eee2;
+  --crm-texto-sub:     rgba(255,255,255,0.55);
+  --crm-texto-tenue:   rgba(255,255,255,0.40);
+
+  /* Texto sobre fondo crema */
+  --crm-texto:         #1a1208;
+  --crm-texto-sub2:    #9c8c72;
+  --crm-texto-medio:   #5a4e3a;
+
+  /* Acentos de estado (uso semántico, NO decorativo) */
+  --crm-ok:    #c6a14e;   /* "positivo" en tono dorado, no verde */
+  --crm-info:  #6f8db5;   /* azul apagado para informativo */
+  --crm-warn:  #d1a23c;   /* ámbar */
+  --crm-error: #cf6b6b;   /* rojo apagado */
+
+  /* Geometría compartida */
+  --crm-radio:        14px;   /* radio estándar de paneles/tarjetas */
+  --crm-radio-chico:  8px;    /* radio de botones, inputs, chips */
+  --crm-sombra:       0 4px 20px rgba(0,0,0,0.18);
+  --crm-sombra-hover: 0 10px 32px rgba(0,0,0,0.24);
+}
+
+/* ── 2. FONDO DE PÁGINA ──────────────────────────────────── */
+body {
+  background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%) !important;
+  color: #1a1208;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── 3. SIDEBAR ──────────────────────────────────────────── */
+.sidebar {
+  background: var(--crm-sidebar) !important;
+  border-right: 1px solid rgba(201,168,76,0.14) !important;
+}
+.sidebar-logo {
+  border-bottom: 1px solid rgba(201,168,76,0.12) !important;
+}
+.logo-text {
+  font-family: 'Playfair Display', serif !important;
+  color: #f3eee2 !important;
+}
+.logo-text span { color: var(--crm-dorado) !important; }
+.logo-sub {
+  color: #7d7261 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+.nav-section {
+  color: #5a5346 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+.nav-item {
+  color: #9a9282 !important;
+  text-decoration: none !important;
+  transition: background 0.18s, color 0.18s !important;
+}
+.nav-item:hover {
+  background: rgba(201,168,76,0.07) !important;
+  color: #f3eee2 !important;
+}
+.nav-item.active {
+  background: rgba(201,168,76,0.13) !important;
+  color: var(--crm-dorado) !important;
+}
+.nav-badge {
+  background: var(--crm-dorado) !important;
+  color: #0e0e16 !important;
+}
+.nav-badge.alt {
+  background: rgba(201,168,76,0.16) !important;
+  color: var(--crm-dorado) !important;
+}
+.sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+}
+.user-avatar, .user-av {
+  background: rgba(201,168,76,0.15) !important;
+  border: 1px solid rgba(201,168,76,0.32) !important;
+  color: var(--crm-dorado) !important;
+}
+.user-name { color: #e9e3d6 !important; }
+.user-role { color: #7d7261 !important; }
+
+/* ── 4. ENCABEZADO DE PÁGINA ─────────────────────────────── */
+/* Mismo tamaño y tipografía de título en todas las vistas */
+.page-title,
+.section-header h2,
+.ev-asunto {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 25px !important;
+  font-weight: 700 !important;
+  color: #1a1208 !important;
+  letter-spacing: 0.2px !important;
+}
+.page-title span,
+.section-header h2 span { color: var(--crm-dorado) !important; }
+
+/* ── 5. PANELES Y TARJETAS — GLASS DARK UNIFICADO ────────── */
+/* Todas las superficies de contenido comparten fondo, radio,
+   borde, sombra y comportamiento al pasar el ratón.          */
+.stat-card,
+.panel,
+.kpi-card,
+.chart-card,
+.config-card,
+.card,
+.table-wrap,
+.table-card,
+.t-card,
+.tratamiento-card,
+.factura-card,
+.bot-card,
+.profile-card,
+.tab-content,
+.agent-hero,
+.overview-card,
+.ov-card,
+.kb-card,
+.tpl-card,
+.p-card,
+.b-card {
+  background: var(--crm-panel) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--crm-panel-borde) !important;
+  border-radius: var(--crm-radio) !important;
+  box-shadow: var(--crm-sombra) !important;
+}
+
+/* Hover suave y consistente en tarjetas interactivas */
+.stat-card:hover,
+.kpi-card:hover,
+.chart-card:hover,
+.config-card:hover,
+.card:hover,
+.t-card:hover,
+.tratamiento-card:hover,
+.bot-card:hover,
+.tpl-card:hover,
+.p-card:hover,
+.b-card:hover {
+  border-color: var(--crm-panel-hover) !important;
+  box-shadow: var(--crm-sombra-hover) !important;
+}
+
+/* Texto dentro de paneles oscuros: legible y jerarquizado */
+.panel-title,
+.chart-title,
+.card-title,
+.kpi-label,
+.stat-title {
+  color: #f1ebdd !important;
+}
+.stat-label,
+.card-label,
+.kpi-label,
+.panel-tag,
+.chart-sub {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* Valor destacado de las tarjetas — siempre dorado y Playfair */
+.stat-value,
+.kpi-value,
+.card-value,
+.ov-value,
+.donut-total {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--crm-dorado) !important;
+}
+
+/* ── 6. BOTONES ──────────────────────────────────────────── */
+/* Primario: dorado sólido, para la acción principal de la vista */
+.btn-new,
+.btn-nuevo,
+.btn-primary,
+.btn-redactar,
+.btn-guardar {
+  background: linear-gradient(135deg, var(--crm-dorado), var(--crm-dorado-claro)) !important;
+  color: #0e0e16 !important;
+  border: none !important;
+  border-radius: var(--crm-radio-chico) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  cursor: pointer !important;
+  transition: box-shadow 0.2s, transform 0.2s !important;
+}
+.btn-new:hover,
+.btn-nuevo:hover,
+.btn-primary:hover,
+.btn-redactar:hover,
+.btn-guardar:hover {
+  box-shadow: 0 6px 18px rgba(201,168,76,0.32) !important;
+  transform: translateY(-1px) !important;
+  opacity: 1 !important;
+}
+
+/* Secundario: contorno dorado sobre fondo crema */
+.btn-auto,
+.btn-export,
+.btn-exportar,
+.btn-secundario,
+.btn-actividades {
+  background: rgba(255,255,255,0.55) !important;
+  border: 1px solid rgba(201,168,76,0.32) !important;
+  color: var(--crm-dorado-oscuro) !important;
+  border-radius: var(--crm-radio-chico) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background 0.2s, border-color 0.2s !important;
+}
+.btn-auto:hover,
+.btn-export:hover,
+.btn-exportar:hover,
+.btn-secundario:hover,
+.btn-actividades:hover {
+  background: rgba(201,168,76,0.12) !important;
+  border-color: rgba(201,168,76,0.5) !important;
+}
+
+/* ── 7. CHIPS / FILTROS ──────────────────────────────────── */
+.chip,
+.filter-chip,
+.period-btn,
+.f-btn {
+  border-radius: 20px !important;
+  transition: all 0.18s !important;
+}
+.chip.active,
+.filter-chip.active,
+.period-btn.active,
+.f-btn.active {
+  background: rgba(201,168,76,0.14) !important;
+  color: var(--crm-dorado) !important;
+  border-color: rgba(201,168,76,0.32) !important;
+}
+
+/* ── 8. BADGES DE ESTADO ─────────────────────────────────── */
+/* El acento principal es dorado. Los estados conservan un
+   color tenue solo para que se distingan de un vistazo.      */
+.badge,
+.rt-badge,
+.kpi-trend {
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+
+/* ── 9. SCROLLBAR ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(201,168,76,0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.4); }
+
+/* ── 10. ESTADOS VACÍOS ──────────────────────────────────── */
+.empty-state,
+.coming-soon,
+.col-empty {
+  color: #b6a888 !important;
+}
+.empty-state .empty-icon,
+.col-empty-icon { opacity: 0.4 !important; }
+
+/* ── 11. TABLAS DENTRO DE PANELES OSCUROS ────────────────── */
+/* Garantiza texto legible en las tablas que viven dentro de
+   .table-wrap (que ahora es glass dark en todas las vistas). */
+.table-wrap .table-header {
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+.table-wrap .table-info { color: rgba(255,255,255,0.55) !important; }
+.table-wrap thead th {
+  color: rgba(255,255,255,0.50) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+  background: transparent !important;
+}
+.table-wrap tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+.table-wrap tbody tr:hover {
+  background: rgba(201,168,76,0.08) !important;
+}
+.table-wrap td,
+.table-wrap .td-name,
+.table-wrap .pac-name {
+  color: #ece5d6 !important;
+}
+.table-wrap .td-doc,
+.table-wrap .td-sub,
+.table-wrap .pac-doc {
+  color: rgba(255,255,255,0.45) !important;
+}
+
+/* Avatares dentro de tablas: dorado coherente */
+.avatar-mini,
+.pac-avatar {
+  background: rgba(201,168,76,0.14) !important;
+  border: 1px solid rgba(201,168,76,0.3) !important;
+  color: var(--crm-dorado) !important;
+}
+
+/* Botones de icono dentro de tablas (acciones de fila) */
+.btn-icon {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  color: rgba(255,255,255,0.6) !important;
+}
+.btn-icon:hover {
+  border-color: rgba(201,168,76,0.45) !important;
+  color: var(--crm-dorado) !important;
+}
+
+/* ── 12. MODALES ─────────────────────────────────────────── */
+/* Mismo fondo glass dark, radio y borde dorado en toda app. */
+.modal,
+.modal-box {
+  background: rgba(16,16,24,0.96) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(201,168,76,0.22) !important;
+  border-radius: var(--crm-radio) !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5) !important;
+}
+.modal-title,
+.modal-header h2 {
+  font-family: 'Playfair Display', serif !important;
+  color: #f3eee2 !important;
+}
+.modal-title span { color: var(--crm-dorado) !important; }
+
+/* ── 13. FORMULARIOS ─────────────────────────────────────── */
+/* Etiquetas en dorado tenue, campos oscuros legibles. */
+.form-group label {
+  color: var(--crm-dorado) !important;
+  letter-spacing: 1.2px !important;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(201,168,76,0.18) !important;
+  color: #f1ebdd !important;
+  border-radius: var(--crm-radio-chico) !important;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(255,255,255,0.32) !important;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: rgba(201,168,76,0.45) !important;
+  background: rgba(201,168,76,0.06) !important;
+}
+.form-divider {
+  color: rgba(255,255,255,0.4) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+.modal-footer {
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+.modal-close {
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  color: rgba(255,255,255,0.55) !important;
+}
+.modal-close:hover {
+  border-color: rgba(201,168,76,0.4) !important;
+  color: var(--crm-dorado) !important;
+}
+
+/* ── 14. TEMA CLARO — devolver el mando a light-theme.css ── */
+/* Cuando el usuario activa el tema claro, los paneles vuelven
+   a ser blancos. Estas reglas reponen lo que la sección 5
+   forzó con !important, para no ensuciar el tema claro.      */
+html[data-theme="claro"] body {
+  background: var(--negro) !important;
+}
+html[data-theme="claro"] .stat-card,
+html[data-theme="claro"] .panel,
+html[data-theme="claro"] .kpi-card,
+html[data-theme="claro"] .chart-card,
+html[data-theme="claro"] .config-card,
+html[data-theme="claro"] .card,
+html[data-theme="claro"] .table-wrap,
+html[data-theme="claro"] .table-card,
+html[data-theme="claro"] .t-card,
+html[data-theme="claro"] .tratamiento-card,
+html[data-theme="claro"] .factura-card,
+html[data-theme="claro"] .bot-card,
+html[data-theme="claro"] .profile-card,
+html[data-theme="claro"] .tab-content,
+html[data-theme="claro"] .agent-hero,
+html[data-theme="claro"] .ov-card,
+html[data-theme="claro"] .kb-card,
+html[data-theme="claro"] .tpl-card,
+html[data-theme="claro"] .p-card,
+html[data-theme="claro"] .b-card {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.07) !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-theme="claro"] .panel-title,
+html[data-theme="claro"] .chart-title,
+html[data-theme="claro"] .card-title,
+html[data-theme="claro"] .stat-title { color: #1a1a1a !important; }
+html[data-theme="claro"] .stat-label,
+html[data-theme="claro"] .card-label,
+html[data-theme="claro"] .kpi-label,
+html[data-theme="claro"] .chart-sub { color: #6b7280 !important; }
+html[data-theme="claro"] .table-wrap thead th { color: #6b7280 !important; }
+html[data-theme="claro"] .table-wrap td,
+html[data-theme="claro"] .table-wrap .td-name,
+html[data-theme="claro"] .table-wrap .pac-name { color: #1a1a1a !important; }
+html[data-theme="claro"] .table-wrap .td-doc,
+html[data-theme="claro"] .table-wrap .pac-doc { color: #9ca3af !important; }
+html[data-theme="claro"] .table-wrap tbody tr { border-bottom-color: rgba(0,0,0,0.05) !important; }
+html[data-theme="claro"] .modal,
+html[data-theme="claro"] .modal-box {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-theme="claro"] .modal-title,
+html[data-theme="claro"] .modal-header h2 { color: #1a1a1a !important; }
+html[data-theme="claro"] .form-group input,
+html[data-theme="claro"] .form-group select,
+html[data-theme="claro"] .form-group textarea {
+  background: #f5f7fa !important;
+  border-color: rgba(0,0,0,0.10) !important;
+  color: #1a1a1a !important;
+}

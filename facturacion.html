@@ -18,7 +18,7 @@
       --dorado-claro: #e2c47a;
       --blanco: #ffffff;
       --gris: #888888;
-      --verde: #4CAF82;
+      --verde: #a8893f;
       --rojo: #e05555;
       --amarillo: #e0a435;
     }
@@ -62,7 +62,7 @@
     .nav::-webkit-scrollbar { width: 3px; }
     .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
 
-    .nav-section { font-size: 9px; color: #444; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
 
     .nav-item {
       display: flex; align-items: center; gap: 9px; padding: 9px 10px;
@@ -193,7 +193,7 @@
     .stat-card.pendiente .stat-value { color: var(--amarillo); }
     .stat-card.vencido .stat-value { color: var(--rojo); }
 
-    .stat-count { font-size: 11px; color: #555; }
+    .stat-count { font-size: 11px; color: #9a9180; }
 
     /* ── FILTROS Y BÚSQUEDA ── */
     .toolbar {
@@ -222,7 +222,7 @@
       color: var(--blanco); width: 100%;
     }
 
-    .search-wrap input::placeholder { color: #444; }
+    .search-wrap input::placeholder { color: #8c8472; }
 
     .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 
@@ -241,7 +241,7 @@
 
     .chip:hover { color: var(--blanco); border-color: rgba(255,255,255,0.18); }
     .chip.active { background: rgba(201,168,76,0.12); color: var(--dorado); border-color: rgba(201,168,76,0.3); }
-    .chip.cobrado.active   { background: rgba(76,175,130,0.12); color: var(--verde); border-color: rgba(76,175,130,0.3); }
+    .chip.cobrado.active   { background: rgba(168,137,63,0.12); color: var(--verde); border-color: rgba(168,137,63,0.3); }
     .chip.pendiente.active { background: rgba(224,164,53,0.12); color: var(--amarillo); border-color: rgba(224,164,53,0.3); }
     .chip.vencido.active   { background: rgba(224,85,85,0.12); color: var(--rojo); border-color: rgba(224,85,85,0.3); }
 
@@ -264,7 +264,7 @@
       font-weight: 600;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #555;
+      color: #9a9180;
       text-align: left;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       white-space: nowrap;
@@ -306,7 +306,7 @@
     }
 
     .pac-name { font-size: 13px; font-weight: 500; }
-    .pac-doc  { font-size: 11px; color: #555; }
+    .pac-doc  { font-size: 11px; color: #9a9180; }
 
     .td-valor {
       font-family: 'Playfair Display', serif;
@@ -329,7 +329,7 @@
 
     .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-    .badge.cobrado   { background: rgba(76,175,130,0.12); color: var(--verde); }
+    .badge.cobrado   { background: rgba(168,137,63,0.12); color: var(--verde); }
     .badge.cobrado .badge-dot   { background: var(--verde); }
     .badge.pendiente { background: rgba(224,164,53,0.12); color: var(--amarillo); }
     .badge.pendiente .badge-dot { background: var(--amarillo); }
@@ -358,7 +358,7 @@
     .table-empty {
       padding: 64px 24px;
       text-align: center;
-      color: #333;
+      color: #7c7565;
     }
 
     .table-empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.3; }
@@ -373,7 +373,7 @@
       border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    .page-info { font-size: 12px; color: #444; }
+    .page-info { font-size: 12px; color: #8c8472; }
 
     .page-btns { display: flex; gap: 4px; }
 
@@ -425,7 +425,7 @@
       position: absolute;
       top: 16px; right: 16px;
       background: none; border: none;
-      color: #555; font-size: 18px;
+      color: #9a9180; font-size: 18px;
       cursor: pointer; line-height: 1;
     }
 
@@ -477,7 +477,7 @@
     .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
 
     .form-group input::placeholder,
-    .form-group textarea::placeholder { color: #444; }
+    .form-group textarea::placeholder { color: #8c8472; }
 
     .form-group select option { background: #1a1a1a; }
 
@@ -523,6 +523,7 @@
     .sidebar { background: #0e0e16 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
+<link rel="stylesheet" href="crm.css" />
 </head>
 <body>
 
