@@ -33,6 +33,15 @@ Con el agente `revisor-frontend` se completaron 2 de los 3 pendientes (ver infor
 - ✅ Adaptación a móvil (responsive) de las 18 páginas.
 - ↪️ Diseño de `insights.html`: el Dr. Leo decidió **mantenerlo como está** (diseño oceánico intencional).
 
+### 7. Cuatro agentes más creados (para que el CRM quede profesional)
+Tras analizar qué le faltaba al proyecto, se crearon cuatro agentes nuevos en `.claude/agents/`. *Aún no se han usado:*
+- **`calidad-qa`** — *¿funciona?* Recorre el CRM como un usuario real y reporta lo que falla o confunde.
+- **`cumplimiento-datos`** — *¿es legal?* Revisa que el CRM cumpla la ley colombiana de datos de salud (habeas data, historia clínica, consentimiento).
+- **`redaccion-contenido`** — *¿se entiende?* Revisa que todos los textos sean profesionales, correctos y consistentes.
+- **`documentacion-manual`** — *¿saben usarlo?* Escribe la guía de uso para el personal de la clínica.
+
+**Total: 7 agentes.** Los 3 anteriores cubren código, diseño y datos; estos 4 cubren funcionamiento, legalidad, textos y capacitación.
+
 ---
 
 ## 📋 Informe del agente — Revisión del frontend (parte 1)
@@ -140,7 +149,11 @@ Se completaron las dos tareas aprobadas por el Dr. Leo. El enfoque fue **central
 
 1. **Revisar en un teléfono real** las páginas adaptadas a móvil (verificación visual).
 2. **Corregir el color verde** de la segunda columna del kanban en `pipeline.html` (hallazgo nuevo del agente).
-3. **Estrenar los agentes nuevos:** `backend-supabase` (conectar el CRM a una base de datos real) o `disenador-uxui` (mejorar diseño y experiencia).
+3. **Estrenar los agentes nuevos.** Hay 6 sin usar; orden sugerido:
+   - `calidad-qa` — probar que todo funciona (recomendado para empezar).
+   - `backend-supabase` — conectar el CRM a una base de datos real.
+   - `cumplimiento-datos` — clave en cuanto se guarden datos reales.
+   - `redaccion-contenido`, `disenador-uxui`, `documentacion-manual` — pulido, diseño y manual.
 4. A futuro: unificar nombres de clases (hallazgo 12) y seguir moviendo CSS común a archivos compartidos (hallazgo 13).
 
 ---
@@ -149,9 +162,14 @@ Se completaron las dos tareas aprobadas por el Dr. Leo. El enfoque fue **central
 
 | Archivo | Descripción |
 |---|---|
-| `.claude/agents/revisor-frontend.md` | Agente ingeniero frontend |
-| `.claude/agents/backend-supabase.md` | Agente ingeniero backend Supabase — sin usar aún |
-| `.claude/agents/disenador-uxui.md` | Agente diseñador UX/UI — sin usar aún |
+| `.claude/agents/` | Carpeta con los 7 agentes del proyecto (ver abajo) |
+| · `revisor-frontend.md` | Ingeniero frontend — revisa el código |
+| · `disenador-uxui.md` | Diseñador UX/UI — revisa el diseño *(sin usar)* |
+| · `backend-supabase.md` | Ingeniero backend Supabase — base de datos *(sin usar)* |
+| · `calidad-qa.md` | Calidad y pruebas (QA) *(sin usar)* |
+| · `cumplimiento-datos.md` | Cumplimiento legal y protección de datos *(sin usar)* |
+| · `redaccion-contenido.md` | Redacción y contenido *(sin usar)* |
+| · `documentacion-manual.md` | Documentación y manual de uso *(sin usar)* |
 | `resúmenes/` | Carpeta con los resúmenes de cada sesión |
 | `sidebar.css` / `sidebar.js` | Sidebar colapsable + botón "Cerrar sesión" + sistema responsive |
 | `tema.js` / `light-theme.css` | Sistema de tema claro / oscuro |
