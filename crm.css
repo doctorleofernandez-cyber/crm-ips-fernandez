@@ -3,17 +3,19 @@
    ------------------------------------------------------------
    Este archivo define el estilo común de TODAS las páginas:
    sidebar, encabezados, paneles, botones, tablas, badges,
-   formularios y modales. Se carga después de los <style> de
+   formularios y modales. Se carga DESPUÉS de los <style> de
    cada página, así que homogeneiza sin tener que reescribir
    el HTML de cada vista.
 
-   Reglas de marca:
-   - Fondo crema  : linear-gradient(145deg,#fdf8f0,#f7f1e4,#faf5ea)
-   - Panel oscuro : rgba(8,8,16,0.72) + blur (glass dark)
-   - Sidebar      : negro sólido #0e0e16
-   - Dorado       : #C9A84C  (claro #e2c47a)
-   - Texto crema  : #1a1208   Subtexto: #9c8c72 / #5a4e3a
-   - Tipografías  : Playfair Display (títulos) + Inter (texto)
+   PALETA CLARA — referencia: dashboard.html / correo.html
+   - Fondo de página : linear-gradient(145deg,#fdf8f0,#f7f1e4,#faf5ea)  (crema)
+   - Tarjetas (stats): rgba(255,255,255,0.62)  (blanco translúcido)
+   - Paneles         : #fdf8f0 · crema medio #faf5ea · franja #f0e8d8
+   - Sidebar         : negro sólido #0e0e16  (ÚNICO bloque oscuro)
+   - Dorado          : #C9A84C  (claro #e2c47a · texto #7a5c1e)
+   - Texto           : principal #1a1208 · cuerpo #3a2e1c
+                       secundario #5a4e3a · tenue #9c8c72
+   - Tipografías     : Playfair Display (títulos) + Inter (texto)
    ══════════════════════════════════════════════════════════ */
 
 /* ── 1. VARIABLES DE DISEÑO ──────────────────────────────── */
@@ -21,26 +23,34 @@
   /* Marca */
   --crm-dorado:        #C9A84C;
   --crm-dorado-claro:  #e2c47a;
-  --crm-dorado-oscuro: #7a5c1e;   /* dorado legible sobre fondo claro */
+  --crm-dorado-oscuro: #7a5c1e;   /* dorado legible como texto sobre crema */
 
-  /* Superficies */
+  /* Sidebar (se queda OSCURO) */
   --crm-sidebar:       #0e0e16;
-  --crm-panel:         rgba(8,8,16,0.72);   /* glass dark */
-  --crm-panel-borde:   rgba(255,255,255,0.10);
-  --crm-panel-hover:   rgba(201,168,76,0.30);
 
-  /* Texto sobre panel oscuro */
-  --crm-texto-claro:   #f3eee2;
-  --crm-texto-sub:     rgba(255,255,255,0.55);
-  --crm-texto-tenue:   rgba(255,255,255,0.40);
+  /* Superficies claras */
+  --crm-panel:         rgba(255,255,255,0.62);  /* tarjeta — blanco translúcido */
+  --crm-panel-2:       #fdf8f0;                 /* panel crema claro */
+  --crm-panel-3:       #faf5ea;                 /* panel crema medio */
+  --crm-panel-4:       #f0e8d8;                 /* franja crema marcada */
 
-  /* Texto sobre fondo crema */
-  --crm-texto:         #1a1208;
-  --crm-texto-sub2:    #9c8c72;
-  --crm-texto-medio:   #5a4e3a;
+  /* Texto sobre fondo claro */
+  --crm-texto:         #1a1208;   /* principal — títulos y datos */
+  --crm-texto-medio:   #3a2e1c;   /* texto de cuerpo */
+  --crm-texto-sub:     #5a4e3a;   /* secundario */
+  --crm-texto-tenue:   #9c8c72;   /* tenue — etiquetas, pistas */
+
+  /* Bordes — sutiles y oscuros */
+  --crm-borde:         rgba(0,0,0,0.07);
+  --crm-borde-fuerte:  rgba(0,0,0,0.10);
+  --crm-borde-dorado:  rgba(201,168,76,0.35);
+
+  /* Tintes dorados suaves */
+  --crm-tinte:         rgba(201,168,76,0.12);
+  --crm-tinte-activo:  rgba(201,168,76,0.18);
 
   /* Acentos de estado (uso semántico, NO decorativo) */
-  --crm-ok:    #c6a14e;   /* "positivo" en tono dorado, no verde */
+  --crm-ok:    #a8893f;   /* "positivo" en tono dorado, no verde */
   --crm-info:  #6f8db5;   /* azul apagado para informativo */
   --crm-warn:  #d1a23c;   /* ámbar */
   --crm-error: #cf6b6b;   /* rojo apagado */
@@ -48,8 +58,8 @@
   /* Geometría compartida */
   --crm-radio:        14px;   /* radio estándar de paneles/tarjetas */
   --crm-radio-chico:  8px;    /* radio de botones, inputs, chips */
-  --crm-sombra:       0 4px 20px rgba(0,0,0,0.18);
-  --crm-sombra-hover: 0 10px 32px rgba(0,0,0,0.24);
+  --crm-sombra:       0 4px 18px rgba(120,98,40,0.07);
+  --crm-sombra-hover: 0 10px 28px rgba(120,98,40,0.13);
 }
 
 /* ── 2. FONDO DE PÁGINA ──────────────────────────────────── */
@@ -59,7 +69,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* ── 3. SIDEBAR ──────────────────────────────────────────── */
+/* ── 3. SIDEBAR (se queda OSCURO — sin cambios) ──────────── */
 .sidebar {
   background: var(--crm-sidebar) !important;
   border-right: 1px solid rgba(201,168,76,0.14) !important;
@@ -106,7 +116,7 @@ body {
 .sidebar-footer {
   border-top: 1px solid rgba(255,255,255,0.06) !important;
 }
-.user-avatar, .user-av {
+.user-avatar, .user-av, .user-avatar-s {
   background: rgba(201,168,76,0.15) !important;
   border: 1px solid rgba(201,168,76,0.32) !important;
   color: var(--crm-dorado) !important;
@@ -128,9 +138,10 @@ body {
 .page-title span,
 .section-header h2 span { color: var(--crm-dorado) !important; }
 
-/* ── 5. PANELES Y TARJETAS — GLASS DARK UNIFICADO ────────── */
-/* Todas las superficies de contenido comparten fondo, radio,
-   borde, sombra y comportamiento al pasar el ratón.          */
+/* ── 5. PANELES Y TARJETAS — SUPERFICIE CLARA UNIFICADA ──── */
+/* Todas las superficies de contenido comparten fondo claro,
+   radio, borde sutil, sombra cálida y comportamiento al
+   pasar el ratón.                                            */
 .stat-card,
 .panel,
 .kpi-card,
@@ -150,12 +161,14 @@ body {
 .ov-card,
 .kb-card,
 .tpl-card,
+.plantilla-card,
+.list-table-wrap,
 .p-card,
 .b-card {
   background: var(--crm-panel) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--crm-panel-borde) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--crm-borde) !important;
   border-radius: var(--crm-radio) !important;
   box-shadow: var(--crm-sombra) !important;
 }
@@ -170,51 +183,57 @@ body {
 .tratamiento-card:hover,
 .bot-card:hover,
 .tpl-card:hover,
+.plantilla-card:hover,
 .p-card:hover,
 .b-card:hover {
-  border-color: var(--crm-panel-hover) !important;
+  border-color: var(--crm-borde-dorado) !important;
   box-shadow: var(--crm-sombra-hover) !important;
 }
 
-/* Texto dentro de paneles oscuros: legible y jerarquizado */
+/* Texto dentro de paneles claros: legible y jerarquizado */
 .panel-title,
 .chart-title,
 .card-title,
-.kpi-label,
-.stat-title {
-  color: #f1ebdd !important;
+.stat-title,
+.config-card-title {
+  color: #1a1208 !important;
 }
 .stat-label,
 .card-label,
 .kpi-label,
 .panel-tag,
 .chart-sub {
-  color: rgba(255,255,255,0.55) !important;
+  color: var(--crm-texto-tenue) !important;
 }
 
-/* Valor destacado de las tarjetas — siempre dorado y Playfair */
+/* Valor destacado de las tarjetas — dorado legible y Playfair */
 .stat-value,
 .kpi-value,
 .card-value,
 .ov-value,
 .donut-total {
   font-family: 'Playfair Display', serif !important;
-  color: var(--crm-dorado) !important;
+  color: var(--crm-dorado-oscuro) !important;
 }
 
 /* ── 6. BOTONES ──────────────────────────────────────────── */
-/* Primario: dorado sólido, para la acción principal de la vista */
+/* Primario: degradado dorado con texto oscuro */
 .btn-new,
 .btn-nuevo,
 .btn-primary,
 .btn-redactar,
-.btn-guardar {
+.btn-guardar,
+.btn-nueva-factura,
+.btn-save,
+.btn-create,
+.btn-enviar,
+.btn-send {
   background: linear-gradient(135deg, var(--crm-dorado), var(--crm-dorado-claro)) !important;
-  color: #0e0e16 !important;
+  color: #1a1208 !important;
   border: none !important;
   border-radius: var(--crm-radio-chico) !important;
   font-weight: 600 !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.3px !important;
   cursor: pointer !important;
   transition: box-shadow 0.2s, transform 0.2s !important;
 }
@@ -222,33 +241,43 @@ body {
 .btn-nuevo:hover,
 .btn-primary:hover,
 .btn-redactar:hover,
-.btn-guardar:hover {
-  box-shadow: 0 6px 18px rgba(201,168,76,0.32) !important;
+.btn-guardar:hover,
+.btn-nueva-factura:hover,
+.btn-save:hover,
+.btn-create:hover,
+.btn-enviar:hover,
+.btn-send:hover {
+  box-shadow: 0 6px 18px rgba(201,168,76,0.30) !important;
   transform: translateY(-1px) !important;
   opacity: 1 !important;
 }
 
-/* Secundario: contorno dorado sobre fondo crema */
+/* Secundario: blanco translúcido, texto marrón, hover dorado */
 .btn-auto,
 .btn-export,
 .btn-exportar,
 .btn-secundario,
-.btn-actividades {
-  background: rgba(255,255,255,0.55) !important;
-  border: 1px solid rgba(201,168,76,0.32) !important;
-  color: var(--crm-dorado-oscuro) !important;
+.btn-actividades,
+.btn-cancel,
+.btn-conectar {
+  background: rgba(255,255,255,0.62) !important;
+  border: 1px solid var(--crm-borde-fuerte) !important;
+  color: var(--crm-texto-sub) !important;
   border-radius: var(--crm-radio-chico) !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  transition: background 0.2s, border-color 0.2s !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
 }
 .btn-auto:hover,
 .btn-export:hover,
 .btn-exportar:hover,
 .btn-secundario:hover,
-.btn-actividades:hover {
-  background: rgba(201,168,76,0.12) !important;
-  border-color: rgba(201,168,76,0.5) !important;
+.btn-actividades:hover,
+.btn-cancel:hover,
+.btn-conectar:hover {
+  background: var(--crm-tinte) !important;
+  border-color: var(--crm-borde-dorado) !important;
+  color: var(--crm-dorado-oscuro) !important;
 }
 
 /* ── 7. CHIPS / FILTROS ──────────────────────────────────── */
@@ -263,9 +292,9 @@ body {
 .filter-chip.active,
 .period-btn.active,
 .f-btn.active {
-  background: rgba(201,168,76,0.14) !important;
-  color: var(--crm-dorado) !important;
-  border-color: rgba(201,168,76,0.32) !important;
+  background: var(--crm-tinte-activo) !important;
+  color: var(--crm-dorado-oscuro) !important;
+  border-color: var(--crm-borde-dorado) !important;
 }
 
 /* ── 8. BADGES DE ESTADO ─────────────────────────────────── */
@@ -291,124 +320,164 @@ body {
 /* ── 10. ESTADOS VACÍOS ──────────────────────────────────── */
 .empty-state,
 .coming-soon,
-.col-empty {
-  color: #b6a888 !important;
+.col-empty,
+.empty-tab,
+.table-empty {
+  color: var(--crm-texto-tenue) !important;
 }
 .empty-state .empty-icon,
-.col-empty-icon { opacity: 0.4 !important; }
+.col-empty-icon,
+.empty-tab-icon,
+.table-empty-icon { opacity: 0.4 !important; }
 
-/* ── 11. TABLAS DENTRO DE PANELES OSCUROS ────────────────── */
+/* ── 11. TABLAS DENTRO DE PANELES CLAROS ─────────────────── */
 /* Garantiza texto legible en las tablas que viven dentro de
-   .table-wrap (que ahora es glass dark en todas las vistas). */
-.table-wrap .table-header {
-  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+   .table-wrap (que ahora es superficie clara).               */
+.table-wrap .table-header,
+.table-card .table-header {
+  border-bottom: 1px solid var(--crm-borde) !important;
 }
-.table-wrap .table-info { color: rgba(255,255,255,0.55) !important; }
-.table-wrap thead th {
-  color: rgba(255,255,255,0.50) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+.table-wrap .table-info,
+.table-card .table-info { color: var(--crm-texto-tenue) !important; }
+.table-wrap .table-info span,
+.table-card .table-info span { color: var(--crm-dorado-oscuro) !important; }
+.table-wrap thead th,
+.table-card thead th {
+  color: var(--crm-texto-tenue) !important;
+  border-bottom: 1px solid var(--crm-borde) !important;
   background: transparent !important;
 }
-.table-wrap tbody tr {
-  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+.table-wrap tbody tr,
+.table-card tbody tr {
+  border-bottom: 1px solid var(--crm-borde) !important;
 }
-.table-wrap tbody tr:hover {
-  background: rgba(201,168,76,0.08) !important;
+.table-wrap tbody tr:hover,
+.table-card tbody tr:hover {
+  background: var(--crm-tinte) !important;
 }
 .table-wrap td,
 .table-wrap .td-name,
-.table-wrap .pac-name {
-  color: #ece5d6 !important;
+.table-wrap .pac-name,
+.table-card td,
+.table-card .td-name,
+.recent-table .rt-name {
+  color: #1a1208 !important;
 }
 .table-wrap .td-doc,
 .table-wrap .td-sub,
-.table-wrap .pac-doc {
-  color: rgba(255,255,255,0.45) !important;
+.table-wrap .pac-doc,
+.recent-table tbody td {
+  color: var(--crm-texto-tenue) !important;
 }
 
 /* Avatares dentro de tablas: dorado coherente */
 .avatar-mini,
 .pac-avatar {
-  background: rgba(201,168,76,0.14) !important;
-  border: 1px solid rgba(201,168,76,0.3) !important;
-  color: var(--crm-dorado) !important;
+  background: var(--crm-tinte) !important;
+  border: 1px solid var(--crm-borde-dorado) !important;
+  color: var(--crm-dorado-oscuro) !important;
 }
 
 /* Botones de icono dentro de tablas (acciones de fila) */
-.btn-icon {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.12) !important;
-  color: rgba(255,255,255,0.6) !important;
+.btn-icon,
+.btn-action,
+.btn-act,
+.page-btn {
+  background: rgba(255,255,255,0.55) !important;
+  border: 1px solid var(--crm-borde-fuerte) !important;
+  color: var(--crm-texto-tenue) !important;
 }
-.btn-icon:hover {
-  border-color: rgba(201,168,76,0.45) !important;
-  color: var(--crm-dorado) !important;
+.btn-icon:hover,
+.btn-action:hover,
+.btn-act:hover,
+.page-btn:hover {
+  border-color: var(--crm-borde-dorado) !important;
+  color: var(--crm-dorado-oscuro) !important;
 }
 
-/* ── 12. MODALES ─────────────────────────────────────────── */
-/* Mismo fondo glass dark, radio y borde dorado en toda app. */
+/* ── 12. MODALES — SUPERFICIE CLARA ──────────────────────── */
+/* Mismo fondo claro, radio y borde dorado en toda la app.    */
 .modal,
 .modal-box {
-  background: rgba(16,16,24,0.96) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
-  backdrop-filter: blur(24px) !important;
-  border: 1px solid rgba(201,168,76,0.22) !important;
+  background: #fdf8f0 !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--crm-borde-dorado) !important;
   border-radius: var(--crm-radio) !important;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 24px 60px rgba(120,98,40,0.22) !important;
 }
 .modal-title,
 .modal-header h2 {
   font-family: 'Playfair Display', serif !important;
-  color: #f3eee2 !important;
+  color: #1a1208 !important;
 }
-.modal-title span { color: var(--crm-dorado) !important; }
+.modal-title span { color: var(--crm-dorado-oscuro) !important; }
+.modal-sub { color: var(--crm-texto-tenue) !important; }
 
 /* ── 13. FORMULARIOS ─────────────────────────────────────── */
-/* Etiquetas en dorado tenue, campos oscuros legibles. */
-.form-group label {
-  color: var(--crm-dorado) !important;
+/* Etiquetas en dorado tenue, campos claros legibles. */
+.form-group label,
+.modal label {
+  color: var(--crm-dorado-oscuro) !important;
   letter-spacing: 1.2px !important;
 }
 .form-group input,
 .form-group select,
-.form-group textarea {
-  background: rgba(255,255,255,0.05) !important;
-  border: 1px solid rgba(201,168,76,0.18) !important;
-  color: #f1ebdd !important;
+.form-group textarea,
+.modal input,
+.modal select,
+.modal textarea {
+  background: rgba(255,255,255,0.75) !important;
+  border: 1px solid var(--crm-borde-fuerte) !important;
+  color: #1a1208 !important;
   border-radius: var(--crm-radio-chico) !important;
 }
 .form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: rgba(255,255,255,0.32) !important;
+.form-group textarea::placeholder,
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: var(--crm-texto-tenue) !important;
 }
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-  border-color: rgba(201,168,76,0.45) !important;
+.form-group textarea:focus,
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus {
+  border-color: var(--crm-borde-dorado) !important;
   background: rgba(201,168,76,0.06) !important;
 }
+.form-group select option,
+.modal select option { background: #fdf8f0 !important; color: #1a1208 !important; }
 .form-divider {
-  color: rgba(255,255,255,0.4) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+  color: var(--crm-texto-tenue) !important;
+  border-bottom: 1px solid var(--crm-borde) !important;
 }
 .modal-footer {
-  border-top: 1px solid rgba(255,255,255,0.08) !important;
+  border-top: 1px solid var(--crm-borde) !important;
 }
 .modal-close {
-  border: 1px solid rgba(255,255,255,0.14) !important;
-  color: rgba(255,255,255,0.55) !important;
+  border: 1px solid var(--crm-borde-fuerte) !important;
+  color: var(--crm-texto-tenue) !important;
 }
 .modal-close:hover {
-  border-color: rgba(201,168,76,0.4) !important;
-  color: var(--crm-dorado) !important;
+  border-color: var(--crm-borde-dorado) !important;
+  color: var(--crm-dorado-oscuro) !important;
 }
 
-/* ── 14. TEMA CLARO — devolver el mando a light-theme.css ── */
-/* Cuando el usuario activa el tema claro, los paneles vuelven
-   a ser blancos. Estas reglas reponen lo que la sección 5
-   forzó con !important, para no ensuciar el tema claro.      */
-html[data-theme="claro"] body {
-  background: var(--negro) !important;
+/* ── 14. TEMA CLARO (selector de tema) ───────────────────── */
+/* La paleta clara YA es el estándar; cuando el usuario activa
+   explícitamente el "tema claro" desde Ajustes solo se afina
+   el fondo de campos y se quita el desenfoque.                */
+html[data-theme="claro"] .form-group input,
+html[data-theme="claro"] .form-group select,
+html[data-theme="claro"] .form-group textarea,
+html[data-theme="claro"] .modal input,
+html[data-theme="claro"] .modal select,
+html[data-theme="claro"] .modal textarea {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  color: #1a1208 !important;
 }
 html[data-theme="claro"] .stat-card,
 html[data-theme="claro"] .panel,
@@ -428,42 +497,15 @@ html[data-theme="claro"] .agent-hero,
 html[data-theme="claro"] .ov-card,
 html[data-theme="claro"] .kb-card,
 html[data-theme="claro"] .tpl-card,
+html[data-theme="claro"] .plantilla-card,
 html[data-theme="claro"] .p-card,
 html[data-theme="claro"] .b-card {
   background: #ffffff !important;
   border-color: rgba(0,0,0,0.07) !important;
   box-shadow: 0 1px 6px rgba(0,0,0,0.06) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
 }
-html[data-theme="claro"] .panel-title,
-html[data-theme="claro"] .chart-title,
-html[data-theme="claro"] .card-title,
-html[data-theme="claro"] .stat-title { color: #1a1a1a !important; }
-html[data-theme="claro"] .stat-label,
-html[data-theme="claro"] .card-label,
-html[data-theme="claro"] .kpi-label,
-html[data-theme="claro"] .chart-sub { color: #6b7280 !important; }
-html[data-theme="claro"] .table-wrap thead th { color: #6b7280 !important; }
-html[data-theme="claro"] .table-wrap td,
-html[data-theme="claro"] .table-wrap .td-name,
-html[data-theme="claro"] .table-wrap .pac-name { color: #1a1a1a !important; }
-html[data-theme="claro"] .table-wrap .td-doc,
-html[data-theme="claro"] .table-wrap .pac-doc { color: #9ca3af !important; }
-html[data-theme="claro"] .table-wrap tbody tr { border-bottom-color: rgba(0,0,0,0.05) !important; }
 html[data-theme="claro"] .modal,
 html[data-theme="claro"] .modal-box {
   background: #ffffff !important;
   border-color: rgba(0,0,0,0.08) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-html[data-theme="claro"] .modal-title,
-html[data-theme="claro"] .modal-header h2 { color: #1a1a1a !important; }
-html[data-theme="claro"] .form-group input,
-html[data-theme="claro"] .form-group select,
-html[data-theme="claro"] .form-group textarea {
-  background: #f5f7fa !important;
-  border-color: rgba(0,0,0,0.10) !important;
-  color: #1a1a1a !important;
 }

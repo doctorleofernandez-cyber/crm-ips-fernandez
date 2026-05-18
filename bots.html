@@ -67,8 +67,8 @@
     .bi-azul   { background: rgba(76,143,202,0.12); }
     .bi-morado { background: rgba(155,89,182,0.12); }
 
-    .bot-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .bot-trigger { font-size: 11px; color: var(--gris); }
+    .bot-name { font-size: 14px; font-weight: 600; color: #1a1208; margin-bottom: 4px; }
+    .bot-trigger { font-size: 11px; color: #9c8c72; }
 
     .bot-status {
       position: absolute; top: 16px; right: 16px;
@@ -79,63 +79,65 @@
     .bs-inactivo { background: rgba(255,255,255,0.05); color: #9a9180; }
     .bs-borrador { background: rgba(224,164,53,0.1); color: var(--amarillo); }
 
-    .bot-stats { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .bot-stats { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.07); }
     .bs-item { text-align: center; }
-    .bs-num { font-size: 16px; font-weight: 700; color: var(--dorado); }
-    .bs-lbl { font-size: 10px; color: #9a9180; }
+    .bs-num { font-size: 16px; font-weight: 700; color: #7a5c1e; }
+    .bs-lbl { font-size: 10px; color: #9c8c72; }
 
     .bot-actions { display: flex; gap: 6px; margin-top: 14px; }
-    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--gris); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
-    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-sm { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.10); background: rgba(255,255,255,0.55); color: #9c8c72; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .btn-sm:hover { border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
     .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
 
     /* Plantillas de inicio */
-    .section-title { font-size: 13px; font-weight: 600; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+    .section-title { font-size: 13px; font-weight: 600; color: #5a4e3a; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
     .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 
-    .tpl-card {
-      background: transparent;
-      border: 1px dashed rgba(201,168,76,0.2);
+    /* Tarjeta "añadir bot": borde punteado intencional —
+       se refuerza con !important para que no la pise crm.css */
+    .templates-grid .tpl-card {
+      background: rgba(255,255,255,0.5) !important;
+      border: 1px dashed rgba(201,168,76,0.4) !important;
       border-radius: 12px;
       padding: 20px;
       cursor: pointer;
       transition: all 0.2s;
       text-align: center;
+      box-shadow: none !important;
     }
-    .tpl-card:hover { background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.4); }
+    .templates-grid .tpl-card:hover { background: rgba(201,168,76,0.10) !important; border-color: rgba(201,168,76,0.6) !important; }
     .tpl-icon { font-size: 28px; margin-bottom: 10px; }
-    .tpl-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-    .tpl-desc { font-size: 11.5px; color: var(--gris); line-height: 1.5; }
+    .tpl-name { font-size: 13px; font-weight: 600; color: #1a1208; margin-bottom: 6px; }
+    .tpl-desc { font-size: 11.5px; color: #9c8c72; line-height: 1.5; }
 
     /* Modal */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:center; justify-content:center; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(40,30,12,0.45); z-index:200; align-items:center; justify-content:center; }
     .modal-overlay.show { display:flex; }
-    .modal { background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 32px; width: 540px; max-height: 80vh; overflow-y: auto; }
-    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-    .modal-title span { color: var(--dorado); }
-    .modal-sub { font-size: 12.5px; color: var(--gris); margin-bottom: 24px; }
+    .modal { background: #fdf8f0; border: 1px solid rgba(201,168,76,0.35); border-radius: 16px; padding: 32px; width: 540px; max-height: 80vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(120,98,40,0.22); }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #1a1208; margin-bottom: 6px; }
+    .modal-title span { color: #7a5c1e; }
+    .modal-sub { font-size: 12.5px; color: #9c8c72; margin-bottom: 24px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dorado); }
-    input[type="text"], select, textarea { background: var(--negro-input); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blanco); font-family: 'Inter', sans-serif; outline: none; resize: none; transition: border-color 0.2s; width: 100%; }
-    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
-    input::placeholder, textarea::placeholder { color: #7c7565; }
-    select option { background: #1a1a1a; }
+    label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #7a5c1e; }
+    input[type="text"], select, textarea { background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; resize: none; transition: border-color 0.2s; width: 100%; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.06); }
+    input::placeholder, textarea::placeholder { color: #b0a090; }
+    select option { background: #fdf8f0; color: #1a1208; }
 
     /* Flujo del bot */
     .flow-step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
-    .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--dorado); flex-shrink: 0; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(201,168,76,0.16); border: 1px solid rgba(201,168,76,0.35); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #7a5c1e; flex-shrink: 0; }
     .step-content { flex: 1; }
-    .step-type { font-size: 10px; color: var(--gris); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .step-type { font-size: 10px; color: #9c8c72; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
 
-    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
-    .btn-cancel { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--gris); cursor: pointer; font-family: 'Inter', sans-serif; }
-    .btn-cancel:hover { color: var(--blanco); }
-    .btn-create { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: none; background: var(--dorado); color: var(--negro); font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.07); }
+    .btn-cancel { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.62); color: #5a4e3a; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+    .btn-cancel:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
+    .btn-create { font-size: 13px; padding: 9px 20px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); color: #1a1208; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
     .btn-create:hover { opacity: 0.88; }
 
-    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--negro-panel); border: 1px solid rgba(201,168,76,0.3); color: var(--dorado); padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
+    .toast { position: fixed; bottom: 28px; right: 28px; background: #fdf8f0; border: 1px solid rgba(201,168,76,0.4); color: #7a5c1e; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 12px 32px rgba(120,98,40,0.25); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
-    .bot-card, .modal, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
     .sidebar { background: #0e0e16 !important; }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
@@ -207,7 +209,7 @@
             <div class="bot-trigger">⚡ Se activa: Nuevo contacto entra al CRM</div>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía saludo inicial + menú de opciones al primer mensaje de un nuevo paciente.</div>
+        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía saludo inicial + menú de opciones al primer mensaje de un nuevo paciente.</div>
         <div class="bot-stats">
           <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Activaciones</div></div>
           <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Último envío</div></div>
@@ -229,7 +231,7 @@
             <div class="bot-trigger">⏰ Se activa: 24h antes de cada cita</div>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía recordatorio por WhatsApp con fecha, hora y dirección de la clínica.</div>
+        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía recordatorio por WhatsApp con fecha, hora y dirección de la clínica.</div>
         <div class="bot-stats">
           <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Enviados</div></div>
           <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Confirmados</div></div>
@@ -251,7 +253,7 @@
             <div class="bot-trigger">📋 Se activa: Paciente en etapa "Interesado"</div>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--gris);line-height:1.5">Envía seguimiento 48h después de enviar una cotización sin respuesta del paciente.</div>
+        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía seguimiento 48h después de enviar una cotización sin respuesta del paciente.</div>
         <div class="bot-stats">
           <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Activaciones</div></div>
           <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Conversiones</div></div>
@@ -325,7 +327,7 @@
         </select>
       </div>
 
-      <div style="font-size:11px;color:var(--gris);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;font-weight:600">Flujo de mensajes</div>
+      <div style="font-size:11px;color:#9c8c72;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;font-weight:600">Flujo de mensajes</div>
 
       <div id="flowSteps">
         <div class="flow-step">

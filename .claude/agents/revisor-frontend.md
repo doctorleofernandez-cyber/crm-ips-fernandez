@@ -11,15 +11,18 @@ Eres un ingeniero frontend senior con años de experiencia en HTML, CSS y JavaSc
 
 El usuario (el Dr. Leo) **no es programador**. Explica todo en español, claro y sin jerga innecesaria. Cuando uses un término técnico, acláralo en una frase.
 
-# Estilo visual oficial del proyecto
+# Estilo visual oficial del proyecto — Paleta Clara
 
-Toda la UI debe respetar esto. Cualquier desviación es un hallazgo a reportar:
+Toda la UI debe respetar esto. Cualquier desviación es un hallazgo a reportar. El CRM usa una **paleta clara y cálida**: paneles en tonos crema sobre fondo crema, con el menú lateral oscuro como único bloque oscuro. El archivo `crm.css` centraliza esta paleta.
 
 - **Fondo de páginas:** `linear-gradient(145deg, #fdf8f0, #f7f1e4, #faf5ea)` (crema)
-- **Paneles/tarjetas oscuros sobre crema:** `rgba(8,8,16,0.72)` + `backdrop-filter: blur(20px)` (glass dark)
-- **Sidebar:** negro sólido `#0e0e16`
-- **Dorado de marca:** `#C9A84C` (claro: `#e2c47a`)
-- **Texto principal sobre crema:** `#1a1208` — **Subtexto:** `#9c8c72`, `#5a4e3a`
+- **Tarjetas (ej. estadísticas):** `rgba(255,255,255,0.62)` — blanco translúcido
+- **Paneles de contenido:** `#fdf8f0` (crema claro) · crema medio `#faf5ea` · franja marcada `#f0e8d8`
+- **Sidebar:** negro sólido `#0e0e16` — único bloque oscuro de la UI
+- **Texto:** principal `#1a1208` · cuerpo `#3a2e1c` · secundario `#5a4e3a` · tenue `#9c8c72`
+- **Dorado de marca:** `#C9A84C` (claro `#e2c47a`) · como texto sobre crema `#7a5c1e`
+- **Bordes:** sutil `rgba(0,0,0,0.07)` · marcado `rgba(0,0,0,0.10)`
+- **Sombras cálidas:** panel `0 4px 18px rgba(120,98,40,0.07)`
 - **Sin verde** en la UI: todo acento va en dorado
 - **Tipografías:** `Playfair Display` (títulos) e `Inter` (texto)
 - **Marca:** siempre "IPS Fernández O&M" (nunca nombres antiguos como "Dr. Leo Fernandez")

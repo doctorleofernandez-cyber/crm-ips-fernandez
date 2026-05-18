@@ -47,6 +47,11 @@ Se ejecutó el agente `disenador-uxui` para homogeneizar el CRM y hacerlo agrada
 
 **Cambio de decisión:** lo dicho en la sección 6 sobre `insights.html` quedó sin efecto. El Dr. Leo decidió **alinearla al resto del CRM** para lograr homogeneidad total.
 
+### 9. Cambio de dirección visual — paleta clara
+Al ver el CRM unificado en oscuro, al Dr. Leo le gustó más el estilo claro de `correo.html` y pidió aplicarlo a todo (ver informe — parte 4). Se hizo primero una **muestra** (`dashboard.html`), se aprobó, y luego se aplicó la **paleta clara** a las 18 páginas. La guía de estilo oficial del proyecto (en los agentes `disenador-uxui` y `revisor-frontend`) se actualizó a la paleta clara.
+
+**Cambio de decisión:** el estilo oscuro tipo cristal de la sección 8 quedó reemplazado. El estilo oficial ahora es **claro y cálido**: paneles crema sobre fondo crema, con el menú lateral oscuro como único bloque oscuro.
+
 ---
 
 ## 📋 Informe del agente — Revisión del frontend (parte 1)
@@ -179,7 +184,44 @@ Se creó el archivo compartido **`crm.css`**, la "guía de estilo viva" del CRM.
 
 ### Notas del agente
 - El responsive (menú móvil y @media) se verificó intacto a 1440px y 760px.
-- Recomendación a futuro: mover progresivamente el CSS viejo repetido de cada página a `crm.css` para aligerar los archivos (hoy `crm.css` ya unifica lo visible; el CSS viejo queda dentro de cada página sin estorbar).
+- Recomendación a futuro: mover progresivamente el CSS viejo repetido de cada página a `crm.css` para aligerar los archivos.
+
+> ⚠️ La dirección oscura de esta parte 3 fue **reemplazada** por la paleta clara (ver parte 4).
+
+---
+
+## 📋 Informe del agente — Paleta clara en todo el CRM (parte 4)
+
+Al ver el CRM unificado en oscuro, el Dr. Leo prefirió el estilo claro de `correo.html` y pidió aplicarlo a todo. Se trabajó en dos pasos: una muestra aprobada y luego el despliegue completo.
+
+### Paso 1 — Muestra (`dashboard.html`)
+El agente rehízo `dashboard.html` con la **paleta clara** tomando `correo.html` como referencia y definió el **Sistema de Diseño Claro** (valores exactos). El Dr. Leo la revisó y la **aprobó tal cual**, incluyendo los detalles decorativos (cinta dorada y icono de esquina en las tarjetas).
+
+### El Sistema de Diseño Claro (paleta oficial nueva)
+- **Fondo de página:** crema `linear-gradient(145deg,#fdf8f0,#f7f1e4,#faf5ea)`.
+- **Tarjetas:** blanco translúcido `rgba(255,255,255,0.62)`. **Paneles:** crema `#fdf8f0` / `#faf5ea` / `#f0e8d8`.
+- **Sidebar:** negro `#0e0e16` — único bloque oscuro de la UI.
+- **Texto:** principal `#1a1208`, cuerpo `#3a2e1c`, secundario `#5a4e3a`, tenue `#9c8c72`.
+- **Dorado:** `#C9A84C` / `#e2c47a` / como texto sobre crema `#7a5c1e`.
+- **Bordes:** `rgba(0,0,0,0.07)` y `rgba(0,0,0,0.10)`. **Sombras cálidas** (no negras).
+- **Botones:** primario degradado dorado con texto oscuro; secundario blanco translúcido.
+
+### Paso 2 — Despliegue en las 18 páginas
+- **`crm.css` reescrito por completo a la paleta clara:** paneles, tarjetas, botones, tablas, modales y formularios. Una sola edición cambió la base de todas las páginas.
+- **Cada página interna** tenía estilos propios en su `<style>` con colores oscuros (modales, formularios, toasts, textos sueltos); se convirtieron uno a uno a la paleta clara.
+- **`insights.html`** pasó de cristal oscuro a paleta clara.
+- **`paciente-perfil.html`** (el caso más complejo: ficha completa como panel oscuro) se convirtió íntegra.
+- Tablas con textos casi invisibles (`facturacion`, `citas`) corregidas a texto oscuro legible.
+- Modales: fondo crema, campos blancos, etiquetas doradas; fondo translúcido detrás pasó a marrón cálido.
+- `dashboard.html` volvió a cargar `crm.css` (se le había quitado durante la muestra).
+- `correo`, `chat`, `chats-equipo` y `pipeline` ya estaban claros; solo se verificaron.
+
+### Archivos modificados en la parte 4 (16)
+`crm.css` + 14 páginas (`dashboard`, `pacientes`, `citas`, `facturacion`, `insights`, `paciente-perfil`, `tratamientos`, `reportes`, `agente-ia`, `bots`, `plantillas`, `difusiones`, `ajustes`) + los 2 archivos de agente (`disenador-uxui.md`, `revisor-frontend.md`, guía de estilo actualizada). `index.html`, `sidebar.*`, `tema.js` y `light-theme.css` no se tocaron.
+
+### Notas del agente
+- El responsive se verificó intacto: no se tocó `sidebar.css/js` ni ninguna regla `@media`; solo colores.
+- Recomendación a futuro: depurar variables CSS muertas (`--negro`, etc.) que cada página aún declara.
 
 ---
 
@@ -208,7 +250,7 @@ Se creó el archivo compartido **`crm.css`**, la "guía de estilo viva" del CRM.
 | · `redaccion-contenido.md` | Redacción y contenido *(sin usar)* |
 | · `documentacion-manual.md` | Documentación y manual de uso *(sin usar)* |
 | `resúmenes/` | Carpeta con los resúmenes de cada sesión |
-| `crm.css` | Guía de estilo viva — unifica el diseño de las 17 páginas internas |
+| `crm.css` | Guía de estilo viva — paleta clara, unifica las 17 páginas internas |
 | `sidebar.css` / `sidebar.js` | Sidebar colapsable + botón "Cerrar sesión" + sistema responsive |
 | `tema.js` / `light-theme.css` | Sistema de tema claro / oscuro |
 | `dashboard.html` | Panel principal |

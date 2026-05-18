@@ -57,7 +57,8 @@
     .settings-sidebar {
       width: 210px;
       flex-shrink: 0;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      border-right: 1px solid rgba(0,0,0,0.07);
+      background: #f0e8d8;
       padding: 28px 14px;
       display: flex;
       flex-direction: column;
@@ -68,24 +69,25 @@
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       font-weight: 700;
+      color: #1a1208;
       padding: 0 8px;
       margin-bottom: 18px;
     }
 
-    .settings-title span { color: var(--dorado); }
+    .settings-title span { color: #7a5c1e; }
 
-    .s-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 6px; }
+    .s-section { font-size: 9px; color: #9c8c72; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 6px; }
 
     .s-tab {
       display: flex; align-items: center; gap: 10px;
       padding: 10px 10px; border-radius: 8px;
-      cursor: pointer; font-size: 12.5px; color: var(--gris);
+      cursor: pointer; font-size: 12.5px; color: #5a4e3a;
       transition: all 0.2s; border: none; background: none;
       font-family: 'Inter', sans-serif; text-align: left; width: 100%;
     }
 
-    .s-tab:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
-    .s-tab.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .s-tab:hover { background: rgba(201,168,76,0.10); color: #1a1208; }
+    .s-tab.active { background: rgba(201,168,76,0.18); color: #7a5c1e; }
     .s-tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 
     /* ── CONTENIDO ── */
@@ -95,32 +97,34 @@
     .section.active { display: block; }
 
     .section-header { margin-bottom: 28px; }
-    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .section-header h2 span { color: var(--dorado); }
-    .section-header p { font-size: 13px; color: var(--gris); }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #1a1208; margin-bottom: 4px; }
+    .section-header h2 span { color: #7a5c1e; }
+    .section-header p { font-size: 13px; color: #9c8c72; }
 
     /* Cards de configuración */
     .config-card {
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.1);
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(0,0,0,0.07);
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 16px;
-      transition: border-color 0.2s;
+      box-shadow: 0 4px 18px rgba(120,98,40,0.07);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .config-card:hover { border-color: rgba(201,168,76,0.2); }
+    .config-card:hover { border-color: rgba(201,168,76,0.35); box-shadow: 0 10px 28px rgba(120,98,40,0.13); }
 
     .config-card-title {
       font-size: 13px;
       font-weight: 600;
+      color: #1a1208;
       margin-bottom: 18px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .config-card-title span { color: var(--dorado); }
+    .config-card-title span { color: #7a5c1e; }
 
     /* Formulario */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -132,29 +136,29 @@
     label {
       font-size: 10px; font-weight: 600;
       letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--dorado);
+      color: #7a5c1e;
     }
 
     input[type="text"], input[type="email"], input[type="tel"],
     input[type="password"], input[type="time"], input[type="url"],
     select, textarea {
-      background: var(--negro-input);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.10);
       border-radius: 8px; padding: 10px 14px;
-      font-size: 13px; color: var(--blanco);
+      font-size: 13px; color: #1a1208;
       font-family: 'Inter', sans-serif;
       outline: none; resize: none;
       transition: border-color 0.2s; width: 100%;
     }
 
-    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.4); }
-    input::placeholder, textarea::placeholder { color: #7c7565; }
-    select option { background: #1a1a1a; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.06); }
+    input::placeholder, textarea::placeholder { color: #b0a090; }
+    select option { background: #fdf8f0; color: #1a1208; }
 
     /* Botón guardar */
     .btn-save {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--dorado); color: var(--negro);
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); color: #1a1208;
       border: none; padding: 10px 22px; border-radius: 8px;
       font-size: 13px; font-weight: 600; cursor: pointer;
       transition: opacity 0.2s; margin-top: 18px;
@@ -171,8 +175,8 @@
       align-items: center;
     }
 
-    .horario-day { font-size: 13px; font-weight: 500; }
-    .horario-header { font-size: 10px; color: #8c8472; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .horario-day { font-size: 13px; font-weight: 500; color: #1a1208; }
+    .horario-header { font-size: 10px; color: #9c8c72; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
 
     .toggle-wrap { display: flex; align-items: center; gap: 8px; }
 
@@ -185,7 +189,7 @@
 
     .toggle-slider {
       position: absolute; inset: 0;
-      background: rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.12);
       border-radius: 10px;
       transition: background 0.2s;
     }
@@ -194,14 +198,14 @@
       content: ''; position: absolute;
       width: 14px; height: 14px;
       left: 3px; top: 3px;
-      background: #555; border-radius: 50%;
+      background: #b0a090; border-radius: 50%;
       transition: all 0.2s;
     }
 
-    .toggle input:checked + .toggle-slider { background: rgba(201,168,76,0.3); }
+    .toggle input:checked + .toggle-slider { background: rgba(201,168,76,0.4); }
     .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--dorado); }
 
-    .toggle-label { font-size: 12px; color: var(--gris); }
+    .toggle-label { font-size: 12px; color: #9c8c72; }
 
     /* ── USUARIOS ── */
     .user-row {
@@ -223,8 +227,8 @@
     }
 
     .u-info { flex: 1; }
-    .u-name { font-size: 13px; font-weight: 600; }
-    .u-email { font-size: 11px; color: #9a9180; }
+    .u-name { font-size: 13px; font-weight: 600; color: #1a1208; }
+    .u-email { font-size: 11px; color: #9c8c72; }
 
     .u-role-badge {
       font-size: 10px; font-weight: 600;
@@ -240,28 +244,28 @@
 
     .btn-sm {
       font-size: 11px; padding: 5px 12px;
-      border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
-      background: transparent; color: var(--gris);
+      border-radius: 6px; border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.55); color: #9c8c72;
       cursor: pointer; transition: all 0.15s;
       font-family: 'Inter', sans-serif;
     }
 
-    .btn-sm:hover { border-color: rgba(201,168,76,0.3); color: var(--dorado); }
+    .btn-sm:hover { border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
     .btn-sm.danger:hover { border-color: rgba(224,85,85,0.4); color: var(--rojo); }
 
     .btn-invite {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 500;
-      background: transparent;
-      border: 1px dashed rgba(201,168,76,0.25);
-      color: var(--dorado); padding: 10px 16px;
+      font-size: 12px; font-weight: 600;
+      background: rgba(255,255,255,0.5);
+      border: 1px dashed rgba(201,168,76,0.4);
+      color: #7a5c1e; padding: 10px 16px;
       border-radius: 8px; cursor: pointer;
       transition: all 0.2s; margin-top: 14px;
       font-family: 'Inter', sans-serif;
       width: 100%; justify-content: center;
     }
 
-    .btn-invite:hover { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.4); }
+    .btn-invite:hover { background: rgba(201,168,76,0.10); border-color: rgba(201,168,76,0.6); }
 
     /* ── INTEGRACIONES ── */
     .integration-row {
@@ -285,8 +289,8 @@
     .int-icon.cal  { background: rgba(201,168,76,0.12); }
 
     .int-info { flex: 1; }
-    .int-name  { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-    .int-desc  { font-size: 11px; color: #9a9180; }
+    .int-name  { font-size: 13px; font-weight: 600; color: #1a1208; margin-bottom: 2px; }
+    .int-desc  { font-size: 11px; color: #9c8c72; }
 
     .int-status {
       font-size: 11px; font-weight: 600;
@@ -299,17 +303,17 @@
     .int-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
     .btn-conectar {
-      font-size: 12px; font-weight: 500;
+      font-size: 12px; font-weight: 600;
       padding: 7px 14px; border-radius: 7px;
-      border: 1px solid rgba(201,168,76,0.25);
-      background: transparent; color: var(--dorado);
+      border: 1px solid rgba(201,168,76,0.35);
+      background: rgba(255,255,255,0.6); color: #7a5c1e;
       cursor: pointer; transition: background 0.2s;
       font-family: 'Inter', sans-serif; white-space: nowrap;
     }
 
-    .btn-conectar:hover { background: rgba(201,168,76,0.08); }
-    .btn-conectar.desconectar { border-color: rgba(224,85,85,0.25); color: var(--rojo); }
-    .btn-conectar.desconectar:hover { background: rgba(224,85,85,0.06); }
+    .btn-conectar:hover { background: rgba(201,168,76,0.12); }
+    .btn-conectar.desconectar { border-color: rgba(224,85,85,0.3); color: var(--rojo); }
+    .btn-conectar.desconectar:hover { background: rgba(224,85,85,0.08); }
 
     /* ── NOTIFICACIONES ── */
     .notif-row {
@@ -320,8 +324,8 @@
 
     .notif-row:last-child { border-bottom: none; }
     .notif-info { flex: 1; }
-    .notif-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-    .notif-desc { font-size: 11px; color: #9a9180; }
+    .notif-name { font-size: 13px; font-weight: 500; color: #1a1208; margin-bottom: 2px; }
+    .notif-desc { font-size: 11px; color: #9c8c72; }
 
     /* ── SEGURIDAD ── */
     .danger-zone {
@@ -345,19 +349,19 @@
     }
 
     .danger-row:last-child { border-bottom: none; }
-    .danger-row-info { font-size: 13px; color: #888; }
-    .btn-danger { font-size: 12px; padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(224,85,85,0.3); background: transparent; color: var(--rojo); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+    .danger-row-info { font-size: 13px; color: #5a4e3a; }
+    .btn-danger { font-size: 12px; padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(224,85,85,0.3); background: rgba(255,255,255,0.55); color: var(--rojo); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
     .btn-danger:hover { background: rgba(224,85,85,0.08); }
 
     /* Toast */
     .toast {
       position: fixed; bottom: 28px; right: 28px;
-      background: var(--negro-panel);
-      border: 1px solid rgba(201,168,76,0.3);
-      color: var(--dorado);
+      background: #fdf8f0;
+      border: 1px solid rgba(201,168,76,0.4);
+      color: #7a5c1e;
       padding: 12px 20px; border-radius: 10px;
       font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      box-shadow: 0 12px 32px rgba(120,98,40,0.25);
       transform: translateY(80px); opacity: 0;
       transition: all 0.3s ease; z-index: 999;
       display: flex; align-items: center; gap: 8px;
@@ -372,8 +376,8 @@
 
     .logo-preview {
       width: 72px; height: 72px; border-radius: 12px;
-      background: rgba(201,168,76,0.06);
-      border: 1px dashed rgba(201,168,76,0.25);
+      background: rgba(201,168,76,0.08);
+      border: 1px dashed rgba(201,168,76,0.4);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; overflow: hidden;
     }
@@ -381,14 +385,14 @@
     .logo-preview img { width: 100%; height: 100%; object-fit: contain; }
 
     .logo-upload-btn {
-      font-size: 12px; padding: 8px 16px; border-radius: 8px;
-      border: 1px solid rgba(201,168,76,0.25); background: transparent;
-      color: var(--dorado); cursor: pointer; transition: background 0.2s;
+      font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(201,168,76,0.35); background: rgba(255,255,255,0.6);
+      color: #7a5c1e; cursor: pointer; transition: background 0.2s;
       font-family: 'Inter', sans-serif;
     }
 
-    .logo-upload-btn:hover { background: rgba(201,168,76,0.08); }
-    .logo-hint { font-size: 11px; color: #8c8472; margin-top: 4px; }
+    .logo-upload-btn:hover { background: rgba(201,168,76,0.12); }
+    .logo-hint { font-size: 11px; color: #9c8c72; margin-top: 4px; }
 
     /* ── APARIENCIA ── */
     .tema-grid {
@@ -399,15 +403,16 @@
     }
 
     .tema-option {
-      border: 2px solid rgba(255,255,255,0.06);
+      border: 2px solid rgba(0,0,0,0.08);
       border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
       transition: border-color 0.2s, transform 0.15s;
       position: relative;
+      background: rgba(255,255,255,0.5);
     }
 
-    .tema-option:hover { transform: translateY(-2px); border-color: rgba(201,168,76,0.3); }
+    .tema-option:hover { transform: translateY(-2px); border-color: rgba(201,168,76,0.35); }
     .tema-option.selected { border-color: var(--dorado); }
 
     .tema-option input[type="radio"] { display: none; }
@@ -444,13 +449,14 @@
       justify-content: space-between;
       font-size: 12.5px;
       font-weight: 500;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      color: #1a1208;
+      border-top: 1px solid rgba(0,0,0,0.07);
     }
 
     .tema-check {
       width: 16px; height: 16px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.15);
+      border: 2px solid rgba(0,0,0,0.20);
       display: flex; align-items: center; justify-content: center;
       font-size: 9px; transition: all 0.2s;
       flex-shrink: 0;
@@ -459,11 +465,11 @@
     .tema-option.selected .tema-check {
       background: var(--dorado);
       border-color: var(--dorado);
-      color: #000;
+      color: #1a1208;
     }
 
     .tema-option.selected .tema-label {
-      color: var(--dorado);
+      color: #7a5c1e;
     }
 
     html[data-theme="claro"] .tema-label {
@@ -484,11 +490,10 @@
 
     .tema-desc {
       font-size: 11px;
-      color: var(--gris);
+      color: #9c8c72;
       margin-top: 6px;
       line-height: 1.5;
     }
-    .config-card, .toast { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
     .sidebar { background: #0e0e16 !important; }
 
     /* ── RESPONSIVE: ajustes en móvil ── */
@@ -500,7 +505,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        border-bottom: 1px solid rgba(0,0,0,0.07);
         padding: 14px;
       }
       .settings-content { padding: 20px 14px; }
@@ -814,22 +819,22 @@
             <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">👑</div>
               <div style="font-size:12px;font-weight:600;color:var(--dorado)">Administrador</div>
-              <div style="font-size:10px;color:#555;margin-top:4px">Acceso total</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Acceso total</div>
             </div>
             <div style="background:rgba(76,143,202,0.06);border:1px solid rgba(76,143,202,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🩺</div>
               <div style="font-size:12px;font-weight:600;color:var(--azul)">Doctor</div>
-              <div style="font-size:10px;color:#555;margin-top:4px">Historia, citas, pacientes</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Historia, citas, pacientes</div>
             </div>
             <div style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
               <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
-              <div style="font-size:10px;color:#555;margin-top:4px">Citas y pacientes</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Citas y pacientes</div>
             </div>
             <div style="background:rgba(155,89,182,0.06);border:1px solid rgba(155,89,182,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">📋</div>
               <div style="font-size:12px;font-weight:600;color:#9B59B6">Recepcionista</div>
-              <div style="font-size:10px;color:#555;margin-top:4px">Agenda y chat</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Agenda y chat</div>
             </div>
           </div>
         </div>
@@ -1085,7 +1090,7 @@
             <div style="width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--dorado);flex-shrink:0">LF</div>
             <div>
               <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">Dr. Leo Fernández</div>
-              <div style="font-size:12px;color:#555;margin-top:2px">doctorleofernandez@gmail.com</div>
+              <div style="font-size:12px;color:#9c8c72;margin-top:2px">doctorleofernandez@gmail.com</div>
               <div style="font-size:11px;margin-top:6px;background:rgba(201,168,76,0.1);color:var(--dorado);padding:2px 10px;border-radius:10px;display:inline-block;font-weight:600">Administrador</div>
             </div>
           </div>
@@ -1148,10 +1153,10 @@
 
         <div class="config-card">
           <div class="config-card-title">🛡️ Sesiones activas</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.06)">
             <div>
               <div style="font-size:13px;font-weight:500">Este dispositivo</div>
-              <div style="font-size:11px;color:#555">Mac · Chrome · Medellín, Colombia</div>
+              <div style="font-size:11px;color:#9c8c72">Mac · Chrome · Medellín, Colombia</div>
             </div>
             <span style="font-size:10px;font-weight:600;background:rgba(168,137,63,0.12);color:var(--verde);padding:3px 10px;border-radius:10px">Activa ahora</span>
           </div>
