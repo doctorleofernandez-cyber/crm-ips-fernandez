@@ -122,12 +122,26 @@
   }
 
   hamburger.addEventListener('click', toggleMobileMenu);
-  // Refuerzo para iOS: touchend garantiza respuesta inmediata al toque.
-  hamburger.addEventListener('touchend', toggleMobileMenu);
 
-  // Tocar la capa oscura cierra el menú
+  // Delegación global: capturamos el toque en TODO el documento y, si cae
+  // sobre el botón hamburguesa o la capa oscura, reaccionamos. Esto evita
+  // problemas de iOS con elementos creados por JS que a veces no reciben
+  // el evento click directamente.
+  document.addEventListener('touchend', function (e) {
+    var t = e.target;
+    if (t && (t === hamburger || (t.closest && t.closest('.mobile-menu-btn')))) {
+      e.preventDefault();
+      toggleMobileMenu();
+      return;
+    }
+    if (t && (t === overlay || (t.closest && t.closest('.sidebar-overlay')))) {
+      e.preventDefault();
+      closeMobileMenu();
+    }
+  }, { passive: false });
+
+  // Tocar la capa oscura cierra el menú (escritorio)
   overlay.addEventListener('click', closeMobileMenu);
-  overlay.addEventListener('touchend', function (e) { e.preventDefault(); closeMobileMenu(); });
 
   // Al navegar (tocar un enlace del menú) se cierra solo
   sidebar.querySelectorAll('.nav-item').forEach(function (item) {
