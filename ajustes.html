@@ -423,24 +423,24 @@
       overflow: hidden;
     }
 
-    /* Preview oscuro */
-    .prev-oscuro .prev-sidebar { width: 32px; background: #1a1a1a; }
-    .prev-oscuro .prev-body    { flex: 1; background: #111; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
-    .prev-oscuro .prev-bar     { height: 7px; background: #222; border-radius: 3px; }
-    .prev-oscuro .prev-card    { flex: 1; background: #1a1a1a; border-radius: 4px; }
+    /* Preview oscuro — noche cálida con dorado (paleta oficial nocturna) */
+    .prev-oscuro .prev-sidebar { width: 32px; background: #0e0e16; }
+    .prev-oscuro .prev-body    { flex: 1; background: linear-gradient(145deg,#0e0e16,#15151f,#0e0e16); padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .prev-oscuro .prev-bar     { height: 7px; background: #1a1a24; border-radius: 3px; }
+    .prev-oscuro .prev-card    { flex: 1; background: #1a1a24; border-radius: 4px; border: 1px solid rgba(201,168,76,0.15); }
     .prev-oscuro .prev-accent  { background: #C9A84C; }
 
-    /* Preview claro */
-    .prev-claro .prev-sidebar  { width: 32px; background: #ffffff; border-right: 1px solid #e5e7eb; }
-    .prev-claro .prev-body     { flex: 1; background: #f0f2f5; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
-    .prev-claro .prev-bar      { height: 7px; background: #ffffff; border-radius: 3px; }
-    .prev-claro .prev-card     { flex: 1; background: #ffffff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-    .prev-claro .prev-accent   { background: #b8942e; }
+    /* Preview claro — crema oficial (paleta diurna del CRM) */
+    .prev-claro .prev-sidebar  { width: 32px; background: #0e0e16; }
+    .prev-claro .prev-body     { flex: 1; background: linear-gradient(145deg,#fdf8f0,#f7f1e4,#faf5ea); padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .prev-claro .prev-bar      { height: 7px; background: rgba(255,255,255,0.62); border-radius: 3px; }
+    .prev-claro .prev-card     { flex: 1; background: rgba(255,255,255,0.62); border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+    .prev-claro .prev-accent   { background: #C9A84C; }
 
-    /* Preview sistema */
-    .prev-sistema .prev-sidebar { width: 32px; background: linear-gradient(180deg, #1a1a1a 50%, #fff 50%); }
-    .prev-sistema .prev-body    { flex: 1; background: linear-gradient(135deg, #111 50%, #f0f2f5 50%); padding: 6px; }
-    .prev-sistema .prev-bar     { height: 7px; background: rgba(201,168,76,0.3); border-radius: 3px; }
+    /* Preview sistema — mitad noche, mitad crema */
+    .prev-sistema .prev-sidebar { width: 32px; background: #0e0e16; }
+    .prev-sistema .prev-body    { flex: 1; background: linear-gradient(135deg, #0e0e16 50%, #faf5ea 50%); padding: 6px; }
+    .prev-sistema .prev-bar     { height: 7px; background: rgba(201,168,76,0.5); border-radius: 3px; }
 
     .tema-label {
       padding: 10px 12px;
@@ -851,6 +851,23 @@
           <div class="config-card-title">🌗 Modo de color</div>
           <div class="tema-grid" id="temaGrid">
 
+            <!-- Claro (predeterminado) -->
+            <label class="tema-option" id="opt-claro" onclick="elegirTema('claro')">
+              <input type="radio" name="tema" value="claro" />
+              <div class="tema-preview prev-claro">
+                <div class="prev-sidebar"></div>
+                <div class="prev-body">
+                  <div class="prev-bar prev-accent" style="width:55%;height:5px"></div>
+                  <div class="prev-bar"></div>
+                  <div class="prev-card"></div>
+                </div>
+              </div>
+              <div class="tema-label">
+                Claro
+                <span class="tema-check">✓</span>
+              </div>
+            </label>
+
             <!-- Oscuro -->
             <label class="tema-option" id="opt-oscuro" onclick="elegirTema('oscuro')">
               <input type="radio" name="tema" value="oscuro" />
@@ -864,23 +881,6 @@
               </div>
               <div class="tema-label">
                 Oscuro
-                <span class="tema-check">✓</span>
-              </div>
-            </label>
-
-            <!-- Claro -->
-            <label class="tema-option" id="opt-claro" onclick="elegirTema('claro')">
-              <input type="radio" name="tema" value="claro" />
-              <div class="tema-preview prev-claro">
-                <div class="prev-sidebar"></div>
-                <div class="prev-body">
-                  <div class="prev-bar prev-accent" style="width:55%;height:5px"></div>
-                  <div class="prev-bar"></div>
-                  <div class="prev-card"></div>
-                </div>
-              </div>
-              <div class="tema-label">
-                Claro
                 <span class="tema-check">✓</span>
               </div>
             </label>
@@ -1308,8 +1308,8 @@
 
     // ── APARIENCIA ──
     const TEMAS = {
-      oscuro:  'Fondo oscuro. Ideal para iluminación baja o trabajo nocturno.',
-      claro:   'Fondo blanco. Ideal para espacios bien iluminados y uso diurno.',
+      claro:   'Paleta crema cálida con dorado. Ideal para uso diurno (predeterminado).',
+      oscuro:  'Paleta nocturna negro cálido con dorado. Ideal para iluminación baja o trabajo nocturno.',
       sistema: 'Sigue automáticamente el modo claro u oscuro de tu dispositivo.',
     };
 
@@ -1325,7 +1325,7 @@
     }
 
     // Marcar el tema actual al cargar
-    const temaActual = localStorage.getItem('tema_ips') || 'oscuro';
+    const temaActual = localStorage.getItem('tema_ips') || 'claro';
     ['oscuro','claro','sistema'].forEach(t => {
       document.getElementById('opt-' + t).classList.toggle('selected', t === temaActual);
     });
