@@ -226,7 +226,15 @@
   .sidebar.collapsed.mobile-open .nav-section,
   .sidebar.mobile-open .nav-section { opacity: 1; height: auto; padding: 8px 10px 3px; overflow: visible; }
   .sidebar.collapsed.mobile-open .nav-item,
-  .sidebar.mobile-open .nav-item { font-size: 12.5px; justify-content: flex-start; padding: 9px 10px; }
+  .sidebar.mobile-open .nav-item {
+    font-size: 12.5px;
+    justify-content: flex-start;
+    padding: 9px 10px;
+    /* Refuerzos para iPhone: que cada item se comporte como tocable */
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(201,168,76,0.25);
+  }
   .sidebar.collapsed.mobile-open .nav-icon,
   .sidebar.mobile-open .nav-icon { font-size: 14px; }
   .sidebar.collapsed.mobile-open .logo-text,

@@ -121,45 +121,48 @@
     }
   }
 
+  // Click normal (escritorio + iOS)
   hamburger.addEventListener('click', toggleMobileMenu);
-
-  // Delegación global: capturamos el toque en TODO el documento y, si cae
-  // sobre el botón hamburguesa o la capa oscura, reaccionamos. Esto evita
-  // problemas de iOS con elementos creados por JS que a veces no reciben
-  // el evento click directamente.
-  document.addEventListener('touchend', function (e) {
-    var t = e.target;
-    if (t && (t === hamburger || (t.closest && t.closest('.mobile-menu-btn')))) {
-      e.preventDefault();
-      toggleMobileMenu();
-      return;
-    }
-    if (t && (t === overlay || (t.closest && t.closest('.sidebar-overlay')))) {
-      e.preventDefault();
-      closeMobileMenu();
-    }
-  }, { passive: false });
-
-  // Tocar la capa oscura cierra el menú (escritorio)
   overlay.addEventListener('click', closeMobileMenu);
 
-  // Al navegar (tocar un enlace del menú) se cierra el menú Y se navega.
-  // En iOS Safari, si la animación de cierre coincide con la navegación
-  // del <a>, el click default puede cancelarse. Forzamos la navegación.
+  // Refuerzo solo en el botón hamburguesa y la capa oscura: en iOS Safari
+  // el touchend dispara el toggle antes que el click sintético. Anotamos
+  // los listeners en los elementos concretos (no en document) para no
+  // interferir con los toques sobre los enlaces del menú.
+  hamburger.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    toggleMobileMenu();
+  }, { passive: false });
+
+  overlay.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    closeMobileMenu();
+  }, { passive: false });
+
+  // Al tocar un enlace del menú en móvil: navegar de forma fiable en iOS.
+  // En iPhone el click sintético sobre un <a> dentro de un sidebar con
+  // transform/animación no siempre se dispara, así que respondemos al
+  // touchend (que sí llega) y forzamos la navegación con window.location.
+  // El click se queda como respaldo para escritorio y navegadores que no
+  // disparen touchend.
   sidebar.querySelectorAll('.nav-item').forEach(function (item) {
-    item.addEventListener('click', function (e) {
-      var href = item.getAttribute('href');
-      // Si NO estamos en modo móvil con menú abierto, dejar comportamiento normal.
+    var yaNavegando = false;
+
+    function navegar(e) {
+      if (yaNavegando) return;
       if (!sidebar.classList.contains('mobile-open')) return;
-      // En móvil con menú abierto: cerrar menú y navegar manualmente.
-      if (href && href !== '#' && href.charAt(0) !== '#') {
-        e.preventDefault();
+      var href = item.getAttribute('href');
+      if (!href || href === '#' || href.charAt(0) === '#') {
         closeMobileMenu();
-        window.location.href = href;
-      } else {
-        closeMobileMenu();
+        return;
       }
-    });
+      yaNavegando = true;
+      if (e && e.preventDefault) e.preventDefault();
+      window.location.href = href;
+    }
+
+    item.addEventListener('touchend', navegar, { passive: false });
+    item.addEventListener('click', navegar);
   });
 
   // Si se agranda la ventana a escritorio, cerrar el menú móvil
