@@ -417,8 +417,8 @@
 
 <script>
   /* ── Storage ─────────────────────────────── */
-  const KEY_CITAS = 'ips_citas';
-  const KEY_PAC   = 'ips_pacientes';
+  const KEY_CITAS = 'citas_ips';
+  const KEY_PAC   = 'pacientes_ips';
 
   const cargar    = () => JSON.parse(localStorage.getItem(KEY_CITAS) || '[]');
   const guardar   = d  => localStorage.setItem(KEY_CITAS, JSON.stringify(d));
