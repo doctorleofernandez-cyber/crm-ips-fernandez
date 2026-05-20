@@ -143,9 +143,23 @@
   // Tocar la capa oscura cierra el menú (escritorio)
   overlay.addEventListener('click', closeMobileMenu);
 
-  // Al navegar (tocar un enlace del menú) se cierra solo
+  // Al navegar (tocar un enlace del menú) se cierra el menú Y se navega.
+  // En iOS Safari, si la animación de cierre coincide con la navegación
+  // del <a>, el click default puede cancelarse. Forzamos la navegación.
   sidebar.querySelectorAll('.nav-item').forEach(function (item) {
-    item.addEventListener('click', closeMobileMenu);
+    item.addEventListener('click', function (e) {
+      var href = item.getAttribute('href');
+      // Si NO estamos en modo móvil con menú abierto, dejar comportamiento normal.
+      if (!sidebar.classList.contains('mobile-open')) return;
+      // En móvil con menú abierto: cerrar menú y navegar manualmente.
+      if (href && href !== '#' && href.charAt(0) !== '#') {
+        e.preventDefault();
+        closeMobileMenu();
+        window.location.href = href;
+      } else {
+        closeMobileMenu();
+      }
+    });
   });
 
   // Si se agranda la ventana a escritorio, cerrar el menú móvil
