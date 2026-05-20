@@ -83,9 +83,13 @@
 
   // Botón hamburguesa
   var hamburger = document.createElement('button');
+  hamburger.type = 'button';
   hamburger.className = 'mobile-menu-btn';
   hamburger.setAttribute('aria-label', 'Abrir menú');
   hamburger.innerHTML = '☰';
+  // iOS Safari a veces ignora clicks en botones creados por JS si no tienen
+  // un handler inline. onclick="void(0)" garantiza que el toque dispare el click.
+  hamburger.setAttribute('onclick', 'void(0)');
 
   // Capa oscura (overlay)
   var overlay = document.createElement('div');
@@ -108,16 +112,22 @@
     hamburger.setAttribute('aria-label', 'Abrir menú');
   }
 
-  hamburger.addEventListener('click', function () {
+  function toggleMobileMenu(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
     if (sidebar.classList.contains('mobile-open')) {
       closeMobileMenu();
     } else {
       openMobileMenu();
     }
-  });
+  }
+
+  hamburger.addEventListener('click', toggleMobileMenu);
+  // Refuerzo para iOS: touchend garantiza respuesta inmediata al toque.
+  hamburger.addEventListener('touchend', toggleMobileMenu);
 
   // Tocar la capa oscura cierra el menú
   overlay.addEventListener('click', closeMobileMenu);
+  overlay.addEventListener('touchend', function (e) { e.preventDefault(); closeMobileMenu(); });
 
   // Al navegar (tocar un enlace del menú) se cierra solo
   sidebar.querySelectorAll('.nav-item').forEach(function (item) {

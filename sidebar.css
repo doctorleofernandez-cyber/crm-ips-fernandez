@@ -158,8 +158,8 @@
   top: 14px;
   left: 14px;
   z-index: 320;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 9px;
   border: 1px solid rgba(201,168,76,0.35);
   background: #0e0e16;
@@ -170,6 +170,10 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  -webkit-tap-highlight-color: rgba(201,168,76,0.25);
+  touch-action: manipulation;
+  -webkit-appearance: none;
+          appearance: none;
 }
 
 /* Capa oscura detrás del menú abierto en móvil */
