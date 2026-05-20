@@ -680,7 +680,9 @@
           </div>
           <div class="form-group">
             <label>Paciente</label>
-            <input type="text" id="fPaciente" placeholder="Nombre completo" required />
+            <select id="fPaciente" required onchange="autoLlenarDocumento()">
+              <option value="">— Selecciona un paciente —</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Documento</label>
@@ -843,9 +845,40 @@
     function abrirModal() {
       editandoId = null;
       document.getElementById('facturaForm').reset();
+      llenarSelectorPacientes();
       inicializarFecha();
       document.querySelector('.modal-title').innerHTML = 'Nueva <span>Factura</span>';
       document.getElementById('overlay').classList.add('open');
+    }
+
+    // ── LLENA EL SELECTOR DE PACIENTES DESDE LA LISTA REAL ──
+    function llenarSelectorPacientes() {
+      const sel = document.getElementById('fPaciente');
+      const pacientes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
+      sel.innerHTML = '<option value="">— Selecciona un paciente —</option>';
+      if (pacientes.length === 0) {
+        sel.innerHTML = '<option value="">No hay pacientes registrados — añádalos en la sección Pacientes</option>';
+        return;
+      }
+      pacientes
+        .slice()
+        .sort((a, b) => (a.nombres || '').localeCompare(b.nombres || ''))
+        .forEach(p => {
+          const nombre = `${p.nombres || ''} ${p.apellidos || ''}`.trim();
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = nombre;
+          opt.dataset.documento = `${p.tipoDoc || ''} ${p.numDoc || ''}`.trim();
+          sel.appendChild(opt);
+        });
+    }
+
+    // ── AUTOCOMPLETA EL DOCUMENTO AL ELEGIR UN PACIENTE ──
+    function autoLlenarDocumento() {
+      const sel = document.getElementById('fPaciente');
+      const opt = sel.options[sel.selectedIndex];
+      const doc = opt ? (opt.dataset.documento || '') : '';
+      document.getElementById('fDocumento').value = doc;
     }
 
     function cerrarModal() {
@@ -859,12 +892,15 @@
     // ── GUARDAR ──
     function guardarFactura(e) {
       e.preventDefault();
+      const selPac = document.getElementById('fPaciente');
+      const optPac = selPac.options[selPac.selectedIndex];
       const factura = {
         id:          editandoId || Date.now().toString(),
         numero:      document.getElementById('fNumero').value.trim(),
         fecha:       document.getElementById('fFecha').value,
         vencimiento: document.getElementById('fVencimiento').value,
-        paciente:    document.getElementById('fPaciente').value.trim(),
+        pacienteId:  selPac.value,
+        paciente:    optPac ? optPac.textContent.trim() : '',
         documento:   document.getElementById('fDocumento').value.trim(),
         concepto:    document.getElementById('fConcepto').value.trim(),
         valor:       document.getElementById('fValor').value,
@@ -889,10 +925,11 @@
       const f = facturas.find(x => x.id === id);
       if (!f) return;
       editandoId = id;
+      llenarSelectorPacientes();
       document.getElementById('fNumero').value    = f.numero;
       document.getElementById('fFecha').value     = f.fecha;
       document.getElementById('fVencimiento').value = f.vencimiento || '';
-      document.getElementById('fPaciente').value  = f.paciente;
+      document.getElementById('fPaciente').value  = f.pacienteId || '';
       document.getElementById('fDocumento').value = f.documento || '';
       document.getElementById('fConcepto').value  = f.concepto;
       document.getElementById('fValor').value     = f.valor;

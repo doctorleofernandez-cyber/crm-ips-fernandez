@@ -960,8 +960,13 @@
 
     // ── FACTURAS VINCULADAS ──
     function cargarFacturas() {
+      const nombrePac = (pac.nombres ? `${pac.nombres} ${pac.apellidos || ''}` : pac.nombre || '').trim().toLowerCase();
       const facts = JSON.parse(localStorage.getItem('facturas_ips') || '[]')
-        .filter(f => f.paciente.toLowerCase().includes(pac.nombre.split(' ')[0].toLowerCase()));
+        .filter(f => {
+          if (f.pacienteId) return f.pacienteId === pac.id;
+          // Respaldo para facturas antiguas que solo guardaban el nombre como texto
+          return nombrePac && f.paciente && f.paciente.toLowerCase().includes(nombrePac);
+        });
 
       const total    = facts.reduce((s,f) => s + Number(f.valor), 0);
       const pendiente = facts.filter(f=>f.estado==='pendiente').reduce((s,f)=>s+Number(f.valor),0);
