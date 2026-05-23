@@ -140,7 +140,7 @@
       <a href="chats-equipo.html"               class="nav-item"><span class="nav-icon">👥</span> Chats de equipo</a>
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html"   class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
       <div class="nav-section">Insights</div>
       <a href="insights.html"   class="nav-item"><span class="nav-icon">◈</span> Panel</a>
       <div class="nav-section">IA & Automatización</div>
@@ -189,7 +189,7 @@
       <div class="kpi-card">
         <div class="kpi-label">Respuestas recibidas</div>
         <div class="kpi-value kpi-azul">0</div>
-        <div class="kpi-sub">Pacientes que respondieron</div>
+        <div class="kpi-sub">Contactos que respondieron</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Conversiones</div>
@@ -222,7 +222,7 @@
             <td colspan="8">
               <span class="empty-icon-big">📣</span>
               <div style="font-size:14px;margin-bottom:6px">Aún no hay difusiones</div>
-              <div style="font-size:12px">Crea tu primera campaña masiva para llegar a tus pacientes</div>
+              <div style="font-size:12px">Crea tu primera campaña masiva para llegar a tus contactos</div>
             </td>
           </tr>
         </tbody>
@@ -234,7 +234,7 @@
   <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
     <div class="modal">
       <div class="modal-title">Nueva <span>Difusión</span></div>
-      <div class="modal-sub">Envía un mensaje masivo a un grupo de pacientes o contactos.</div>
+      <div class="modal-sub">Envía un mensaje masivo a un grupo de contactos.</div>
 
       <div class="form-group">
         <label>Nombre de la campaña</label>
@@ -254,12 +254,12 @@
         <label>Plantilla de mensaje</label>
         <select id="dPlantilla">
           <option value="">— Seleccionar plantilla —</option>
-          <option>Saludo inicial nuevo paciente</option>
+          <option>Saludo inicial nuevo contacto</option>
           <option>Recordatorio de cita 24h antes</option>
           <option>Follow-up cotización sin respuesta</option>
           <option>Oferta especial blanqueamiento</option>
           <option>¿Cómo te sientes? Post-tratamiento</option>
-          <option>Paciente sin cita en 6 meses</option>
+          <option>Contacto sin cita en 6 meses</option>
         </select>
       </div>
 
@@ -268,17 +268,17 @@
         <div class="audience-card" onclick="selAud(this)">
           <span class="ac-count" id="cTodos">0</span>
           <div class="ac-name">Todos los contactos</div>
-          <div class="ac-desc">Todos los pacientes registrados en el CRM</div>
+          <div class="ac-desc">Todos los contactos registrados en el CRM</div>
         </div>
         <div class="audience-card" onclick="selAud(this)">
           <span class="ac-count">0</span>
-          <div class="ac-name">Pacientes activos</div>
-          <div class="ac-desc">Pacientes con al menos una cita en los últimos 12 meses</div>
+          <div class="ac-name">Contactos activos</div>
+          <div class="ac-desc">Contactos con al menos una cita en los últimos 12 meses</div>
         </div>
         <div class="audience-card" onclick="selAud(this)">
           <span class="ac-count">0</span>
           <div class="ac-name">Sin cita en +6 meses</div>
-          <div class="ac-desc">Pacientes que no han visitado la clínica en más de 6 meses</div>
+          <div class="ac-desc">Contactos que no han visitado la clínica en más de 6 meses</div>
         </div>
         <div class="audience-card" onclick="selAud(this)">
           <span class="ac-count">0</span>
@@ -360,7 +360,7 @@
     function renderTabla(difs) {
       const tbody = document.getElementById('tableCampanas');
       if (!difs.length) {
-        tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><span class="empty-icon-big">📣</span><div style="font-size:14px;margin-bottom:6px">Aún no hay difusiones</div><div style="font-size:12px">Crea tu primera campaña masiva para llegar a tus pacientes</div></td></tr>`;
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><span class="empty-icon-big">📣</span><div style="font-size:14px;margin-bottom:6px">Aún no hay difusiones</div><div style="font-size:12px">Crea tu primera campaña masiva para llegar a tus contactos</div></td></tr>`;
         return;
       }
       tbody.innerHTML = difs.map(d => `

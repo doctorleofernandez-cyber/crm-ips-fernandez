@@ -224,7 +224,7 @@
 
     <div class="nav-section">Pipelines</div>
     <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-    <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+    <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
     <div class="nav-section">Insights</div>
     <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -281,7 +281,7 @@
   </div>
 
   <div class="search-date">
-    <input type="text" id="searchInput" placeholder="Buscar paciente o tipo de cita…" oninput="renderLista()" />
+    <input type="text" id="searchInput" placeholder="Buscar contacto o tipo de cita…" oninput="renderLista()" />
     <input type="date"  id="filtFecha"  onchange="renderLista()" />
   </div>
 
@@ -294,7 +294,7 @@
       <table>
         <thead>
           <tr>
-            <th>Paciente</th>
+            <th>Contacto</th>
             <th>Tipo de cita</th>
             <th>Fecha</th>
             <th>Hora</th>
@@ -334,12 +334,12 @@
     <form id="formCita" onsubmit="guardarCita(event)">
       <input type="hidden" id="citaId" />
 
-      <div class="form-divider">Paciente</div>
+      <div class="form-divider">Contacto</div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Paciente *</label>
+          <label>Contacto *</label>
           <select id="pacienteSelect" required>
-            <option value="">— Seleccionar paciente —</option>
+            <option value="">— Seleccionar contacto —</option>
           </select>
         </div>
       </div>
@@ -454,7 +454,7 @@
 
   function nombrePaciente(id) {
     const p = cargarPac().find(p => p.id === id);
-    return p ? `${p.nombres} ${p.apellidos}` : 'Paciente desconocido';
+    return p ? `${p.nombres} ${p.apellidos}` : 'Contacto desconocido';
   }
 
   function inicialesPaciente(id) {
@@ -587,7 +587,7 @@
     const sel = document.getElementById('pacienteSelect');
     const pac = cargarPac().filter(p => p.estado !== 'inactivo')
                            .sort((a,b) => a.apellidos < b.apellidos ? -1 : 1);
-    sel.innerHTML = '<option value="">— Seleccionar paciente —</option>'
+    sel.innerHTML = '<option value="">— Seleccionar contacto —</option>'
       + pac.map(p => `<option value="${p.id}" ${p.id===selId?'selected':''}>${p.apellidos}, ${p.nombres}</option>`).join('');
   }
 

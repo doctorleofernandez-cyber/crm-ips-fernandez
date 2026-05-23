@@ -326,7 +326,7 @@
     }
     .sidebar { background: #0e0e16 !important; }
 
-    /* ── TARJETAS DE PACIENTE ── */
+    /* ── TARJETAS DE CONTACTO ── */
     .lead-card {
       background: rgba(255,255,255,0.82);
       border: 1px solid rgba(0,0,0,0.07);
@@ -377,7 +377,7 @@
       border-radius: 8px;
     }
 
-    /* ── MODAL NUEVO PACIENTE RÁPIDO ── */
+    /* ── MODAL NUEVO CONTACTO RÁPIDO ── */
     .overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.45);
@@ -513,7 +513,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html"  class="nav-item active"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -553,11 +553,11 @@
 
     <!-- Topbar -->
     <div class="topbar">
-      <span class="topbar-title">PIPELINE DE PACIENTES</span>
+      <span class="topbar-title">PIPELINE DE CONTACTOS</span>
       <span class="topbar-sep"></span>
-      <input type="text" class="topbar-search-input" id="searchInput" placeholder="Buscar paciente…" oninput="renderPipeline()" />
-      <span class="topbar-meta" id="leadCount">0 pacientes</span>
-      <button class="btn-new" onclick="abrirModalNuevo()">+ Nuevo paciente</button>
+      <input type="text" class="topbar-search-input" id="searchInput" placeholder="Buscar contacto…" oninput="renderPipeline()" />
+      <span class="topbar-meta" id="leadCount">0 contactos</span>
+      <button class="btn-new" onclick="abrirModalNuevo()">+ Nuevo contacto</button>
     </div>
 
     <!-- Kanban -->
@@ -567,7 +567,7 @@
       <div class="column" data-etapa="contacto">
         <div class="column-header">
           <div class="col-title">Contacto inicial</div>
-          <div class="col-sub" data-count>0 pacientes</div>
+          <div class="col-sub" data-count>0 contactos</div>
         </div>
         <div class="column-body" data-etapa="contacto"
              ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
@@ -578,7 +578,7 @@
       <div class="column" data-etapa="agendada">
         <div class="column-header">
           <div class="col-title">Cita agendada</div>
-          <div class="col-sub" data-count>0 pacientes</div>
+          <div class="col-sub" data-count>0 contactos</div>
         </div>
         <div class="column-body" data-etapa="agendada"
              ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
@@ -589,7 +589,7 @@
       <div class="column" data-etapa="tratamiento">
         <div class="column-header">
           <div class="col-title">En tratamiento</div>
-          <div class="col-sub" data-count>0 pacientes</div>
+          <div class="col-sub" data-count>0 contactos</div>
         </div>
         <div class="column-body" data-etapa="tratamiento"
              ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
@@ -600,7 +600,7 @@
       <div class="column" data-etapa="finalizado">
         <div class="column-header">
           <div class="col-title">Tratamiento finalizado</div>
-          <div class="col-sub" data-count>0 pacientes</div>
+          <div class="col-sub" data-count>0 contactos</div>
         </div>
         <div class="column-body" data-etapa="finalizado"
              ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
@@ -610,10 +610,10 @@
     </div>
   </div>
 
-  <!-- Modal Nuevo Paciente Rápido -->
+  <!-- Modal Nuevo Contacto Rápido -->
   <div class="overlay" id="overlay" onclick="cerrarOverlay(event)">
     <div class="modal">
-      <div class="modal-title">Nuevo <span>paciente</span></div>
+      <div class="modal-title">Nuevo <span>contacto</span></div>
       <form id="formNuevo" onsubmit="guardarNuevo(event)">
         <div class="modal-field">
           <label>Nombres *</label>
@@ -689,19 +689,19 @@
         const body = document.querySelector(`.column-body[data-etapa="${et}"]`);
         const count = body.querySelectorAll('.lead-card').length;
         const sub = document.querySelector(`.column[data-etapa="${et}"] [data-count]`);
-        sub.textContent = count === 1 ? '1 paciente' : `${count} pacientes`;
+        sub.textContent = count === 1 ? '1 contacto' : `${count} contactos`;
         if (count === 0) {
           body.innerHTML = `
             <div class="col-empty">
               <div class="col-empty-icon">◇</div>
-              <div class="col-empty-text">Sin pacientes en esta etapa</div>
+              <div class="col-empty-text">Sin contactos en esta etapa</div>
             </div>`;
         }
       });
 
       // Contador global
       const total = visibles.length;
-      document.getElementById('leadCount').textContent = total === 1 ? '1 paciente' : `${total} pacientes`;
+      document.getElementById('leadCount').textContent = total === 1 ? '1 contacto' : `${total} contactos`;
     }
 
     function crearTarjeta(p) {
@@ -779,7 +779,7 @@
       renderPipeline();
     }
 
-    /* ── MODAL NUEVO PACIENTE ── */
+    /* ── MODAL NUEVO CONTACTO ── */
     function abrirModalNuevo() {
       document.getElementById('formNuevo').reset();
       document.getElementById('overlay').classList.add('open');

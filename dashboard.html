@@ -511,7 +511,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html"  class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -553,42 +553,53 @@
         <h1 class="page-title">Panel <span>Principal</span></h1>
         <div class="topbar-sub">Resumen de la actividad de la clínica</div>
       </div>
-      <div class="date-badge">10 de Mayo, 2026</div>
+      <div class="date-badge" id="dateBadge">—</div>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Pacientes activos</div>
+          <div class="stat-label">Contactos activos</div>
           <div class="stat-icon">◇</div>
         </div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">Por conectar</div>
+        <div class="stat-value" id="statPacientes">—</div>
+        <div class="stat-sub" id="subPacientes">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
           <div class="stat-label">Citas hoy</div>
           <div class="stat-icon">📅</div>
         </div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">Por conectar</div>
+        <div class="stat-value" id="statCitasHoy">—</div>
+        <div class="stat-sub" id="subCitasHoy">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Facturación mes</div>
+          <div class="stat-label">Facturación del mes</div>
           <div class="stat-icon">💰</div>
         </div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">Por conectar</div>
+        <div class="stat-value" id="statFacturacion">—</div>
+        <div class="stat-sub" id="subFacturacion">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Tratamientos</div>
+          <div class="stat-label">En tratamiento</div>
           <div class="stat-icon">🦷</div>
         </div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">Por conectar</div>
+        <div class="stat-value" id="statTratamiento">—</div>
+        <div class="stat-sub" id="subTratamiento">Cargando…</div>
+      </div>
+    </div>
+
+    <!-- Pipeline del día -->
+    <div class="panel" style="margin-bottom: 20px;">
+      <div class="panel-header">
+        <div class="panel-title">Pipeline de contactos</div>
+        <a href="pipeline.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver pipeline →</a>
+      </div>
+      <div id="pipelineMini" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;">
+        <!-- llenado por JS -->
       </div>
     </div>
 
@@ -597,28 +608,276 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">Próximas citas</div>
-          <div class="panel-tag">Hoy</div>
+          <a href="citas.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver agenda →</a>
         </div>
-        <div class="coming-soon">
-          <span class="cs-icon">📅</span>
-          <p>Módulo en construcción</p>
-          <div class="cs-hint">Aquí verás las citas del día cuando se conecte</div>
-        </div>
+        <div id="proximasCitas"></div>
       </div>
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">Pacientes recientes</div>
-          <div class="panel-tag">Últimos 7 días</div>
+          <div class="panel-title">Contactos recientes</div>
+          <a href="pacientes.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver todos →</a>
         </div>
-        <div class="coming-soon">
-          <span class="cs-icon">◇</span>
-          <p>Módulo en construcción</p>
-          <div class="cs-hint">Aquí verás los últimos pacientes registrados</div>
-        </div>
+        <div id="pacientesRecientes"></div>
       </div>
     </div>
   </main>
 
   <script src="sidebar.js"></script>
+
+  <style>
+    /* ── Estilos del dashboard vivo ── */
+    .mini-etapa {
+      background: #ffffff;
+      border: 1px solid var(--borde);
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .mini-etapa:hover {
+      border-color: var(--borde-dorado);
+      transform: translateY(-2px);
+    }
+    .mini-etapa-count {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--dorado-oscuro);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .mini-etapa-label {
+      font-size: 10.5px;
+      color: var(--texto-sub);
+      letter-spacing: 0.5px;
+    }
+
+    .dash-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--borde);
+    }
+    .dash-row:last-child { border-bottom: none; }
+    .dash-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--tinte-dorado);
+      border: 1px solid var(--borde-dorado);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dorado-oscuro);
+      flex-shrink: 0;
+    }
+    .dash-body { flex: 1; min-width: 0; }
+    .dash-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--texto);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dash-sub {
+      font-size: 11.5px;
+      color: var(--texto-sub);
+      margin-top: 2px;
+    }
+    .dash-right {
+      font-size: 11.5px;
+      color: var(--texto-tenue);
+      white-space: nowrap;
+    }
+    .dash-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--texto-tenue);
+    }
+    .dash-empty-icon {
+      font-size: 28px;
+      opacity: 0.45;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .dash-empty-text { font-size: 12.5px; }
+
+    .badge-cita {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-confirmada { background: rgba(46,160,67,0.12);  color: #2ea043; }
+    .badge-pendiente  { background: rgba(201,168,76,0.15); color: var(--dorado-oscuro); }
+    .badge-completada { background: rgba(64,128,200,0.12); color: #4080c8; }
+    .badge-cancelada  { background: rgba(200,72,72,0.10);  color: #c84848; }
+  </style>
+
+  <script>
+    /* ════════ DASHBOARD VIVO ════════ */
+    (function() {
+      const MESES = ['enero','febrero','marzo','abril','mayo','junio',
+                     'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+      const ETAPAS = [
+        { key: 'contacto',    label: 'Contacto inicial' },
+        { key: 'agendada',    label: 'Cita agendada' },
+        { key: 'tratamiento', label: 'En tratamiento' },
+        { key: 'finalizado',  label: 'Finalizado' }
+      ];
+
+      function cargar(key) {
+        try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+        catch(e) { return []; }
+      }
+
+      const pacientes = cargar('pacientes_ips');
+      const citas     = cargar('citas_ips');
+      const facturas  = cargar('facturas_ips');
+
+      const hoy = new Date();
+      const hoyISO = hoy.toISOString().slice(0,10);
+      const mesActual = hoy.getMonth();
+      const anioActual = hoy.getFullYear();
+
+      // ── Fecha
+      document.getElementById('dateBadge').textContent =
+        `${hoy.getDate()} de ${MESES[mesActual].charAt(0).toUpperCase() + MESES[mesActual].slice(1)}, ${anioActual}`;
+
+      // ── Stat 1: Contactos activos
+      const activos = pacientes.filter(p => p.estado !== 'inactivo').length;
+      document.getElementById('statPacientes').textContent = activos;
+      const semanaAtras = new Date(hoy); semanaAtras.setDate(hoy.getDate() - 7);
+      const nuevosSemana = pacientes.filter(p => {
+        if (!p.fechaRegistro) return false;
+        return new Date(p.fechaRegistro) >= semanaAtras;
+      }).length;
+      document.getElementById('subPacientes').textContent =
+        nuevosSemana > 0 ? `+${nuevosSemana} esta semana` : 'Total registrados';
+
+      // ── Stat 2: Citas hoy
+      const citasHoy = citas.filter(c => c.fecha === hoyISO);
+      document.getElementById('statCitasHoy').textContent = citasHoy.length;
+      const pendHoy = citasHoy.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada').length;
+      document.getElementById('subCitasHoy').textContent =
+        citasHoy.length === 0 ? 'Sin citas hoy' :
+        pendHoy > 0 ? `${pendHoy} por atender` : 'Todas atendidas';
+
+      // ── Stat 3: Facturación del mes
+      const factsMes = facturas.filter(f => {
+        if (!f.fecha) return false;
+        const d = new Date(f.fecha);
+        return d.getMonth() === mesActual && d.getFullYear() === anioActual;
+      });
+      const cobrado = factsMes
+        .filter(f => f.estado === 'cobrado')
+        .reduce((s,f) => s + Number(f.valor || 0), 0);
+      const pendiente = factsMes
+        .filter(f => f.estado === 'pendiente' || f.estado === 'vencido')
+        .reduce((s,f) => s + Number(f.valor || 0), 0);
+      document.getElementById('statFacturacion').textContent = '$' + cobrado.toLocaleString('es-CO');
+      document.getElementById('subFacturacion').textContent =
+        pendiente > 0 ? `$${pendiente.toLocaleString('es-CO')} pendiente` : 'Sin saldo pendiente';
+
+      // ── Stat 4: En tratamiento
+      const enTrat = pacientes.filter(p => p.etapa === 'tratamiento').length;
+      document.getElementById('statTratamiento').textContent = enTrat;
+      document.getElementById('subTratamiento').textContent =
+        enTrat === 0 ? 'Ningún tratamiento activo' :
+        enTrat === 1 ? '1 contacto en curso' : `${enTrat} contactos en curso`;
+
+      // ── Pipeline mini
+      const pipelineMini = document.getElementById('pipelineMini');
+      pipelineMini.innerHTML = ETAPAS.map(et => {
+        const count = pacientes.filter(p => (p.etapa || 'contacto') === et.key).length;
+        return `
+          <a href="pipeline.html" class="mini-etapa" style="text-decoration:none;">
+            <div class="mini-etapa-count">${count}</div>
+            <div class="mini-etapa-label">${et.label}</div>
+          </a>`;
+      }).join('');
+
+      // ── Próximas citas (hoy + futuras, máximo 5)
+      const proximas = citas
+        .filter(c => c.fecha >= hoyISO && (c.estado === 'pendiente' || c.estado === 'confirmada'))
+        .sort((a,b) => (a.fecha + (a.hora || '')).localeCompare(b.fecha + (b.hora || '')))
+        .slice(0, 5);
+
+      function nombrePac(id) {
+        const p = pacientes.find(x => x.id === id);
+        if (!p) return 'Contacto';
+        return `${p.nombres || ''} ${p.apellidos || ''}`.trim() || 'Sin nombre';
+      }
+      function inicialesPac(id) {
+        const n = nombrePac(id);
+        const partes = n.split(' ').filter(Boolean);
+        return ((partes[0]?.[0] || '') + (partes[1]?.[0] || '')).toUpperCase() || '?';
+      }
+      function fechaCorta(iso) {
+        if (!iso) return '';
+        const [y,m,d] = iso.split('-');
+        const mes = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+m-1];
+        return iso === hoyISO ? 'Hoy' : `${d} ${mes}`;
+      }
+
+      const proxCont = document.getElementById('proximasCitas');
+      if (proximas.length === 0) {
+        proxCont.innerHTML = `
+          <div class="dash-empty">
+            <span class="dash-empty-icon">📅</span>
+            <div class="dash-empty-text">Sin citas próximas</div>
+          </div>`;
+      } else {
+        proxCont.innerHTML = proximas.map(c => `
+          <div class="dash-row">
+            <div class="dash-avatar">${inicialesPac(c.pacienteId)}</div>
+            <div class="dash-body">
+              <div class="dash-title">${nombrePac(c.pacienteId)}</div>
+              <div class="dash-sub">${c.tipoCita || 'Cita'} · ${c.hora || '—'}</div>
+            </div>
+            <div class="dash-right">
+              <span class="badge-cita badge-${c.estado || 'pendiente'}">${c.estado || 'pendiente'}</span>
+              <div style="margin-top:3px;">${fechaCorta(c.fecha)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // ── Contactos recientes (últimos 5 por fechaRegistro)
+      const recientes = pacientes
+        .filter(p => p.fechaRegistro)
+        .sort((a,b) => (b.fechaRegistro || '').localeCompare(a.fechaRegistro || ''))
+        .slice(0, 5);
+
+      const recCont = document.getElementById('pacientesRecientes');
+      if (recientes.length === 0) {
+        recCont.innerHTML = `
+          <div class="dash-empty">
+            <span class="dash-empty-icon">◇</span>
+            <div class="dash-empty-text">Aún no hay contactos registrados</div>
+          </div>`;
+      } else {
+        recCont.innerHTML = recientes.map(p => {
+          const nombre = `${p.nombres || ''} ${p.apellidos || ''}`.trim() || 'Sin nombre';
+          const ini = (((p.nombres || '')[0] || '') + ((p.apellidos || '')[0] || '')).toUpperCase() || '?';
+          return `
+            <a href="paciente-perfil.html?id=${encodeURIComponent(p.id)}" class="dash-row" style="text-decoration:none; color:inherit;">
+              <div class="dash-avatar">${ini}</div>
+              <div class="dash-body">
+                <div class="dash-title">${nombre}</div>
+                <div class="dash-sub">${p.telefono || 'Sin teléfono'}</div>
+              </div>
+              <div class="dash-right">${fechaCorta(p.fechaRegistro)}</div>
+            </a>`;
+        }).join('');
+      }
+    })();
+  </script>
 </body>
 </html>

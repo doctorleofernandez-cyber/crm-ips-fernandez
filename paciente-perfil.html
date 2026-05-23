@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Perfil Paciente | IPS Fernández O&M</title>
+  <title>Perfil Contacto | IPS Fernández O&M</title>
   <script src="tema.js"></script>
   <link rel="stylesheet" href="light-theme.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -485,7 +485,7 @@
 
     .btn-guardar:hover { opacity: 0.85; }
 
-    /* ── FICHA DEL PACIENTE — panel claro coherente ──
+    /* ── FICHA DEL CONTACTO — panel claro coherente ──
        El breadcrumb va sobre el fondo crema; la ficha (columna
        de contacto + área de pestañas) es un único panel claro,
        igual que las tarjetas del resto del CRM.               */
@@ -534,7 +534,7 @@
     .conv-time { color: #9c8c72; }
     .sidebar { background: #0e0e16 !important; }
 
-    /* ── RESPONSIVE: ficha de paciente en móvil ── */
+    /* ── RESPONSIVE: ficha de contacto en móvil ── */
     @media (max-width: 760px) {
       body {
         display: block;
@@ -580,7 +580,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -762,7 +762,7 @@
           <div class="item-list" id="listaCitas">
             <div class="empty-tab">
               <div class="empty-tab-icon">📅</div>
-              <div class="empty-tab-text">Sin citas registradas para este paciente</div>
+              <div class="empty-tab-text">Sin citas registradas para este contacto</div>
             </div>
           </div>
         </div>
@@ -780,7 +780,7 @@
           <div class="item-list" id="listaFacturas">
             <div class="empty-tab">
               <div class="empty-tab-icon">💰</div>
-              <div class="empty-tab-text">Sin facturas registradas para este paciente</div>
+              <div class="empty-tab-text">Sin facturas registradas para este contacto</div>
             </div>
           </div>
         </div>
@@ -892,7 +892,7 @@
   </div>
 
   <script>
-    // ── CARGAR DATOS DEL PACIENTE ──
+    // ── CARGAR DATOS DEL CONTACTO ──
     const params  = new URLSearchParams(location.search);
     const pacId   = params.get('id');
     let pacientes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
@@ -901,7 +901,7 @@
     // Si no hay ID o no existe, mostrar perfil de demostración vacío
     if (!pac) {
       pac = {
-        id: 'demo', nombres: 'Paciente', apellidos: 'Demo',
+        id: 'demo', nombres: 'Contacto', apellidos: 'Demo',
         tipoDoc: 'CC', numDoc: '000000000',
         telefono: '', email: '', fechaNac: '', grupoSanguineo: '', eps: '',
         ciudad: '', alergias: '', tags: ''

@@ -548,7 +548,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -623,7 +623,7 @@
     <div class="toolbar">
       <div class="search-wrap">
         <span style="color:#444;font-size:13px">🔍</span>
-        <input type="text" id="searchInput" placeholder="Buscar por paciente, concepto o N° de factura…" oninput="renderTabla()" />
+        <input type="text" id="searchInput" placeholder="Buscar por contacto, concepto o N° de factura…" oninput="renderTabla()" />
       </div>
       <div class="filter-chips">
         <button class="chip active"     data-estado="" onclick="setFiltro(this)">Todas</button>
@@ -639,7 +639,7 @@
         <thead>
           <tr>
             <th>N° Factura</th>
-            <th>Paciente</th>
+            <th>Contacto</th>
             <th>Fecha</th>
             <th>Vencimiento</th>
             <th>Concepto</th>
@@ -679,9 +679,9 @@
             <input type="date" id="fFecha" required />
           </div>
           <div class="form-group">
-            <label>Paciente</label>
+            <label>Contacto</label>
             <select id="fPaciente" required onchange="autoLlenarDocumento()">
-              <option value="">— Selecciona un paciente —</option>
+              <option value="">— Selecciona un contacto —</option>
             </select>
           </div>
           <div class="form-group">
@@ -851,13 +851,13 @@
       document.getElementById('overlay').classList.add('open');
     }
 
-    // ── LLENA EL SELECTOR DE PACIENTES DESDE LA LISTA REAL ──
+    // ── LLENA EL SELECTOR DE CONTACTOS DESDE LA LISTA REAL ──
     function llenarSelectorPacientes() {
       const sel = document.getElementById('fPaciente');
       const pacientes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
-      sel.innerHTML = '<option value="">— Selecciona un paciente —</option>';
+      sel.innerHTML = '<option value="">— Selecciona un contacto —</option>';
       if (pacientes.length === 0) {
-        sel.innerHTML = '<option value="">No hay pacientes registrados — añádalos en la sección Pacientes</option>';
+        sel.innerHTML = '<option value="">No hay contactos registrados — añádalos en la sección Contactos</option>';
         return;
       }
       pacientes
@@ -873,7 +873,7 @@
         });
     }
 
-    // ── AUTOCOMPLETA EL DOCUMENTO AL ELEGIR UN PACIENTE ──
+    // ── AUTOCOMPLETA EL DOCUMENTO AL ELEGIR UN CONTACTO ──
     function autoLlenarDocumento() {
       const sel = document.getElementById('fPaciente');
       const opt = sel.options[sel.selectedIndex];
@@ -949,7 +949,7 @@
 
     // ── EXPORTAR ──
     function exportar() {
-      const encabezado = ['N° Factura','Paciente','Documento','Fecha','Vencimiento','Concepto','Valor','Estado'];
+      const encabezado = ['N° Factura','Contacto','Documento','Fecha','Vencimiento','Concepto','Valor','Estado'];
       const filas = facturas.map(f => [
         f.numero, f.paciente, f.documento, f.fecha, f.vencimiento,
         f.concepto, f.valor, f.estado

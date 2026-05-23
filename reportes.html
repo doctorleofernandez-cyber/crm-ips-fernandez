@@ -169,7 +169,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los leads</a>
+      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -235,7 +235,7 @@
           <span class="kpi-trend up" id="trendPacientes">↑ 0%</span>
         </div>
         <div class="kpi-value" id="kpiPacientes">0</div>
-        <div class="kpi-label">Pacientes atendidos</div>
+        <div class="kpi-label">Contactos atendidos</div>
       </div>
       <div class="kpi-card k3">
         <div class="kpi-top">
@@ -288,13 +288,13 @@
       </div>
     </div>
 
-    <!-- Fila 2: Pacientes nuevos + Top tratamientos + Canales -->
+    <!-- Fila 2: Contactos nuevos + Top tratamientos + Canales -->
     <div class="charts-row cols-3">
 
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <div class="chart-title">Pacientes nuevos</div>
+            <div class="chart-title">Contactos nuevos</div>
             <div class="chart-sub">vs. recurrentes</div>
           </div>
         </div>
@@ -342,7 +342,7 @@
         <table class="recent-table">
           <thead>
             <tr>
-              <th>Paciente</th>
+              <th>Contacto</th>
               <th>Tipo</th>
               <th>Fecha</th>
               <th>Estado</th>
@@ -363,7 +363,7 @@
         <table class="recent-table">
           <thead>
             <tr>
-              <th>Paciente</th>
+              <th>Contacto</th>
               <th>Concepto</th>
               <th>Valor</th>
               <th>Estado</th>
@@ -501,7 +501,7 @@
       </div>
     `).join('');
 
-    // ── CHART 3: Pacientes nuevos vs recurrentes (donut) ──
+    // ── CHART 3: Contactos nuevos vs recurrentes (donut) ──
     const nuevos      = hayFacturas ? Math.floor(pacientes.length * 0.4) : 62;
     const recurrentes = hayFacturas ? pacientes.length - nuevos : 38;
     const datosPac = [nuevos || 62, recurrentes || 38];
@@ -526,7 +526,7 @@
     });
 
     document.getElementById('legendPacientes').innerHTML = `
-      <div class="legend-item"><div class="legend-dot" style="background:${C.dorado}"></div>Nuevos pacientes<span class="legend-val">${datosPac[0]}</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:${C.dorado}"></div>Nuevos contactos<span class="legend-val">${datosPac[0]}</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:${C.morado}"></div>Recurrentes<span class="legend-val">${datosPac[1]}</span></div>
     `;
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pacientes | IPS Fernández O&M</title>
+  <title>Contactos | IPS Fernández O&M</title>
   <script src="tema.js"></script>
   <link rel="stylesheet" href="light-theme.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -419,7 +419,7 @@
       <span class="nav-icon">◈</span> IPS Fernández O & M
     </a>
     <div class="nav-item active">
-      <span class="nav-icon">◇</span> Todos los leads
+      <span class="nav-icon">◇</span> Todos los contactos
     </div>
 
     <div class="nav-section">Insights</div>
@@ -472,8 +472,8 @@
 <!-- ── MAIN ───────────────────────────────────── -->
 <main class="main">
   <div class="topbar">
-    <h1 class="page-title">Módulo de <span>Pacientes</span></h1>
-    <button class="btn-nuevo" onclick="abrirModal()">+ Nuevo Paciente</button>
+    <h1 class="page-title">Módulo de <span>Contactos</span></h1>
+    <button class="btn-nuevo" onclick="abrirModal()">+ Nuevo Contacto</button>
   </div>
 
   <div class="search-bar">
@@ -496,12 +496,12 @@
 
   <div class="table-wrap">
     <div class="table-header">
-      <div class="table-info">Total: <span id="totalCount">0</span> pacientes</div>
+      <div class="table-info">Total: <span id="totalCount">0</span> contactos</div>
     </div>
     <table>
       <thead>
         <tr>
-          <th>Paciente</th>
+          <th>Contacto</th>
           <th>Documento</th>
           <th>Teléfono</th>
           <th>EPS</th>
@@ -514,16 +514,16 @@
     </table>
     <div class="empty-state" id="emptyState" style="display:none;">
       <div class="empty-icon">⊙</div>
-      <p>No se encontraron pacientes</p>
+      <p>No se encontraron contactos</p>
     </div>
   </div>
 </main>
 
-<!-- ── MODAL NUEVO / EDITAR PACIENTE ─────────── -->
+<!-- ── MODAL NUEVO / EDITAR CONTACTO ─────────── -->
 <div class="overlay" id="overlay" onclick="cerrarModalOverlay(event)">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title" id="modalTitulo">Nuevo <span>Paciente</span></h2>
+      <h2 class="modal-title" id="modalTitulo">Nuevo <span>Contacto</span></h2>
       <button class="modal-close" onclick="cerrarModal()">✕</button>
     </div>
 
@@ -631,7 +631,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-        <button type="submit" class="btn-guardar">Guardar paciente</button>
+        <button type="submit" class="btn-guardar">Guardar contacto</button>
       </div>
     </form>
   </div>
@@ -733,7 +733,7 @@
     document.getElementById('overlay').classList.add('open');
 
     if (paciente) {
-      document.getElementById('modalTitulo').innerHTML = 'Editar <span>Paciente</span>';
+      document.getElementById('modalTitulo').innerHTML = 'Editar <span>Contacto</span>';
       document.getElementById('pacienteId').value  = paciente.id;
       document.getElementById('nombres').value     = paciente.nombres;
       document.getElementById('apellidos').value   = paciente.apellidos;
@@ -750,7 +750,7 @@
       document.getElementById('alergias').value    = paciente.alergias || '';
       document.getElementById('antecedentes').value = paciente.antecedentes || '';
     } else {
-      document.getElementById('modalTitulo').innerHTML = 'Nuevo <span>Paciente</span>';
+      document.getElementById('modalTitulo').innerHTML = 'Nuevo <span>Contacto</span>';
       document.getElementById('pacienteId').value = '';
     }
   }
@@ -789,12 +789,12 @@
     if (id) {
       const idx = datos.findIndex(p => p.id === id);
       if (idx !== -1) datos[idx] = { ...datos[idx], ...paciente };
-      toast(`✎ Paciente <span>${paciente.nombres}</span> actualizado`);
+      toast(`✎ Contacto <span>${paciente.nombres}</span> actualizado`);
     } else {
       paciente.id = uid();
       paciente.fechaRegistro = new Date().toISOString().split('T')[0];
       datos.push(paciente);
-      toast(`✓ Paciente <span>${paciente.nombres}</span> registrado`);
+      toast(`✓ Contacto <span>${paciente.nombres}</span> registrado`);
     }
 
     guardar(datos);
@@ -817,7 +817,7 @@
     if (!p) return;
     if (!confirm(`¿Eliminar a ${p.nombres} ${p.apellidos}? Esta acción no se puede deshacer.`)) return;
     guardar(datos.filter(p => p.id !== id));
-    toast(`Paciente eliminado`);
+    toast(`Contacto eliminado`);
     renderTabla();
   }
 
