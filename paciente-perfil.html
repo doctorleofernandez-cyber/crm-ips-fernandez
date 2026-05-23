@@ -822,12 +822,27 @@
       <form id="editForm" onsubmit="guardarEdicion(event)">
         <div class="form-grid">
           <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" id="eNombre" placeholder="Nombre completo" required />
+            <label>Nombres</label>
+            <input type="text" id="eNombres" placeholder="Ej. Ana María" required />
           </div>
           <div class="form-group">
-            <label>Documento</label>
-            <input type="text" id="eDocumento" placeholder="CC / NIT" />
+            <label>Apellidos</label>
+            <input type="text" id="eApellidos" placeholder="Ej. Pérez Gómez" required />
+          </div>
+          <div class="form-group">
+            <label>Tipo de documento</label>
+            <select id="eTipoDoc">
+              <option value="">—</option>
+              <option value="CC">CC</option>
+              <option value="TI">TI</option>
+              <option value="CE">CE</option>
+              <option value="PA">Pasaporte</option>
+              <option value="RC">RC</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número de documento</label>
+            <input type="text" id="eNumDoc" placeholder="Ej. 1098765432" />
           </div>
           <div class="form-group">
             <label>Teléfono</label>
@@ -886,11 +901,20 @@
     // Si no hay ID o no existe, mostrar perfil de demostración vacío
     if (!pac) {
       pac = {
-        id: 'demo', nombre: 'Paciente Demo', documento: 'CC 000000000',
-        telefono: '', email: '', nacimiento: '', sangre: '', eps: '',
+        id: 'demo', nombres: 'Paciente', apellidos: 'Demo',
+        tipoDoc: 'CC', numDoc: '000000000',
+        telefono: '', email: '', fechaNac: '', grupoSanguineo: '', eps: '',
         ciudad: '', alergias: '', tags: ''
       };
     }
+
+    // Normalizar: derivar campos viejos (nombre, documento, nacimiento, sangre)
+    // desde los nuevos (nombres+apellidos, tipoDoc+numDoc, fechaNac, grupoSanguineo).
+    // Esto permite que el resto del código siga usando los nombres antiguos.
+    if (!pac.nombre)     pac.nombre     = `${pac.nombres || ''} ${pac.apellidos || ''}`.trim() || 'Sin nombre';
+    if (!pac.documento)  pac.documento  = `${pac.tipoDoc || ''} ${pac.numDoc || ''}`.trim();
+    if (!pac.nacimiento) pac.nacimiento = pac.fechaNac || '';
+    if (!pac.sangre)     pac.sangre     = pac.grupoSanguineo || '';
 
     renderPerfil();
     cargarCitas();
@@ -1035,16 +1059,18 @@
 
     // ── MODAL EDITAR ──
     function abrirModal() {
-      document.getElementById('eNombre').value    = pac.nombre     || '';
-      document.getElementById('eDocumento').value = pac.documento  || '';
-      document.getElementById('eTelefono').value  = pac.telefono   || '';
-      document.getElementById('eEmail').value     = pac.email      || '';
-      document.getElementById('eNacimiento').value= pac.nacimiento || '';
-      document.getElementById('eSangre').value    = pac.sangre     || '';
-      document.getElementById('eEps').value       = pac.eps        || '';
-      document.getElementById('eCiudad').value    = pac.ciudad     || '';
-      document.getElementById('eAlergias').value  = pac.alergias   || '';
-      document.getElementById('eTags').value      = pac.tags       || '';
+      document.getElementById('eNombres').value   = pac.nombres   || '';
+      document.getElementById('eApellidos').value = pac.apellidos || '';
+      document.getElementById('eTipoDoc').value   = pac.tipoDoc   || '';
+      document.getElementById('eNumDoc').value    = pac.numDoc    || '';
+      document.getElementById('eTelefono').value  = pac.telefono  || '';
+      document.getElementById('eEmail').value     = pac.email     || '';
+      document.getElementById('eNacimiento').value= pac.fechaNac  || pac.nacimiento || '';
+      document.getElementById('eSangre').value    = pac.grupoSanguineo || pac.sangre || '';
+      document.getElementById('eEps').value       = pac.eps       || '';
+      document.getElementById('eCiudad').value    = pac.ciudad    || '';
+      document.getElementById('eAlergias').value  = pac.alergias  || '';
+      document.getElementById('eTags').value      = pac.tags      || '';
       document.getElementById('overlay').classList.add('open');
     }
 
@@ -1053,16 +1079,25 @@
 
     function guardarEdicion(e) {
       e.preventDefault();
-      pac.nombre     = document.getElementById('eNombre').value.trim();
-      pac.documento  = document.getElementById('eDocumento').value.trim();
-      pac.telefono   = document.getElementById('eTelefono').value.trim();
-      pac.email      = document.getElementById('eEmail').value.trim();
-      pac.nacimiento = document.getElementById('eNacimiento').value;
-      pac.sangre     = document.getElementById('eSangre').value;
-      pac.eps        = document.getElementById('eEps').value.trim();
-      pac.ciudad     = document.getElementById('eCiudad').value.trim();
-      pac.alergias   = document.getElementById('eAlergias').value.trim();
-      pac.tags       = document.getElementById('eTags').value.trim();
+      // Campos nuevos (formato oficial usado por pacientes.html y pipeline.html)
+      pac.nombres        = document.getElementById('eNombres').value.trim();
+      pac.apellidos      = document.getElementById('eApellidos').value.trim();
+      pac.tipoDoc        = document.getElementById('eTipoDoc').value;
+      pac.numDoc         = document.getElementById('eNumDoc').value.trim();
+      pac.telefono       = document.getElementById('eTelefono').value.trim();
+      pac.email          = document.getElementById('eEmail').value.trim();
+      pac.fechaNac       = document.getElementById('eNacimiento').value;
+      pac.grupoSanguineo = document.getElementById('eSangre').value;
+      pac.eps            = document.getElementById('eEps').value.trim();
+      pac.ciudad         = document.getElementById('eCiudad').value.trim();
+      pac.alergias       = document.getElementById('eAlergias').value.trim();
+      pac.tags           = document.getElementById('eTags').value.trim();
+
+      // Espejos para compatibilidad (lo que muestra el render del perfil)
+      pac.nombre     = `${pac.nombres} ${pac.apellidos}`.trim();
+      pac.documento  = `${pac.tipoDoc || ''} ${pac.numDoc || ''}`.trim();
+      pac.nacimiento = pac.fechaNac;
+      pac.sangre     = pac.grupoSanguineo;
 
       // Actualizar en localStorage
       const idx = pacientes.findIndex(p => p.id === pac.id);
