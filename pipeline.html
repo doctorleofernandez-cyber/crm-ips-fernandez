@@ -451,6 +451,100 @@
     }
     .modal-btn.save:hover { opacity: 0.88; }
 
+    /* Botón ⚙ Editar etapas */
+    .btn-editar-etapas {
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 8px;
+      width: 30px; height: 30px;
+      font-size: 14px;
+      color: #5a4e3a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      margin-left: 8px;
+    }
+    .btn-editar-etapas:hover {
+      background: rgba(201,168,76,0.10);
+      border-color: rgba(201,168,76,0.35);
+      color: #7a5c1e;
+    }
+
+    /* Modal editar etapas */
+    .modal-etapas { width: min(94vw, 520px); }
+    .etapas-lista { margin: 12px 0; max-height: 50vh; overflow-y: auto; }
+    .etapa-row {
+      display: grid;
+      grid-template-columns: 24px 1fr auto auto auto;
+      gap: 6px;
+      align-items: center;
+      padding: 8px 6px;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: #ffffff;
+    }
+    .etapa-num {
+      font-size: 11px;
+      color: #9c8c72;
+      text-align: center;
+      font-weight: 600;
+    }
+    .etapa-input {
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #1a1208;
+      background: #fdf8f0;
+    }
+    .etapa-input:focus {
+      outline: none;
+      border-color: #C9A84C;
+      background: #fff;
+    }
+    .btn-mini {
+      width: 26px; height: 26px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #5a4e3a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-mini:hover { background: rgba(201,168,76,0.10); }
+    .btn-mini:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-mini.danger:hover { background: rgba(200,72,72,0.10); color: #c84848; }
+    .btn-agregar-etapa {
+      width: 100%;
+      padding: 9px;
+      border: 1px dashed rgba(201,168,76,0.45);
+      background: transparent;
+      border-radius: 8px;
+      color: #7a5c1e;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      font-family: inherit;
+    }
+    .btn-agregar-etapa:hover {
+      background: rgba(201,168,76,0.08);
+      border-color: #C9A84C;
+    }
+    .modal-help {
+      font-size: 11.5px;
+      color: #9c8c72;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
     /* Topbar — buscador real */
     .topbar-search-input {
       font-size: 12px;
@@ -554,59 +648,30 @@
     <!-- Topbar -->
     <div class="topbar">
       <span class="topbar-title">PIPELINE DE CONTACTOS</span>
+      <button class="btn-editar-etapas" onclick="abrirModalEtapas()" title="Editar etapas del pipeline">⚙</button>
       <span class="topbar-sep"></span>
       <input type="text" class="topbar-search-input" id="searchInput" placeholder="Buscar contacto…" oninput="renderPipeline()" />
       <span class="topbar-meta" id="leadCount">0 contactos</span>
       <button class="btn-new" onclick="abrirModalNuevo()">+ Nuevo contacto</button>
     </div>
 
-    <!-- Kanban -->
-    <div class="kanban" id="kanban">
+    <!-- Kanban (las columnas las genera el JS según etapas configuradas) -->
+    <div class="kanban" id="kanban"></div>
+  </div>
 
-      <!-- Columna 1: Contacto inicial -->
-      <div class="column" data-etapa="contacto">
-        <div class="column-header">
-          <div class="col-title">Contacto inicial</div>
-          <div class="col-sub" data-count>0 contactos</div>
-        </div>
-        <div class="column-body" data-etapa="contacto"
-             ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-        </div>
+  <!-- Modal Editar Etapas del Pipeline -->
+  <div class="overlay" id="overlayEtapas" onclick="cerrarOverlayEtapas(event)">
+    <div class="modal modal-etapas">
+      <div class="modal-title">Editar <span>etapas</span></div>
+      <div class="etapas-lista" id="etapasLista"></div>
+      <button type="button" class="btn-agregar-etapa" onclick="agregarEtapaUI()">+ Agregar etapa</button>
+      <div class="modal-help">
+        Puede renombrar, reordenar (↑↓) o eliminar etapas. Si elimina una con contactos dentro, le preguntaré a qué etapa moverlos.
       </div>
-
-      <!-- Columna 2: Cita agendada -->
-      <div class="column" data-etapa="agendada">
-        <div class="column-header">
-          <div class="col-title">Cita agendada</div>
-          <div class="col-sub" data-count>0 contactos</div>
-        </div>
-        <div class="column-body" data-etapa="agendada"
-             ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-        </div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn cancel" onclick="cerrarModalEtapas()">Cancelar</button>
+        <button type="button" class="modal-btn save" onclick="guardarEdicionEtapas()">Guardar cambios</button>
       </div>
-
-      <!-- Columna 3: En tratamiento -->
-      <div class="column" data-etapa="tratamiento">
-        <div class="column-header">
-          <div class="col-title">En tratamiento</div>
-          <div class="col-sub" data-count>0 contactos</div>
-        </div>
-        <div class="column-body" data-etapa="tratamiento"
-             ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-        </div>
-      </div>
-
-      <!-- Columna 4: Tratamiento finalizado -->
-      <div class="column" data-etapa="finalizado">
-        <div class="column-header">
-          <div class="col-title">Tratamiento finalizado</div>
-          <div class="col-sub" data-count>0 contactos</div>
-        </div>
-        <div class="column-body" data-etapa="finalizado"
-             ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -640,13 +705,42 @@
   </div>
 
   <script>
-    const ETAPAS = ['contacto', 'agendada', 'tratamiento', 'finalizado'];
-    const NOMBRE_ETAPA = {
-      contacto: 'Contacto inicial',
-      agendada: 'Cita agendada',
-      tratamiento: 'En tratamiento',
-      finalizado: 'Tratamiento finalizado'
-    };
+    /* ════════ ETAPAS DEL PIPELINE (configurable por el Dr.) ════════ */
+    const DEFAULT_ETAPAS = [
+      { id: 'contacto',    label: 'Contacto inicial' },
+      { id: 'agendada',    label: 'Interesado' },
+      { id: 'tratamiento', label: 'En tratamiento' },
+      { id: 'finalizado',  label: 'Tratamiento finalizado' }
+    ];
+
+    function cargarEtapas() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('etapas_pipeline_ips') || 'null');
+        if (saved && Array.isArray(saved) && saved.length > 0 &&
+            saved.every(e => e && typeof e.id === 'string' && typeof e.label === 'string')) {
+          return saved;
+        }
+      } catch(e) {}
+      return DEFAULT_ETAPAS.slice();
+    }
+    function guardarEtapas(etapas) {
+      localStorage.setItem('etapas_pipeline_ips', JSON.stringify(etapas));
+    }
+    function nuevoEtapaId() {
+      return 'et_' + Date.now() + Math.random().toString(36).slice(2, 6);
+    }
+
+    let ETAPAS = cargarEtapas();
+    function etapaIds()   { return ETAPAS.map(e => e.id); }
+    function etapaLabel(id) {
+      const et = ETAPAS.find(e => e.id === id);
+      return et ? et.label : 'Sin etapa';
+    }
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, ch => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]
+      ));
+    }
 
     /* ── DATOS ── */
     function cargarPacientes() {
@@ -656,21 +750,43 @@
       localStorage.setItem('pacientes_ips', JSON.stringify(lista));
     }
     function etapaDe(p) {
-      return ETAPAS.includes(p.etapa) ? p.etapa : 'contacto';
+      const ids = etapaIds();
+      return ids.includes(p.etapa) ? p.etapa : ids[0];
     }
 
-    /* ── RENDER ── */
+    /* ── RENDER COLUMNAS (dinámico según ETAPAS) ── */
+    function renderColumnas() {
+      const kanban = document.getElementById('kanban');
+      kanban.innerHTML = ETAPAS.map(et => `
+        <div class="column" data-etapa="${escapeHtml(et.id)}">
+          <div class="column-header">
+            <div class="col-title">${escapeHtml(et.label)}</div>
+            <div class="col-sub" data-count>0 contactos</div>
+          </div>
+          <div class="column-body" data-etapa="${escapeHtml(et.id)}"
+               ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── RENDER PIPELINE ── */
     function renderPipeline() {
+      // Asegurar que las columnas existan según la config actual
+      if (document.querySelectorAll('#kanban .column').length !== ETAPAS.length) {
+        renderColumnas();
+      }
+
       const pacientes = cargarPacientes();
       const filtro = (document.getElementById('searchInput').value || '').trim().toLowerCase();
 
       // Limpiar columnas
       ETAPAS.forEach(et => {
-        const body = document.querySelector(`.column-body[data-etapa="${et}"]`);
-        body.innerHTML = '';
+        const body = document.querySelector(`.column-body[data-etapa="${et.id}"]`);
+        if (body) body.innerHTML = '';
       });
 
-      // Filtrar y agrupar
+      // Filtrar
       const visibles = pacientes.filter(p => {
         if (!filtro) return true;
         const txt = `${p.nombres || ''} ${p.apellidos || ''} ${p.numDoc || ''} ${p.telefono || ''}`.toLowerCase();
@@ -681,15 +797,16 @@
       visibles.forEach(p => {
         const et = etapaDe(p);
         const body = document.querySelector(`.column-body[data-etapa="${et}"]`);
-        body.appendChild(crearTarjeta(p));
+        if (body) body.appendChild(crearTarjeta(p));
       });
 
       // Estado vacío por columna + contador
       ETAPAS.forEach(et => {
-        const body = document.querySelector(`.column-body[data-etapa="${et}"]`);
+        const body = document.querySelector(`.column-body[data-etapa="${et.id}"]`);
+        if (!body) return;
         const count = body.querySelectorAll('.lead-card').length;
-        const sub = document.querySelector(`.column[data-etapa="${et}"] [data-count]`);
-        sub.textContent = count === 1 ? '1 contacto' : `${count} contactos`;
+        const sub = document.querySelector(`.column[data-etapa="${et.id}"] [data-count]`);
+        if (sub) sub.textContent = count === 1 ? '1 contacto' : `${count} contactos`;
         if (count === 0) {
           body.innerHTML = `
             <div class="col-empty">
@@ -762,12 +879,14 @@
       const p = pacientes.find(x => x.id === id);
       if (!p) return;
       const actual = etapaDe(p);
-      const opciones = ETAPAS.filter(e => e !== actual).map(e => `${ETAPAS.indexOf(e) + 1}) ${NOMBRE_ETAPA[e]}`).join('\n');
+      const candidatas = ETAPAS.filter(e => e.id !== actual);
+      if (candidatas.length === 0) return;
+      const opciones = candidatas.map((e, i) => `${i + 1}) ${e.label}`).join('\n');
       const r = prompt(`Mover a etapa (escriba el número):\n\n${opciones}`);
       if (!r) return;
       const idx = parseInt(r, 10) - 1;
-      if (isNaN(idx) || !ETAPAS[idx] || ETAPAS[idx] === actual) return;
-      cambiarEtapa(id, ETAPAS[idx]);
+      if (isNaN(idx) || !candidatas[idx]) return;
+      cambiarEtapa(id, candidatas[idx].id);
     }
 
     function cambiarEtapa(id, nuevaEtapa) {
@@ -809,7 +928,118 @@
       renderPipeline();
     }
 
+    /* ════════ MODAL EDITAR ETAPAS ════════ */
+    let etapasEdit = [];  // copia temporal de etapas mientras edita
+
+    function abrirModalEtapas() {
+      // copia profunda para no afectar las etapas reales hasta guardar
+      etapasEdit = ETAPAS.map(e => ({ id: e.id, label: e.label }));
+      renderModalEtapas();
+      document.getElementById('overlayEtapas').classList.add('open');
+    }
+    function cerrarModalEtapas() {
+      document.getElementById('overlayEtapas').classList.remove('open');
+    }
+    function cerrarOverlayEtapas(e) {
+      if (e.target === document.getElementById('overlayEtapas')) cerrarModalEtapas();
+    }
+
+    function renderModalEtapas() {
+      const lista = document.getElementById('etapasLista');
+      lista.innerHTML = etapasEdit.map((et, i) => `
+        <div class="etapa-row">
+          <div class="etapa-num">${i + 1}</div>
+          <input type="text" class="etapa-input" value="${escapeHtml(et.label)}"
+                 oninput="onEditarLabel(${i}, this.value)" placeholder="Nombre de la etapa" />
+          <button type="button" class="btn-mini" onclick="moverEtapaUI(${i}, -1)" ${i === 0 ? 'disabled' : ''} title="Subir">↑</button>
+          <button type="button" class="btn-mini" onclick="moverEtapaUI(${i}, 1)" ${i === etapasEdit.length - 1 ? 'disabled' : ''} title="Bajar">↓</button>
+          <button type="button" class="btn-mini danger" onclick="eliminarEtapaUI(${i})" title="Eliminar">🗑</button>
+        </div>
+      `).join('');
+    }
+
+    function onEditarLabel(i, valor) {
+      if (etapasEdit[i]) etapasEdit[i].label = valor;
+    }
+    function moverEtapaUI(i, delta) {
+      const j = i + delta;
+      if (j < 0 || j >= etapasEdit.length) return;
+      const tmp = etapasEdit[i];
+      etapasEdit[i] = etapasEdit[j];
+      etapasEdit[j] = tmp;
+      renderModalEtapas();
+    }
+    function agregarEtapaUI() {
+      etapasEdit.push({ id: nuevoEtapaId(), label: 'Nueva etapa' });
+      renderModalEtapas();
+      // Foco en el último input
+      setTimeout(() => {
+        const inputs = document.querySelectorAll('#etapasLista .etapa-input');
+        const ultimo = inputs[inputs.length - 1];
+        if (ultimo) { ultimo.focus(); ultimo.select(); }
+      }, 30);
+    }
+    function eliminarEtapaUI(i) {
+      if (etapasEdit.length <= 1) {
+        alert('Debe quedar al menos una etapa en el pipeline.');
+        return;
+      }
+      etapasEdit.splice(i, 1);
+      renderModalEtapas();
+    }
+
+    function guardarEdicionEtapas() {
+      // Validar labels no vacíos
+      const sinNombre = etapasEdit.findIndex(e => !e.label || !e.label.trim());
+      if (sinNombre !== -1) {
+        alert(`La etapa #${sinNombre + 1} necesita un nombre.`);
+        return;
+      }
+      // Trim labels
+      etapasEdit.forEach(e => e.label = e.label.trim());
+
+      // Detectar etapas eliminadas y migrar contactos
+      const idsAntes  = ETAPAS.map(e => e.id);
+      const idsAhora  = etapasEdit.map(e => e.id);
+      const eliminadas = idsAntes.filter(id => !idsAhora.includes(id));
+
+      const pacientes = cargarPacientes();
+      const migraciones = {};  // { idEtapaVieja: idEtapaDestino }
+
+      for (const idElim of eliminadas) {
+        const labelElim = ETAPAS.find(e => e.id === idElim)?.label || idElim;
+        const cuentos = pacientes.filter(p => p.etapa === idElim).length;
+        if (cuentos > 0) {
+          const opciones = etapasEdit.map((e, i) => `${i + 1}) ${e.label}`).join('\n');
+          const r = prompt(`La etapa "${labelElim}" tiene ${cuentos} contacto(s).\n¿A qué etapa los muevo? (escriba el número):\n\n${opciones}`);
+          if (!r) return;  // cancelar todo si cancela la migración
+          const idx = parseInt(r, 10) - 1;
+          if (isNaN(idx) || !etapasEdit[idx]) return;
+          migraciones[idElim] = etapasEdit[idx].id;
+        }
+      }
+
+      // Aplicar migraciones a contactos
+      let cambios = 0;
+      pacientes.forEach(p => {
+        if (migraciones[p.etapa]) {
+          p.etapa = migraciones[p.etapa];
+          cambios++;
+        }
+      });
+      if (cambios > 0) guardarPacientes(pacientes);
+
+      // Guardar nuevas etapas
+      ETAPAS = etapasEdit.map(e => ({ id: e.id, label: e.label }));
+      guardarEtapas(ETAPAS);
+
+      cerrarModalEtapas();
+      renderColumnas();
+      renderPipeline();
+    }
+
     /* ── INIT ── */
+    renderColumnas();
     renderPipeline();
   </script>
 

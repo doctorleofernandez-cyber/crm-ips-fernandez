@@ -725,17 +725,26 @@
     (function() {
       const MESES = ['enero','febrero','marzo','abril','mayo','junio',
                      'julio','agosto','septiembre','octubre','noviembre','diciembre'];
-      const ETAPAS = [
-        { key: 'contacto',    label: 'Contacto inicial' },
-        { key: 'agendada',    label: 'Cita agendada' },
-        { key: 'tratamiento', label: 'En tratamiento' },
-        { key: 'finalizado',  label: 'Finalizado' }
+      const DEFAULT_ETAPAS = [
+        { id: 'contacto',    label: 'Contacto inicial' },
+        { id: 'agendada',    label: 'Interesado' },
+        { id: 'tratamiento', label: 'En tratamiento' },
+        { id: 'finalizado',  label: 'Finalizado' }
       ];
 
       function cargar(key) {
         try { return JSON.parse(localStorage.getItem(key) || '[]'); }
         catch(e) { return []; }
       }
+
+      // Lee las etapas configuradas por el Dr. en pipeline.html. Si no hay, usa defaults.
+      let ETAPAS;
+      try {
+        const saved = JSON.parse(localStorage.getItem('etapas_pipeline_ips') || 'null');
+        ETAPAS = (saved && Array.isArray(saved) && saved.length > 0 &&
+                  saved.every(e => e && typeof e.id === 'string' && typeof e.label === 'string'))
+          ? saved : DEFAULT_ETAPAS;
+      } catch(e) { ETAPAS = DEFAULT_ETAPAS; }
 
       const pacientes = cargar('pacientes_ips');
       const citas     = cargar('citas_ips');
@@ -794,8 +803,9 @@
 
       // ── Pipeline mini
       const pipelineMini = document.getElementById('pipelineMini');
+      const primeraEtapaId = ETAPAS[0].id;
       pipelineMini.innerHTML = ETAPAS.map(et => {
-        const count = pacientes.filter(p => (p.etapa || 'contacto') === et.key).length;
+        const count = pacientes.filter(p => (p.etapa || primeraEtapaId) === et.id).length;
         return `
           <a href="pipeline.html" class="mini-etapa" style="text-decoration:none;">
             <div class="mini-etapa-count">${count}</div>
