@@ -511,7 +511,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html"  class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
+      <a href="contactos.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -523,7 +523,7 @@
       <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
 
       <div class="nav-section">Gestión</div>
-      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="contactos.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
       <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
       <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
       <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
@@ -615,7 +615,7 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">Contactos recientes</div>
-          <a href="pacientes.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver todos →</a>
+          <a href="contactos.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver todos →</a>
         </div>
         <div id="pacientesRecientes"></div>
       </div>
@@ -877,7 +877,7 @@
           const nombre = `${p.nombres || ''} ${p.apellidos || ''}`.trim() || 'Sin nombre';
           const ini = (((p.nombres || '')[0] || '') + ((p.apellidos || '')[0] || '')).toUpperCase() || '?';
           return `
-            <a href="paciente-perfil.html?id=${encodeURIComponent(p.id)}" class="dash-row" style="text-decoration:none; color:inherit;">
+            <a href="contacto-perfil.html?id=${encodeURIComponent(p.id)}" class="dash-row" style="text-decoration:none; color:inherit;">
               <div class="dash-avatar">${ini}</div>
               <div class="dash-body">
                 <div class="dash-title">${nombre}</div>

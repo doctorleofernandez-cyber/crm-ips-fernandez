@@ -536,7 +536,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
+      <a href="contactos.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -548,7 +548,7 @@
       <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
 
       <div class="nav-section">Gestión</div>
-      <a href="pacientes.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="contactos.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
       <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
       <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
       <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
@@ -1165,10 +1165,18 @@
           </button>
         </div>
 
+        <div class="config-card">
+          <div class="config-card-title">🧪 Datos de prueba</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Carga 10 contactos de ejemplo en distintas etapas del pipeline, junto con citas y facturas, para que pueda explorar todas las funciones del CRM sin tener que crearlos a mano.
+          </p>
+          <button class="btn-save" onclick="cargarDatosDemo()">📥 &nbsp;Cargar datos de prueba</button>
+        </div>
+
         <div class="danger-zone">
           <div class="danger-title">⚠️ Zona de peligro</div>
           <div class="danger-row">
-            <div class="danger-row-info">Eliminar todos los datos de prueba</div>
+            <div class="danger-row-info">Eliminar todos los datos (contactos, citas y facturas)</div>
             <button class="btn-danger" onclick="limpiarDatos()">Limpiar datos</button>
           </div>
           <div class="danger-row">
@@ -1304,6 +1312,67 @@
       if (!confirm('¿Eliminar todos los datos de prueba del localStorage? Esta acción no se puede deshacer.')) return;
       ['pacientes_ips','citas_ips','facturas_ips','tratamientos_ips'].forEach(k => localStorage.removeItem(k));
       showToast('Datos de prueba eliminados');
+    }
+
+    // ── DATOS DE PRUEBA ──
+    function cargarDatosDemo() {
+      const existentes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
+      if (existentes.length > 0 &&
+          !confirm(`Ya tiene ${existentes.length} contacto(s) registrados. ¿Agregar los 10 de prueba de todas formas?`)) return;
+
+      const hoyD = new Date();
+      const iso = (d) => d.toISOString().slice(0,10);
+      const diasAtras = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() - n); return iso(d); };
+      const diasAdelante = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() + n); return iso(d); };
+      const uid = () => 'p' + Date.now() + Math.random().toString(36).slice(2, 6);
+      const uidF = () => 'f' + Date.now() + Math.random().toString(36).slice(2, 6);
+      const uidC = () => 'c' + Date.now() + Math.random().toString(36).slice(2, 6);
+
+      const contactos = [
+        { id: uid(), nombres: 'María Camila',  apellidos: 'Rodríguez Pérez',  tipoDoc: 'CC', numDoc: '1098765432', genero: 'F', fechaNac: '1992-03-15', estado: 'activo', telefono: '3001234567', email: 'mcamila.rodriguez@gmail.com', direccion: 'Calle 80 #10-25', eps: 'Nueva EPS', grupoSanguineo: 'O+', alergias: '', antecedentes: '', etapa: 'contacto',    fechaRegistro: diasAtras(2) },
+        { id: uid(), nombres: 'Carlos Andrés', apellidos: 'Gómez Sánchez',    tipoDoc: 'CC', numDoc: '79456123',   genero: 'M', fechaNac: '1979-08-22', estado: 'activo', telefono: '3157894561', email: 'carlos.gomez@hotmail.com',  direccion: 'Cra 7 #45-12',  eps: 'Sura EPS',                       grupoSanguineo: 'A+', alergias: 'Penicilina', antecedentes: 'Hipertensión controlada', etapa: 'agendada',    fechaRegistro: diasAtras(5) },
+        { id: uid(), nombres: 'Ana Sofía',     apellidos: 'Martínez López',   tipoDoc: 'CC', numDoc: '1023456789', genero: 'F', fechaNac: '1996-11-04', estado: 'activo', telefono: '3208912347', email: 'ana.martinez@outlook.com',  direccion: 'Av. El Poblado #30-15', eps: 'Colsanitas Medicina Prepagada', grupoSanguineo: 'B+', alergias: '', antecedentes: '', etapa: 'tratamiento', fechaRegistro: diasAtras(20) },
+        { id: uid(), nombres: 'Juan David',    apellidos: 'Hernández Torres', tipoDoc: 'CC', numDoc: '8123456',    genero: 'M', fechaNac: '1969-05-30', estado: 'activo', telefono: '3104567891', email: '',                          direccion: 'Cra 50 #20-30', eps: 'Compensar EPS',                  grupoSanguineo: 'O-', alergias: '', antecedentes: 'Diabetes tipo 2', etapa: 'tratamiento', fechaRegistro: diasAtras(35) },
+        { id: uid(), nombres: 'Laura Valentina', apellidos: 'Ramírez Cruz',   tipoDoc: 'TI', numDoc: '1058963147', genero: 'F', fechaNac: '2008-02-18', estado: 'activo', telefono: '3185234896', email: 'laura.ramirez08@gmail.com', direccion: 'Calle 25 #6-40',  eps: 'Sanitas EPS',                    grupoSanguineo: 'A-', alergias: '', antecedentes: '', etapa: 'agendada',    fechaRegistro: diasAtras(7) },
+        { id: uid(), nombres: 'Felipe',        apellidos: 'Cardona Restrepo', tipoDoc: 'CC', numDoc: '71258963',   genero: 'M', fechaNac: '1986-09-12', estado: 'activo', telefono: '3013456987', email: 'felipe.cardona@yahoo.com',  direccion: 'Cra 43A #1-50', eps: 'Colmédica Medicina Prepagada',   grupoSanguineo: 'AB+',alergias: '', antecedentes: '', etapa: 'contacto',    fechaRegistro: diasAtras(1) },
+        { id: uid(), nombres: 'Diana Marcela', apellidos: 'Vargas Ortiz',     tipoDoc: 'CC', numDoc: '52369874',   genero: 'F', fechaNac: '1981-12-07', estado: 'activo', telefono: '3209874563', email: 'diana.vargas@gmail.com',    direccion: 'Calle 100 #15-20', eps: 'Salud Total EPS',             grupoSanguineo: 'O+', alergias: '', antecedentes: '', etapa: 'finalizado',  fechaRegistro: diasAtras(60) },
+        { id: uid(), nombres: 'Roberto',       apellidos: 'Mejía Quintero',   tipoDoc: 'CC', numDoc: '6235147',    genero: 'M', fechaNac: '1964-07-19', estado: 'activo', telefono: '3174589632', email: 'roberto.mejia@outlook.com', direccion: 'Cra 80 #45-23', eps: 'Famisanar EPS',                  grupoSanguineo: 'B-', alergias: 'Látex',     antecedentes: '', etapa: 'tratamiento', fechaRegistro: diasAtras(45) },
+        { id: uid(), nombres: 'Camila Andrea', apellidos: 'Silva Bermúdez',   tipoDoc: 'CC', numDoc: '1015874632', genero: 'F', fechaNac: '1999-01-25', estado: 'activo', telefono: '3148523697', email: 'camila.silva@gmail.com',    direccion: 'Calle 33 #70-15', eps: 'Particular',                  grupoSanguineo: 'A+', alergias: '', antecedentes: '', etapa: 'contacto',    fechaRegistro: diasAtras(0) },
+        { id: uid(), nombres: 'José Luis',     apellidos: 'Patiño Bernal',    tipoDoc: 'CC', numDoc: '10254896',   genero: 'M', fechaNac: '1974-04-08', estado: 'activo', telefono: '3164789532', email: 'jl.patino@gmail.com',       direccion: 'Cra 65 #34-12', eps: 'Sura Medicina Prepagada',        grupoSanguineo: 'O+', alergias: '', antecedentes: '', etapa: 'finalizado',  fechaRegistro: diasAtras(90) },
+      ];
+
+      // Citas: para los que están en "agendada" y "tratamiento"
+      const citas = [
+        { id: uidC(), pacienteId: contactos[1].id, fecha: diasAdelante(2),  hora: '09:00', tipoCita: 'Valoración inicial',  doctor: 'Dr. Fernández', estado: 'confirmada', notas: 'Trae radiografías panorámicas previas' },
+        { id: uidC(), pacienteId: contactos[2].id, fecha: diasAdelante(0),  hora: '11:30', tipoCita: 'Limpieza dental',     doctor: 'Dr. Fernández', estado: 'confirmada', notas: '' },
+        { id: uidC(), pacienteId: contactos[3].id, fecha: diasAdelante(3),  hora: '14:00', tipoCita: 'Control endodoncia',  doctor: 'Dr. Fernández', estado: 'pendiente',  notas: 'Diente 36' },
+        { id: uidC(), pacienteId: contactos[4].id, fecha: diasAdelante(5),  hora: '15:30', tipoCita: 'Ortodoncia — ajuste', doctor: 'Dr. Fernández', estado: 'pendiente',  notas: '' },
+        { id: uidC(), pacienteId: contactos[7].id, fecha: diasAdelante(1),  hora: '10:00', tipoCita: 'Control implante',    doctor: 'Dr. Fernández', estado: 'confirmada', notas: '' },
+        { id: uidC(), pacienteId: contactos[2].id, fecha: diasAtras(15),    hora: '11:00', tipoCita: 'Limpieza dental',     doctor: 'Dr. Fernández', estado: 'completada', notas: '' },
+        { id: uidC(), pacienteId: contactos[6].id, fecha: diasAtras(30),    hora: '16:00', tipoCita: 'Blanqueamiento',      doctor: 'Dr. Fernández', estado: 'completada', notas: '' },
+      ];
+
+      // Facturas
+      const facturas = [
+        { id: uidF(), numero: 'F-2026-001', pacienteId: contactos[2].id, paciente: 'Ana Sofía Martínez López',   concepto: 'Limpieza dental + Profilaxis',          valor: 180000, fecha: diasAtras(15), estado: 'cobrado'   },
+        { id: uidF(), numero: 'F-2026-002', pacienteId: contactos[3].id, paciente: 'Juan David Hernández Torres', concepto: 'Endodoncia diente 36',                   valor: 750000, fecha: diasAtras(20), estado: 'cobrado'   },
+        { id: uidF(), numero: 'F-2026-003', pacienteId: contactos[3].id, paciente: 'Juan David Hernández Torres', concepto: 'Corona porcelana — diente 36',           valor: 950000, fecha: diasAtras(10), estado: 'pendiente' },
+        { id: uidF(), numero: 'F-2026-004', pacienteId: contactos[6].id, paciente: 'Diana Marcela Vargas Ortiz',  concepto: 'Blanqueamiento dental',                   valor: 420000, fecha: diasAtras(30), estado: 'cobrado'   },
+        { id: uidF(), numero: 'F-2026-005', pacienteId: contactos[7].id, paciente: 'Roberto Mejía Quintero',      concepto: 'Implante dental + corona',                valor:2800000, fecha: diasAtras(8),  estado: 'pendiente' },
+        { id: uidF(), numero: 'F-2026-006', pacienteId: contactos[9].id, paciente: 'José Luis Patiño Bernal',     concepto: 'Tratamiento completo (3 sesiones)',       valor:1500000, fecha: diasAtras(85), estado: 'cobrado'   },
+        { id: uidF(), numero: 'F-2026-007', pacienteId: contactos[7].id, paciente: 'Roberto Mejía Quintero',      concepto: 'Control y radiografía',                   valor:  80000, fecha: diasAtras(40), estado: 'vencido'   },
+      ];
+
+      // Mezclar con datos existentes y guardar
+      const existenContactos = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
+      const existenCitas     = JSON.parse(localStorage.getItem('citas_ips')      || '[]');
+      const existenFacts     = JSON.parse(localStorage.getItem('facturas_ips')   || '[]');
+
+      localStorage.setItem('pacientes_ips', JSON.stringify([...existenContactos, ...contactos]));
+      localStorage.setItem('citas_ips',     JSON.stringify([...existenCitas, ...citas]));
+      localStorage.setItem('facturas_ips',  JSON.stringify([...existenFacts, ...facturas]));
+
+      showToast('10 contactos + 7 citas + 7 facturas cargados');
     }
 
     // ── APARIENCIA ──

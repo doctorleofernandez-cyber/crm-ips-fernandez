@@ -434,7 +434,7 @@
       <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
 
     <div class="nav-section">Gestión</div>
-    <a href="pacientes.html" class="nav-item active">
+    <a href="contactos.html" class="nav-item active">
       <span class="nav-icon">◇</span> Contactos
     </a>
     <a href="citas.html" class="nav-item">
@@ -603,7 +603,49 @@
       <div class="form-row">
         <div class="form-group">
           <label>EPS / Aseguradora</label>
-          <input type="text" id="eps" placeholder="Ej. Nueva EPS, Sura…" />
+          <select id="eps">
+            <option value="">Seleccione…</option>
+            <optgroup label="EPS — Régimen contributivo y subsidiado">
+              <option value="Nueva EPS">Nueva EPS</option>
+              <option value="Sura EPS">Sura EPS</option>
+              <option value="Sanitas EPS">Sanitas EPS</option>
+              <option value="Compensar EPS">Compensar EPS</option>
+              <option value="Salud Total EPS">Salud Total EPS</option>
+              <option value="Famisanar EPS">Famisanar EPS</option>
+              <option value="Aliansalud EPS">Aliansalud EPS</option>
+              <option value="Mutual SER EPS">Mutual SER EPS</option>
+              <option value="Coosalud EPS">Coosalud EPS</option>
+              <option value="Asmet Salud EPS">Asmet Salud EPS</option>
+              <option value="Cajacopi EPS">Cajacopi EPS</option>
+              <option value="EPS Servicio Occidental de Salud (S.O.S.)">EPS S.O.S.</option>
+              <option value="Capital Salud EPS">Capital Salud EPS</option>
+              <option value="Savia Salud EPS">Savia Salud EPS</option>
+              <option value="Comfenalco Valle EPS">Comfenalco Valle EPS</option>
+              <option value="Salud Mía EPS">Salud Mía EPS</option>
+              <option value="Pacífica Salud EPS">Pacífica Salud EPS</option>
+              <option value="Anas Wayuu EPS">Anas Wayuu EPS</option>
+              <option value="Capresoca EPS">Capresoca EPS</option>
+            </optgroup>
+            <optgroup label="Medicina prepagada">
+              <option value="Colsanitas Medicina Prepagada">Colsanitas</option>
+              <option value="Medisanitas">Medisanitas</option>
+              <option value="Colmédica Medicina Prepagada">Colmédica</option>
+              <option value="Coomeva Medicina Prepagada">Coomeva Prepagada</option>
+              <option value="Sura Medicina Prepagada">Sura Prepagada</option>
+            </optgroup>
+            <optgroup label="Regímenes especiales">
+              <option value="Magisterio (FOMAG)">Magisterio (FOMAG)</option>
+              <option value="Fuerzas Militares">Fuerzas Militares</option>
+              <option value="Policía Nacional">Policía Nacional</option>
+              <option value="Ecopetrol">Ecopetrol</option>
+              <option value="Universidad Nacional">Universidad Nacional</option>
+            </optgroup>
+            <optgroup label="Otros">
+              <option value="Particular">Particular (paga de su bolsillo)</option>
+              <option value="ARL">ARL (Riesgos laborales)</option>
+              <option value="Otra">Otra…</option>
+            </optgroup>
+          </select>
         </div>
         <div class="form-group">
           <label>Grupo sanguíneo</label>
@@ -803,7 +845,7 @@
   }
 
   function verPerfil(id) {
-    location.href = 'paciente-perfil.html?id=' + id;
+    location.href = 'contacto-perfil.html?id=' + id;
   }
 
   function editarPaciente(id) {

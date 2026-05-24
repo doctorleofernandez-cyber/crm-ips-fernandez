@@ -580,7 +580,7 @@
 
       <div class="nav-section">Pipelines</div>
       <a href="pipeline.html" class="nav-item"><span class="nav-icon">◈</span> IPS Fernández O & M</a>
-      <a href="pacientes.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
+      <a href="contactos.html" class="nav-item"><span class="nav-icon">◇</span> Todos los contactos</a>
 
       <div class="nav-section">Insights</div>
       <a href="insights.html" class="nav-item"><span class="nav-icon">◈</span> Panel</a>
@@ -592,7 +592,7 @@
       <a href="difusiones.html" class="nav-item"><span class="nav-icon">📣</span> Difusiones</a>
 
       <div class="nav-section">Gestión</div>
-      <a href="pacientes.html" class="nav-item active"><span class="nav-icon">◇</span> Contactos</a>
+      <a href="contactos.html" class="nav-item active"><span class="nav-icon">◇</span> Contactos</a>
       <a href="citas.html"     class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
       <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
       <a href="facturacion.html" class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
@@ -620,7 +620,7 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-      <a href="pacientes.html">Contactos</a>
+      <a href="contactos.html">Contactos</a>
       <span style="color:#c4b49a">›</span>
       <span id="breadName">—</span>
     </div>
@@ -868,7 +868,49 @@
           </div>
           <div class="form-group">
             <label>EPS / Seguro</label>
-            <input type="text" id="eEps" placeholder="Nombre de la EPS" />
+            <select id="eEps">
+              <option value="">Seleccione…</option>
+              <optgroup label="EPS — Régimen contributivo y subsidiado">
+                <option value="Nueva EPS">Nueva EPS</option>
+                <option value="Sura EPS">Sura EPS</option>
+                <option value="Sanitas EPS">Sanitas EPS</option>
+                <option value="Compensar EPS">Compensar EPS</option>
+                <option value="Salud Total EPS">Salud Total EPS</option>
+                <option value="Famisanar EPS">Famisanar EPS</option>
+                <option value="Aliansalud EPS">Aliansalud EPS</option>
+                <option value="Mutual SER EPS">Mutual SER EPS</option>
+                <option value="Coosalud EPS">Coosalud EPS</option>
+                <option value="Asmet Salud EPS">Asmet Salud EPS</option>
+                <option value="Cajacopi EPS">Cajacopi EPS</option>
+                <option value="EPS Servicio Occidental de Salud (S.O.S.)">EPS S.O.S.</option>
+                <option value="Capital Salud EPS">Capital Salud EPS</option>
+                <option value="Savia Salud EPS">Savia Salud EPS</option>
+                <option value="Comfenalco Valle EPS">Comfenalco Valle EPS</option>
+                <option value="Salud Mía EPS">Salud Mía EPS</option>
+                <option value="Pacífica Salud EPS">Pacífica Salud EPS</option>
+                <option value="Anas Wayuu EPS">Anas Wayuu EPS</option>
+                <option value="Capresoca EPS">Capresoca EPS</option>
+              </optgroup>
+              <optgroup label="Medicina prepagada">
+                <option value="Colsanitas Medicina Prepagada">Colsanitas</option>
+                <option value="Medisanitas">Medisanitas</option>
+                <option value="Colmédica Medicina Prepagada">Colmédica</option>
+                <option value="Coomeva Medicina Prepagada">Coomeva Prepagada</option>
+                <option value="Sura Medicina Prepagada">Sura Prepagada</option>
+              </optgroup>
+              <optgroup label="Regímenes especiales">
+                <option value="Magisterio (FOMAG)">Magisterio (FOMAG)</option>
+                <option value="Fuerzas Militares">Fuerzas Militares</option>
+                <option value="Policía Nacional">Policía Nacional</option>
+                <option value="Ecopetrol">Ecopetrol</option>
+                <option value="Universidad Nacional">Universidad Nacional</option>
+              </optgroup>
+              <optgroup label="Otros">
+                <option value="Particular">Particular (paga de su bolsillo)</option>
+                <option value="ARL">ARL (Riesgos laborales)</option>
+                <option value="Otra">Otra…</option>
+              </optgroup>
+            </select>
           </div>
           <div class="form-group">
             <label>Ciudad</label>
@@ -1079,7 +1121,7 @@
 
     function guardarEdicion(e) {
       e.preventDefault();
-      // Campos nuevos (formato oficial usado por pacientes.html y pipeline.html)
+      // Campos nuevos (formato oficial usado por contactos.html y pipeline.html)
       pac.nombres        = document.getElementById('eNombres').value.trim();
       pac.apellidos      = document.getElementById('eApellidos').value.trim();
       pac.tipoDoc        = document.getElementById('eTipoDoc').value;
