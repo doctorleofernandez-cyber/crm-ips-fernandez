@@ -330,18 +330,55 @@
     .lead-card {
       background: rgba(255,255,255,0.82);
       border: 1px solid rgba(0,0,0,0.07);
+      border-left: 3px solid rgba(46,160,67,0.55);  /* verde por defecto = respondido */
       border-radius: 10px;
-      padding: 12px 12px 10px;
+      padding: 12px 12px 10px 14px;
       margin-bottom: 8px;
       cursor: grab;
-      transition: box-shadow 0.15s, transform 0.15s;
+      transition: box-shadow 0.15s, transform 0.15s, border-color 0.2s, background 0.2s;
       position: relative;
     }
     .lead-card:hover {
       box-shadow: 0 4px 14px rgba(120,98,40,0.10);
-      border-color: rgba(201,168,76,0.35);
+      border-color: rgba(0,0,0,0.07);
+      border-left-color: rgba(46,160,67,0.85);
+    }
+    /* Pendiente de responder: borde naranja + fondo levemente cálido */
+    .lead-card.pendiente {
+      border-left-color: #e87b35;
+      background: rgba(255,248,240,0.95);
+      box-shadow: 0 2px 8px rgba(232,123,53,0.08);
+    }
+    .lead-card.pendiente:hover {
+      border-left-color: #c84848;
+      box-shadow: 0 4px 14px rgba(232,123,53,0.20);
     }
     .lead-card.dragging { opacity: 0.4; cursor: grabbing; }
+
+    /* Indicador de estado de respuesta */
+    .lead-status-dot {
+      position: absolute;
+      top: 10px; left: -3px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .lead-status-dot:hover { transform: scale(1.2); }
+    .lead-status-dot.pendiente { background: #e87b35; }
+    .lead-status-dot.respondido { background: #2ea043; }
+    .lead-status-dot.respondido::after {
+      content: "✓";
+      color: white;
+      font-size: 8px;
+      font-weight: 900;
+      display: block;
+      line-height: 8px;
+      text-align: center;
+      margin-top: -1px;
+    }
     .lead-card-name {
       font-size: 13px;
       font-weight: 600;
@@ -816,20 +853,35 @@
         }
       });
 
-      // Contador global
+      // Contador global (con pendientes destacados)
       const total = visibles.length;
-      document.getElementById('leadCount').textContent = total === 1 ? '1 contacto' : `${total} contactos`;
+      const pendientes = visibles.filter(p => !p.respondido).length;
+      const meta = document.getElementById('leadCount');
+      if (total === 0) {
+        meta.textContent = '0 contactos';
+      } else if (pendientes === 0) {
+        meta.textContent = total === 1 ? '1 contacto · todos respondidos' : `${total} contactos · todos respondidos`;
+      } else {
+        meta.innerHTML = `${total} ${total === 1 ? 'contacto' : 'contactos'} · <span style="color:#c84848;font-weight:600">${pendientes} sin responder</span>`;
+      }
     }
 
     function crearTarjeta(p) {
       const card = document.createElement('div');
-      card.className = 'lead-card';
+      const respondido = !!p.respondido;
+      card.className = 'lead-card' + (respondido ? '' : ' pendiente');
       card.draggable = true;
       card.dataset.id = p.id;
       const nombre = `${p.nombres || ''} ${p.apellidos || ''}`.trim() || 'Sin nombre';
       const doc = (p.tipoDoc || p.numDoc) ? `${p.tipoDoc || ''} ${p.numDoc || ''}`.trim() : '';
       const tel = p.telefono || '';
+      const tituloEstado = respondido
+        ? 'Respondido — click para marcar como pendiente'
+        : 'Sin responder — click para marcar como respondido';
       card.innerHTML = `
+        <div class="lead-status-dot ${respondido ? 'respondido' : 'pendiente'}"
+             title="${tituloEstado}"
+             onclick="event.stopPropagation(); toggleRespondido('${p.id}')"></div>
         <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄</button>
         <div class="lead-card-name">${nombre}</div>
         <div class="lead-card-info">
@@ -898,6 +950,16 @@
       renderPipeline();
     }
 
+    /* ── ALTERNAR ESTADO RESPONDIDO ── */
+    function toggleRespondido(id) {
+      const pacientes = cargarPacientes();
+      const idx = pacientes.findIndex(p => p.id === id);
+      if (idx === -1) return;
+      pacientes[idx].respondido = !pacientes[idx].respondido;
+      guardarPacientes(pacientes);
+      renderPipeline();
+    }
+
     /* ── MODAL NUEVO CONTACTO ── */
     function abrirModalNuevo() {
       document.getElementById('formNuevo').reset();
@@ -920,6 +982,7 @@
         telefono:  document.getElementById('nTelefono').value.trim(),
         numDoc:    document.getElementById('nDocumento').value.trim(),
         etapa: 'contacto',
+        respondido: false,  // nace como "pendiente" — visible con punto naranja
         fechaRegistro: new Date().toISOString().split('T')[0]
       };
       pacientes.push(nuevo);
