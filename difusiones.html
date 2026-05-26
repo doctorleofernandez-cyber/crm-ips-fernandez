@@ -145,13 +145,21 @@
 
       /* La tabla ancha (8 columnas) se desplaza horizontalmente
          dentro de su propio wrapper — el título y el buscador
-         quedan fijos arriba mientras la tabla se desliza */
+         quedan fijos arriba mientras la tabla se desliza.
+         touch-action: pan-x evita que iOS confunda este gesto
+         con el scroll vertical de la página. */
+      .table-card { overflow: visible; }
       .table-scroll {
         overflow-x: auto;
+        overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
         max-width: 100%;
       }
       .table-scroll table { min-width: 720px; }
+      .table-scroll::-webkit-scrollbar { height: 6px; }
+      .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
+      .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
 
       /* Celdas un poco más compactas para móvil */
       thead th, td { padding: 10px 12px; }
