@@ -150,6 +150,54 @@
 
       /* Celdas un poco más compactas para móvil */
       thead th, td { padding: 10px 12px; }
+
+      /* KPIs: 4 columnas no caben → 2x2 */
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .kpi-card { padding: 14px; }
+      .kpi-value { font-size: 22px; }
+      .kpi-label { font-size: 10.5px; }
+      .kpi-sub { font-size: 10px; }
+
+      /* Modal "Nueva difusión": 620px no cabe en celular */
+      .modal-overlay { padding: 16px; padding-top: 24px; align-items: flex-start; }
+      .modal {
+        width: 100%;
+        max-width: 95vw;
+        padding: 22px 18px;
+        margin-bottom: 24px;
+        border-radius: 14px;
+      }
+      .modal-title { font-size: 17px; }
+      .modal-sub { margin-bottom: 18px; font-size: 12px; }
+
+      /* Tarjetas de audiencia dentro del modal */
+      .audience-card { padding: 12px 14px; }
+      .ac-count { font-size: 16px; }
+      .ac-name { font-size: 12.5px; }
+      .ac-desc { font-size: 11px; line-height: 1.45; }
+
+      /* Inputs y selects: 14px+ evita el zoom de iOS */
+      .modal input, .modal select, .modal textarea {
+        font-size: 14px;
+        padding: 11px 14px;
+      }
+
+      /* Botones del pie del modal: apilados y a todo el ancho */
+      .modal-footer {
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+      .modal-footer .btn-cancel,
+      .modal-footer .btn-create {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        min-height: 44px;
+      }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
