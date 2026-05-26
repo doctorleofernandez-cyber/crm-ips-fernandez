@@ -536,8 +536,9 @@
       .search-wrap input { font-size: 14px; }
       .filter-chips { width: 100%; }
       .chip { padding: 7px 12px; font-size: 11px; }
-      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      table { min-width: 720px; }
+      /* Solo la tabla se desliza horizontalmente; la paginación queda fija abajo */
+      .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+      .table-scroll table { min-width: 720px; }
       .td-actions { opacity: 1; }
       .pagination { flex-direction: column; gap: 10px; align-items: stretch; padding: 12px; }
       .page-info { text-align: center; }
@@ -665,21 +666,23 @@
 
     <!-- Tabla -->
     <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>N° Factura</th>
-            <th>Contacto</th>
-            <th>Fecha</th>
-            <th>Vencimiento</th>
-            <th>Concepto</th>
-            <th>Valor</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="tablaBody"></tbody>
-      </table>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>N° Factura</th>
+              <th>Contacto</th>
+              <th>Fecha</th>
+              <th>Vencimiento</th>
+              <th>Concepto</th>
+              <th>Valor</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody"></tbody>
+        </table>
+      </div>
       <div id="emptyState" class="table-empty" style="display:none">
         <div class="table-empty-icon">💰</div>
         <div class="table-empty-text">Sin facturas registradas</div>
