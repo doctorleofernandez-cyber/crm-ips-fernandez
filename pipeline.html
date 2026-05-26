@@ -816,6 +816,61 @@
         min-height: 100vh;
         overflow: visible;
       }
+
+      /* ── Topbar en celular: en lugar de una sola fila apretada,
+            se acomoda en filas con espacio respirable ── */
+      .topbar {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        gap: 8px;
+        row-gap: 8px;
+      }
+      /* Ocultar el título largo para liberar espacio */
+      .topbar-title { display: none; }
+      /* Separador vertical no hace falta cuando se envuelve */
+      .topbar-sep { display: none; }
+
+      /* Fila 1: editar etapas + toggle Kanban/Lista + contador */
+      .btn-editar-etapas {
+        margin-left: 0;
+        width: 36px; height: 36px;
+        flex-shrink: 0;
+      }
+      .view-toggle { flex-shrink: 0; }
+      .view-toggle-btn { padding: 8px 14px; font-size: 12px; }
+      .topbar-meta {
+        margin-left: auto;
+        font-size: 11px;
+        text-align: right;
+      }
+
+      /* Fila 2: buscador a todo el ancho */
+      .topbar-search-input {
+        order: 10;
+        width: 100% !important;
+        flex-basis: 100%;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+      /* Filtro de etapa (vista lista) también full width */
+      .filter-select {
+        order: 11;
+        flex-basis: 100%;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+
+      /* Fila 3: botón nuevo contacto a todo el ancho — fácil de tocar */
+      .btn-new {
+        order: 20;
+        flex-basis: 100%;
+        padding: 12px 14px;
+        font-size: 13px;
+        text-align: center;
+        min-height: 44px;
+      }
+
       /* El tablero kanban conserva su scroll horizontal propio */
       .kanban { padding-bottom: 12px; }
     }
