@@ -188,6 +188,34 @@
     item.addEventListener('click', navegar);
   });
 
+  // Botón "Cerrar sesión": en iOS Safari el onclick inline a veces no
+  // dispara dentro del menú con animación. Le añadimos un touchend que
+  // hace exactamente lo mismo, distinguiendo tap de scroll.
+  var logoutBtn = sidebar.querySelector('.logout-btn');
+  if (logoutBtn) {
+    var logoutStartX = 0, logoutStartY = 0, logoutMoved = false;
+
+    logoutBtn.addEventListener('touchstart', function (e) {
+      if (!e.touches || !e.touches[0]) return;
+      logoutStartX = e.touches[0].clientX;
+      logoutStartY = e.touches[0].clientY;
+      logoutMoved = false;
+    }, { passive: true });
+
+    logoutBtn.addEventListener('touchmove', function (e) {
+      if (!e.touches || !e.touches[0]) return;
+      var dx = Math.abs(e.touches[0].clientX - logoutStartX);
+      var dy = Math.abs(e.touches[0].clientY - logoutStartY);
+      if (dx > 10 || dy > 10) logoutMoved = true;
+    }, { passive: true });
+
+    logoutBtn.addEventListener('touchend', function (e) {
+      if (logoutMoved) return;
+      e.preventDefault();
+      window.location.href = 'index.html';
+    }, { passive: false });
+  }
+
   // Si se agranda la ventana a escritorio, cerrar el menú móvil
   window.addEventListener('resize', function () {
     if (window.innerWidth > 760) closeMobileMenu();

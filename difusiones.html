@@ -143,14 +143,13 @@
         padding: 10px 14px;
       }
 
-      /* La tabla ancha (8 columnas) se desplaza horizontalmente
-         dentro de su propio wrapper — el título y el buscador
-         quedan fijos arriba mientras la tabla se desliza.
-         touch-action: pan-x evita que iOS confunda este gesto
-         con el scroll vertical de la página. */
-      .table-card { overflow: visible; }
+      /* La tabla ancha (8 columnas) se desplaza horizontalmente.
+         IMPORTANTE: forzamos overflow:visible en el padre con !important
+         para que sidebar.css no lo haga deslizable también (iOS se
+         confunde con scrolls anidados). */
+      .table-card { overflow: visible !important; }
       .table-scroll {
-        overflow-x: auto;
+        overflow-x: auto !important;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
@@ -160,6 +159,17 @@
       .table-scroll::-webkit-scrollbar { height: 6px; }
       .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
       .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
+      .table-scroll::after {
+        content: "← desliza para ver más columnas →";
+        display: block;
+        text-align: center;
+        font-size: 11px;
+        color: #b8801b;
+        padding: 8px;
+        background: rgba(224,164,53,0.06);
+        position: sticky;
+        left: 0;
+      }
 
       /* Celdas un poco más compactas para móvil */
       thead th, td { padding: 10px 12px; }

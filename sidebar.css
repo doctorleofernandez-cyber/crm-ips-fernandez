@@ -252,10 +252,19 @@
   .sidebar.collapsed.mobile-open .sidebar-logo { justify-content: flex-start; padding: 22px 18px; }
   .sidebar.collapsed.mobile-open .user-name,
   .sidebar.collapsed.mobile-open .user-role { display: block; }
-  .sidebar.collapsed.mobile-open .logout-btn {
+  .sidebar.collapsed.mobile-open .logout-btn,
+  .sidebar.mobile-open .logout-btn {
     text-align: left;
-    font-size: 11px;
-    padding: 4px 8px;
+    font-size: 14px;
+    padding: 12px 14px;
+    min-height: 44px;
+    border: 1px solid rgba(201,168,76,0.30);
+    border-radius: 8px;
+    background: rgba(201,168,76,0.06);
+    color: #C9A84C;
+    margin-top: 14px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(201,168,76,0.30);
   }
   .sidebar.collapsed.mobile-open .logout-btn::before { content: ""; font-size: 0; }
   .sidebar.collapsed.mobile-open .nav-badge { display: flex; }

@@ -537,27 +537,36 @@
       .filter-chips { width: 100%; }
       .chip { padding: 7px 12px; font-size: 11px; }
       /* Solo la tabla se desliza horizontalmente; la paginación queda fija abajo.
-         touch-action: pan-x le dice a iOS que es scroll horizontal y no debe
-         confundirlo con el scroll vertical de la página. */
-      .table-wrap { overflow: visible; }
+         IMPORTANTE: sidebar.css también pone overflow-x:auto en .table-wrap
+         y eso confunde a iOS con dos contenedores deslizables anidados.
+         Forzamos overflow:visible en el padre con !important para que
+         solo .table-scroll sea el que se desliza. */
+      .table-wrap { overflow: visible !important; }
       .table-scroll {
-        overflow-x: auto;
+        overflow-x: auto !important;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
         max-width: 100%;
         border-bottom: 1px solid rgba(0,0,0,0.07);
-        /* Sombra-pista a la derecha = "hay más por ver" */
-        background:
-          linear-gradient(to right, transparent 80%, rgba(201,168,76,0.10));
-        background-size: 100% 100%;
-        background-attachment: local;
       }
       .table-scroll table { min-width: 720px; }
       /* Barrita visible para que el usuario sepa que se puede deslizar */
       .table-scroll::-webkit-scrollbar { height: 6px; }
       .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
       .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
+      /* Pista textual de scroll — solo visible si hay tabla con datos */
+      .table-scroll::after {
+        content: "← desliza para ver más columnas →";
+        display: block;
+        text-align: center;
+        font-size: 11px;
+        color: #b8801b;
+        padding: 8px;
+        background: rgba(224,164,53,0.06);
+        position: sticky;
+        left: 0;
+      }
       .td-actions { opacity: 1; }
       .pagination { flex-direction: column; gap: 10px; align-items: stretch; padding: 12px; }
       .page-info { text-align: center; }
