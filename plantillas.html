@@ -206,6 +206,7 @@
     <div class="filters">
       <button class="filter-chip active" onclick="filtrar(this,'all')">Todas</button>
       <button class="filter-chip" onclick="filtrar(this,'bienvenida')">👋 Bienvenida</button>
+      <button class="filter-chip" onclick="filtrar(this,'servicio')">🦷 Servicios</button>
       <button class="filter-chip" onclick="filtrar(this,'recordatorio')">⏰ Recordatorio</button>
       <button class="filter-chip" onclick="filtrar(this,'seguimiento')">🔄 Seguimiento</button>
       <button class="filter-chip" onclick="filtrar(this,'promocion')">🎁 Promoción</button>
@@ -213,6 +214,131 @@
     </div>
 
     <div class="plantillas-grid" id="plantillasGrid">
+
+      <!-- Servicio: Diseño de sonrisa -->
+      <div class="plantilla-card" data-cat="servicio">
+        <div class="p-header">
+          <span class="p-cat-icon">😁</span>
+          <div><div class="p-cat-name">Servicio · Diseño de sonrisa</div><div class="p-name">Orientación inicial — Diseño de sonrisa</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b>, qué gusto saludarte. 😊<br/><br/>
+            El valor del <b>diseño de sonrisa</b> depende del material, el número de dientes a tratar y las condiciones actuales de tu sonrisa.<br/><br/>
+            Para orientarte de forma responsable realizamos una <b>valoración personalizada</b>, donde se define si tu caso requiere resina, cerámica, blanqueamiento, manejo de encía u otro procedimiento previo.<br/><br/>
+            La valoración tiene un valor de <b>$200.000 COP</b>, abonables al tratamiento si decides iniciarlo.<br/><br/>
+            ¿Te gustaría revisar disponibilidad para una valoración <b>presencial</b> o <b>virtual</b>?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Diseño de sonrisa')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Diseño de sonrisa')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Servicio: Implantes -->
+      <div class="plantilla-card" data-cat="servicio">
+        <div class="p-header">
+          <span class="p-cat-icon">🦷</span>
+          <div><div class="p-cat-name">Servicio · Implantes</div><div class="p-name">Orientación inicial — Implantes dentales</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b>, con gusto te orientamos. 🦷<br/><br/>
+            Los <b>implantes dentales</b> son una alternativa para reemplazar dientes perdidos y recuperar función, estética y seguridad al sonreír.<br/><br/>
+            Para saber si eres candidato se requiere una <b>valoración</b> y, en muchos casos, radiografía o tomografía.<br/><br/>
+            ¿El implante sería para <b>un solo diente</b> o para <b>varios dientes</b>?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Implantes')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Implantes')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Servicio: Ortodoncia -->
+      <div class="plantilla-card" data-cat="servicio">
+        <div class="p-header">
+          <span class="p-cat-icon">🪥</span>
+          <div><div class="p-cat-name">Servicio · Ortodoncia</div><div class="p-name">Orientación inicial — Ortodoncia</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b> 😊<br/><br/>
+            Te ayudamos con gusto a orientarte sobre <b>ortodoncia</b>. Existen varias alternativas (brackets metálicos, estéticos o alineadores transparentes) y la indicada depende de tu caso.<br/><br/>
+            Para definirlo realizamos una <b>valoración</b> donde revisamos tu mordida, la posición de los dientes y tus objetivos. Allí te entregamos plan y valor.<br/><br/>
+            ¿Te gustaría agendar tu valoración <b>presencial</b> o <b>virtual</b>?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Ortodoncia')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Ortodoncia')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
+
+      <!-- Servicio: Blanqueamiento Zoom -->
+      <div class="plantilla-card" data-cat="servicio">
+        <div class="p-header">
+          <span class="p-cat-icon">✨</span>
+          <div><div class="p-cat-name">Servicio · Blanqueamiento Zoom</div><div class="p-name">Orientación inicial — Blanqueamiento Zoom</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b> ✨<br/><br/>
+            El <b>blanqueamiento Zoom</b> es un procedimiento profesional realizado en consultorio que aclara el tono de tus dientes en una sola sesión, de forma segura.<br/><br/>
+            Antes de hacerlo es importante verificar que tus encías, esmalte y restauraciones estén en condiciones adecuadas, por eso se requiere una breve <b>valoración previa</b>.<br/><br/>
+            ¿Quieres que revisemos disponibilidad esta semana?
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Blanqueamiento Zoom')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Blanqueamiento Zoom')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span></div>
+        </div>
+      </div>
+
+      <!-- Seguimiento: Presupuesto enviado 24-48h -->
+      <div class="plantilla-card" data-cat="seguimiento">
+        <div class="p-header">
+          <span class="p-cat-icon">💼</span>
+          <div><div class="p-cat-name">Seguimiento · Presupuesto</div><div class="p-name">Seguimiento 24–48h después de enviar plan</div></div>
+          <span class="p-status ps-local">CRM</span>
+        </div>
+        <div class="p-preview">
+          <div class="wa-bubble">
+            Hola <b>{{nombre}}</b> 😊<br/><br/>
+            Te escribo para saber si pudiste revisar el <b>plan de tratamiento</b> que te compartimos para <b>{{tratamiento}}</b>.<br/><br/>
+            ¿Te quedó alguna duda sobre el procedimiento, los tiempos o las formas de pago? Estoy para ayudarte con gusto.
+            <div class="wa-time">✓✓</div>
+          </div>
+          <div class="wa-vars"><span class="wa-var">{{nombre}}</span><span class="wa-var">{{tratamiento}}</span></div>
+        </div>
+        <div class="p-footer">
+          <button class="btn-sm" onclick="usarPlantilla('Seguimiento presupuesto')">Usar</button>
+          <button class="btn-sm" onclick="editarPlantilla('Seguimiento presupuesto')">✏ Editar</button>
+          <button class="btn-sm danger" onclick="showToast('Plantilla eliminada')">🗑</button>
+          <div class="p-canales"><span class="canal-ico">📱</span><span class="canal-ico">📸</span></div>
+        </div>
+      </div>
 
       <!-- Bienvenida -->
       <div class="plantilla-card" data-cat="bienvenida">
@@ -431,6 +557,7 @@
             <label>Categoría</label>
             <select id="pCat">
               <option value="bienvenida">👋 Bienvenida</option>
+              <option value="servicio">🦷 Servicio (orientación clínica)</option>
               <option value="recordatorio">⏰ Recordatorio</option>
               <option value="seguimiento">🔄 Seguimiento</option>
               <option value="promocion">🎁 Promoción</option>

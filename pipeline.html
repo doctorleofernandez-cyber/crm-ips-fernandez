@@ -392,6 +392,32 @@
       line-height: 1.5;
     }
     .lead-card-info span { color: #9c8c72; }
+
+    /* Servicio y nivel de intención en la tarjeta */
+    .lead-card-tags {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-top: 8px;
+    }
+    .lead-tag-servicio {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 10px;
+      color: #7a5c1e;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.30);
+    }
+    .lead-tag-intencion {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px 2px 6px; border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 4px;
+      letter-spacing: 0.3px;
+    }
+    .lead-tag-intencion::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+    }
+    .lead-tag-intencion.frio     { color: #4C8FCA; background: rgba(76,143,202,0.12);  border: 1px solid rgba(76,143,202,0.30); }
+    .lead-tag-intencion.tibio    { color: #b8801b; background: rgba(224,164,53,0.15);  border: 1px solid rgba(224,164,53,0.35); }
+    .lead-tag-intencion.caliente { color: #c84848; background: rgba(200,72,72,0.13);   border: 1px solid rgba(200,72,72,0.32); }
     .lead-card-move {
       position: absolute;
       top: 8px; right: 8px;
@@ -599,6 +625,182 @@
       background: #ffffff;
     }
 
+    /* ════════════ TOGGLE KANBAN | LISTA ════════════ */
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.6);
+    }
+    .view-toggle-btn {
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: #5a4e3a;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.18s, color 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .view-toggle-btn:hover { background: rgba(201,168,76,0.10); color: #1a1208; }
+    .view-toggle-btn.active {
+      background: linear-gradient(135deg, #C9A84C, #e2c47a);
+      color: #1a1208;
+    }
+    .view-toggle-btn + .view-toggle-btn { border-left: 1px solid rgba(0,0,0,0.10); }
+
+    /* Filtro por etapa (dropdown nativo, estilizado) */
+    .filter-select {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.6);
+      color: #1a1208;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .filter-select:focus { outline: none; border-color: #C9A84C; background: #fff; }
+
+    /* ════════════ VISTA LISTA ════════════ */
+    .vista-lista {
+      flex: 1;
+      overflow: auto;
+      padding: 18px 20px;
+      display: none;  /* alternado por JS */
+    }
+    .vista-lista.activa { display: block; }
+
+    .tabla-lista {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 13px;
+      min-width: 980px; /* permite scroll horizontal en pantallas chicas */
+    }
+    .tabla-lista thead th {
+      background: rgba(201,168,76,0.10);
+      color: #5a4e3a;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(201,168,76,0.30);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .tabla-lista thead th:hover { background: rgba(201,168,76,0.18); color: #1a1208; }
+    .tabla-lista thead th .sort-ind { font-size: 10px; opacity: 0.55; margin-left: 4px; }
+    .tabla-lista thead th.activa-sort { color: #1a1208; }
+    .tabla-lista thead th.activa-sort .sort-ind { opacity: 1; color: #C9A84C; }
+
+    .tabla-lista tbody tr {
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tabla-lista tbody tr:hover { background: rgba(201,168,76,0.06); }
+    .tabla-lista tbody tr:last-child { border-bottom: none; }
+    .tabla-lista tbody td {
+      padding: 12px 14px;
+      color: #1a1208;
+      vertical-align: middle;
+    }
+
+    /* Celda Nombre con avatar */
+    .cell-nombre { display: flex; align-items: center; gap: 10px; }
+    .cell-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      color: #7a5c1e;
+      flex-shrink: 0;
+    }
+    .cell-nombre-txt { font-weight: 600; }
+    .cell-nombre-sub { font-size: 11px; color: #9c8c72; }
+
+    /* Badges */
+    .badge-etapa {
+      display: inline-block;
+      font-size: 10.5px; font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      background: rgba(201,168,76,0.15);
+      color: #7a5c1e;
+      border: 1px solid rgba(201,168,76,0.30);
+      letter-spacing: 0.3px;
+    }
+    .badge-resp-dot {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .badge-resp-dot:hover { transform: scale(1.2); }
+    .badge-resp-dot.pendiente { background: #e87b35; }
+    .badge-resp-dot.respondido { background: #2ea043; }
+
+    /* Próxima tarea */
+    .cell-tarea {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px;
+    }
+    .cell-tarea-ico { font-size: 14px; }
+    .cell-tarea-txt {
+      max-width: 180px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .cell-tarea-meta {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.4px;
+      padding: 2px 7px; border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .meta-vencida  { background: rgba(200,72,72,0.12);  color: #c84848; }
+    .meta-hoy      { background: rgba(224,164,53,0.15); color: #b8801b; }
+    .meta-proxima  { background: rgba(76,143,202,0.12); color: #4080c8; }
+    .cell-empty    { color: #c4b49a; font-style: italic; font-size: 12px; }
+
+    /* Etiquetas */
+    .tag-mini {
+      display: inline-block;
+      font-size: 10px; padding: 2px 7px;
+      border-radius: 10px;
+      background: rgba(201,168,76,0.10);
+      color: #7a5c1e;
+      border: 1px solid rgba(201,168,76,0.25);
+      margin-right: 4px;
+    }
+
+    /* Estado vacío de la lista */
+    .lista-vacia {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9c8c72;
+    }
+    .lista-vacia-ico { font-size: 40px; opacity: 0.4; margin-bottom: 12px; }
+    .lista-vacia-txt { font-size: 13.5px; }
+
     /* ── RESPONSIVE: pipeline en móvil ── */
     @media (max-width: 760px) {
       /* La página puede hacer scroll vertical */
@@ -687,13 +889,44 @@
       <span class="topbar-title">PIPELINE DE CONTACTOS</span>
       <button class="btn-editar-etapas" onclick="abrirModalEtapas()" title="Editar etapas del pipeline">⚙</button>
       <span class="topbar-sep"></span>
-      <input type="text" class="topbar-search-input" id="searchInput" placeholder="Buscar contacto…" oninput="renderPipeline()" />
+
+      <!-- Toggle Kanban / Lista -->
+      <div class="view-toggle" role="tablist" aria-label="Cambiar vista">
+        <button class="view-toggle-btn active" id="btnVistaKanban" onclick="setVista('kanban')" title="Vista de tablero">◈ Kanban</button>
+        <button class="view-toggle-btn"        id="btnVistaLista"  onclick="setVista('lista')"  title="Vista de lista">☰ Lista</button>
+      </div>
+
+      <input type="text" class="topbar-search-input" id="searchInput" placeholder="Buscar contacto…" oninput="renderActiva()" />
+
+      <!-- Filtro por etapa (solo afecta la vista Lista; la genera el JS) -->
+      <select class="filter-select" id="filterEtapa" onchange="renderActiva()" title="Filtrar por etapa" style="display:none">
+        <option value="">Todas las etapas</option>
+      </select>
+
       <span class="topbar-meta" id="leadCount">0 contactos</span>
       <button class="btn-new" onclick="abrirModalNuevo()">+ Nuevo contacto</button>
     </div>
 
     <!-- Kanban (las columnas las genera el JS según etapas configuradas) -->
     <div class="kanban" id="kanban"></div>
+
+    <!-- Vista Lista (tabla con todos los contactos) -->
+    <div class="vista-lista" id="vistaLista">
+      <table class="tabla-lista" id="tablaLista">
+        <thead>
+          <tr>
+            <th data-sort="estado"   onclick="setOrden('estado')"   style="width:42px" title="Respondido / pendiente">●</th>
+            <th data-sort="nombre"   onclick="setOrden('nombre')">Contacto <span class="sort-ind">↕</span></th>
+            <th data-sort="etapa"    onclick="setOrden('etapa')">Etapa <span class="sort-ind">↕</span></th>
+            <th data-sort="tarea"    onclick="setOrden('tarea')">Próxima tarea <span class="sort-ind">↕</span></th>
+            <th data-sort="telefono" onclick="setOrden('telefono')">Teléfono <span class="sort-ind">↕</span></th>
+            <th data-sort="actividad" onclick="setOrden('actividad')">Última actividad <span class="sort-ind">↕</span></th>
+            <th>Etiquetas</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyLista"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Modal Editar Etapas del Pipeline -->
@@ -732,6 +965,50 @@
         <div class="modal-field">
           <label>Documento (CC, TI, etc.)</label>
           <input type="text" id="nDocumento" placeholder="CC 12345678" />
+        </div>
+        <div class="modal-field">
+          <label>Servicio de interés</label>
+          <select id="nServicio" style="width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;background:#ffffff;color:#1a1208;font-family:inherit">
+            <option value="">— Aún sin definir —</option>
+            <option>Diseño de sonrisa</option>
+            <option>Cerámica</option>
+            <option>Resina</option>
+            <option>Implantes</option>
+            <option>Ortodoncia</option>
+            <option>Blanqueamiento Zoom</option>
+            <option>Limpieza</option>
+            <option>Rehabilitación oral</option>
+            <option>Periodoncia</option>
+            <option>Urgencia</option>
+            <option>Valoración virtual</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Nivel de intención</label>
+          <select id="nIntencion" style="width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;background:#ffffff;color:#1a1208;font-family:inherit">
+            <option value="">— Aún sin definir —</option>
+            <option value="frio">🔵 Frío — está investigando</option>
+            <option value="tibio">🟡 Tibio — está comparando</option>
+            <option value="caliente">🔴 Caliente — quiere agendar</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Canal de origen</label>
+          <select id="nOrigen" style="width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;background:#ffffff;color:#1a1208;font-family:inherit">
+            <option value="">— Sin definir —</option>
+            <option>WhatsApp</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+            <option>Facebook</option>
+            <option>Página web</option>
+            <option>Google Ads</option>
+            <option>Google Business</option>
+            <option>Llamada</option>
+            <option>Referido</option>
+            <option>Correo</option>
+            <option>Otro</option>
+          </select>
         </div>
         <div class="modal-actions">
           <button type="button" class="modal-btn cancel" onclick="cerrarModal()">Cancelar</button>
@@ -878,16 +1155,26 @@
       const tituloEstado = respondido
         ? 'Respondido — click para marcar como pendiente'
         : 'Sin responder — click para marcar como respondido';
+      const servicio = (p.servicio || '').trim();
+      const intencion = (p.intencion || '').toLowerCase();
+      const intencionLabel = { frio: 'Frío', tibio: 'Tibio', caliente: 'Caliente' }[intencion];
+      const tagsHtml = (servicio || intencionLabel) ? `
+        <div class="lead-card-tags">
+          ${servicio ? `<span class="lead-tag-servicio">${escapeHtml(servicio)}</span>` : ''}
+          ${intencionLabel ? `<span class="lead-tag-intencion ${intencion}">${intencionLabel}</span>` : ''}
+        </div>` : '';
+
       card.innerHTML = `
         <div class="lead-status-dot ${respondido ? 'respondido' : 'pendiente'}"
              title="${tituloEstado}"
              onclick="event.stopPropagation(); toggleRespondido('${p.id}')"></div>
         <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄</button>
-        <div class="lead-card-name">${nombre}</div>
+        <div class="lead-card-name">${escapeHtml(nombre)}</div>
         <div class="lead-card-info">
-          ${doc ? `<span>📄</span> ${doc}<br>` : ''}
-          ${tel ? `<span>📞</span> ${tel}` : ''}
+          ${doc ? `<span>📄</span> ${escapeHtml(doc)}<br>` : ''}
+          ${tel ? `<span>📞</span> ${escapeHtml(tel)}` : ''}
         </div>
+        ${tagsHtml}
       `;
       card.addEventListener('dragstart', onDragStart);
       card.addEventListener('dragend', onDragEnd);
@@ -981,6 +1268,9 @@
         apellidos: document.getElementById('nApellidos').value.trim(),
         telefono:  document.getElementById('nTelefono').value.trim(),
         numDoc:    document.getElementById('nDocumento').value.trim(),
+        servicio:  document.getElementById('nServicio').value,
+        intencion: document.getElementById('nIntencion').value,
+        origen:    document.getElementById('nOrigen').value,
         etapa: 'contacto',
         respondido: false,  // nace como "pendiente" — visible con punto naranja
         fechaRegistro: new Date().toISOString().split('T')[0]
@@ -1101,9 +1391,275 @@
       renderPipeline();
     }
 
+    /* ════════════════════════════════════════════════════════════
+                       VISTA LISTA (estilo Kommo)
+       ════════════════════════════════════════════════════════════ */
+
+    let VISTA_ACTIVA = localStorage.getItem('vista_pipeline_ips') || 'kanban';
+    let ordenLista = { campo: 'actividad', dir: 'desc' };  // por defecto, lo más reciente arriba
+
+    function setVista(v) {
+      VISTA_ACTIVA = (v === 'lista') ? 'lista' : 'kanban';
+      localStorage.setItem('vista_pipeline_ips', VISTA_ACTIVA);
+      aplicarVista();
+      renderActiva();
+    }
+
+    function aplicarVista() {
+      const esLista = VISTA_ACTIVA === 'lista';
+      document.getElementById('kanban').style.display      = esLista ? 'none' : '';
+      document.getElementById('vistaLista').classList.toggle('activa', esLista);
+      document.getElementById('btnVistaKanban').classList.toggle('active', !esLista);
+      document.getElementById('btnVistaLista').classList.toggle('active', esLista);
+      document.getElementById('filterEtapa').style.display = esLista ? 'inline-block' : 'none';
+    }
+
+    function renderActiva() {
+      if (VISTA_ACTIVA === 'lista') renderLista();
+      else renderPipeline();
+    }
+
+    function refrescarFiltroEtapa() {
+      const sel = document.getElementById('filterEtapa');
+      const valActual = sel.value;
+      sel.innerHTML = '<option value="">Todas las etapas</option>' +
+        ETAPAS.map(e => `<option value="${escapeHtml(e.id)}">${escapeHtml(e.label)}</option>`).join('');
+      sel.value = valActual;
+    }
+
+    // Próxima tarea pendiente de un contacto (la más cercana en el futuro o vencida)
+    function obtenerProximaTarea(pacId) {
+      const tareas = JSON.parse(localStorage.getItem('tareas_ips') || '[]')
+        .filter(t => t.pacienteId === pacId && t.estado === 'pendiente');
+      if (!tareas.length) return null;
+      tareas.sort((a, b) => {
+        const A = (a.fechaVencimiento || '9999-99-99') + (a.horaVencimiento || '');
+        const B = (b.fechaVencimiento || '9999-99-99') + (b.horaVencimiento || '');
+        return A.localeCompare(B);
+      });
+      return tareas[0];
+    }
+
+    // Última actividad: nota más reciente, tarea más reciente, cita más reciente o fechaRegistro
+    function obtenerUltimaActividad(pac) {
+      const fechas = [];
+      if (pac.fechaRegistro) fechas.push(pac.fechaRegistro + 'T00:00:00');
+
+      const notas = JSON.parse(localStorage.getItem('notas_pac_' + pac.id) || '[]');
+      notas.forEach(n => { if (n.fecha) fechas.push(n.fecha); });
+
+      const tareas = JSON.parse(localStorage.getItem('tareas_ips') || '[]')
+        .filter(t => t.pacienteId === pac.id);
+      tareas.forEach(t => {
+        if (t.fechaCreacion) fechas.push(t.fechaCreacion);
+        if (t.fechaCompletada) fechas.push(t.fechaCompletada);
+      });
+
+      const citas = JSON.parse(localStorage.getItem('citas_ips') || '[]')
+        .filter(c => c.pacienteId === pac.id);
+      citas.forEach(c => { if (c.fecha) fechas.push(c.fecha + 'T08:00:00'); });
+
+      if (!fechas.length) return null;
+      fechas.sort((a, b) => b.localeCompare(a));
+      return fechas[0];
+    }
+
+    function iconoTipoTarea(tipo) {
+      return ({ llamada: '📞', whatsapp: '💬', correo: '✉️', reunion: '🗓️', otra: '🎯' })[tipo] || '🎯';
+    }
+
+    function formatFechaCorta(iso) {
+      if (!iso) return '';
+      const f = iso.length > 10 ? iso.slice(0, 10) : iso;
+      const [y, m, d] = f.split('-');
+      const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+      return `${d} ${meses[+m - 1]}`;
+    }
+
+    function tiempoRelativo(iso) {
+      if (!iso) return '—';
+      const ahora = new Date();
+      const fecha = new Date(iso);
+      const diffMs = ahora - fecha;
+      const diffMin = Math.round(diffMs / 60000);
+      if (diffMin < 1) return 'ahora';
+      if (diffMin < 60) return `hace ${diffMin} min`;
+      const diffH = Math.round(diffMin / 60);
+      if (diffH < 24) return `hace ${diffH} h`;
+      const diffD = Math.round(diffH / 24);
+      if (diffD < 7) return `hace ${diffD} d`;
+      return formatFechaCorta(iso);
+    }
+
+    function setOrden(campo) {
+      if (ordenLista.campo === campo) {
+        ordenLista.dir = ordenLista.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        ordenLista.campo = campo;
+        ordenLista.dir = (campo === 'actividad' || campo === 'tarea') ? 'asc' : 'asc';
+      }
+      renderLista();
+    }
+
+    function renderLista() {
+      refrescarFiltroEtapa();
+      const pacientes = cargarPacientes();
+      const filtroTxt = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const filtroEtapa = document.getElementById('filterEtapa').value;
+
+      // Filtrar
+      let visibles = pacientes.filter(p => {
+        if (filtroEtapa && etapaDe(p) !== filtroEtapa) return false;
+        if (filtroTxt) {
+          const txt = `${p.nombres || ''} ${p.apellidos || ''} ${p.numDoc || ''} ${p.telefono || ''} ${p.tags || ''}`.toLowerCase();
+          if (!txt.includes(filtroTxt)) return false;
+        }
+        return true;
+      });
+
+      // Enriquecer con datos derivados (tarea, actividad)
+      const enriched = visibles.map(p => {
+        const tarea = obtenerProximaTarea(p.id);
+        const actividad = obtenerUltimaActividad(p);
+        return {
+          p,
+          nombre: `${p.nombres || ''} ${p.apellidos || ''}`.trim() || 'Sin nombre',
+          etapa: etapaLabel(etapaDe(p)),
+          tarea,
+          // claves de ordenación
+          ordenTarea: tarea ? (tarea.fechaVencimiento || '9999-99-99') : '9999-99-99',
+          ordenActividad: actividad || '0000-00-00',
+          telefono: p.telefono || ''
+        };
+      });
+
+      // Ordenar
+      const dir = ordenLista.dir === 'asc' ? 1 : -1;
+      enriched.sort((a, b) => {
+        let cmp = 0;
+        switch (ordenLista.campo) {
+          case 'estado':   cmp = (a.p.respondido ? 1 : 0) - (b.p.respondido ? 1 : 0); break;
+          case 'nombre':   cmp = a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }); break;
+          case 'etapa':    cmp = a.etapa.localeCompare(b.etapa, 'es'); break;
+          case 'tarea':    cmp = a.ordenTarea.localeCompare(b.ordenTarea); break;
+          case 'telefono': cmp = a.telefono.localeCompare(b.telefono); break;
+          case 'actividad': cmp = b.ordenActividad.localeCompare(a.ordenActividad); break;  // desc por defecto = más reciente
+        }
+        return cmp * dir;
+      });
+
+      // Indicador visual de columna ordenada
+      document.querySelectorAll('.tabla-lista thead th').forEach(th => {
+        th.classList.remove('activa-sort');
+        const ind = th.querySelector('.sort-ind');
+        if (ind) ind.textContent = '↕';
+      });
+      const thActivo = document.querySelector(`.tabla-lista thead th[data-sort="${ordenLista.campo}"]`);
+      if (thActivo) {
+        thActivo.classList.add('activa-sort');
+        const ind = thActivo.querySelector('.sort-ind');
+        if (ind) ind.textContent = ordenLista.dir === 'asc' ? '↑' : '↓';
+      }
+
+      // Render filas
+      const tbody = document.getElementById('tbodyLista');
+      if (!enriched.length) {
+        tbody.innerHTML = `
+          <tr><td colspan="7">
+            <div class="lista-vacia">
+              <div class="lista-vacia-ico">◇</div>
+              <div class="lista-vacia-txt">${filtroTxt || filtroEtapa ? 'No hay contactos con esos filtros.' : 'Aún no hay contactos. Cree el primero con "+ Nuevo contacto".'}</div>
+            </div>
+          </td></tr>`;
+      } else {
+        const hoyISO = new Date().toISOString().slice(0, 10);
+        tbody.innerHTML = enriched.map(({ p, nombre, etapa, tarea }) => {
+          const ini = nombre.split(' ').slice(0, 2).map(x => x[0] || '').join('').toUpperCase() || '?';
+          const respondido = !!p.respondido;
+          const tituloEstado = respondido ? 'Respondido — click para marcar como pendiente'
+                                          : 'Sin responder — click para marcar como respondido';
+
+          // Próxima tarea
+          let celdaTarea;
+          if (tarea) {
+            const v = tarea.fechaVencimiento || '';
+            const metaCls = !v ? 'meta-proxima' : v < hoyISO ? 'meta-vencida' : v === hoyISO ? 'meta-hoy' : 'meta-proxima';
+            const metaTxt = !v ? 'Sin fecha' : v < hoyISO ? 'Vencida' : v === hoyISO ? 'Hoy' : formatFechaCorta(v);
+            celdaTarea = `
+              <div class="cell-tarea">
+                <span class="cell-tarea-ico">${iconoTipoTarea(tarea.tipo)}</span>
+                <span class="cell-tarea-txt" title="${escapeHtml(tarea.titulo)}">${escapeHtml(tarea.titulo)}</span>
+                <span class="cell-tarea-meta ${metaCls}">${metaTxt}</span>
+              </div>`;
+          } else {
+            celdaTarea = `<span class="cell-empty">Sin tarea</span>`;
+          }
+
+          // Última actividad
+          const ult = obtenerUltimaActividad(p);
+          const ultTxt = ult ? tiempoRelativo(ult) : '—';
+
+          // Servicio + Intención + Tags
+          const servicio = (p.servicio || '').trim();
+          const intencion = (p.intencion || '').toLowerCase();
+          const intencionLabel = { frio: 'Frío', tibio: 'Tibio', caliente: 'Caliente' }[intencion];
+          const tags = (p.tags || '').split(',').map(t => t.trim()).filter(Boolean).slice(0, 2);
+          const partes = [];
+          if (servicio) partes.push(`<span class="tag-mini" style="background:rgba(201,168,76,0.18);color:#7a5c1e;border-color:rgba(201,168,76,0.35)">${escapeHtml(servicio)}</span>`);
+          if (intencionLabel) partes.push(`<span class="lead-tag-intencion ${intencion}" style="font-size:9.5px;padding:1px 7px 1px 5px">${intencionLabel}</span>`);
+          tags.forEach(t => partes.push(`<span class="tag-mini">${escapeHtml(t)}</span>`));
+          const tagsHtml = partes.length ? partes.join('') : `<span class="cell-empty">—</span>`;
+
+          return `
+            <tr onclick="window.location.href='contacto-perfil.html?id=${encodeURIComponent(p.id)}'">
+              <td onclick="event.stopPropagation(); toggleRespondidoLista('${p.id}')" style="text-align:center">
+                <span class="badge-resp-dot ${respondido ? 'respondido' : 'pendiente'}" title="${tituloEstado}"></span>
+              </td>
+              <td>
+                <div class="cell-nombre">
+                  <div class="cell-avatar">${ini}</div>
+                  <div>
+                    <div class="cell-nombre-txt">${escapeHtml(nombre)}</div>
+                    <div class="cell-nombre-sub">${escapeHtml(p.numDoc || '—')}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge-etapa">${escapeHtml(etapa)}</span></td>
+              <td>${celdaTarea}</td>
+              <td>${escapeHtml(p.telefono || '—')}</td>
+              <td style="color:#5a4e3a;font-size:12px">${ultTxt}</td>
+              <td>${tagsHtml}</td>
+            </tr>`;
+        }).join('');
+      }
+
+      // Contador
+      const total = enriched.length;
+      const pendientes = enriched.filter(x => !x.p.respondido).length;
+      const meta = document.getElementById('leadCount');
+      if (total === 0) {
+        meta.textContent = '0 contactos';
+      } else if (pendientes === 0) {
+        meta.textContent = total === 1 ? '1 contacto · todos respondidos' : `${total} contactos · todos respondidos`;
+      } else {
+        meta.innerHTML = `${total} ${total === 1 ? 'contacto' : 'contactos'} · <span style="color:#c84848;font-weight:600">${pendientes} sin responder</span>`;
+      }
+    }
+
+    // Toggle respondido desde la lista (no re-renderiza el kanban si no toca)
+    function toggleRespondidoLista(id) {
+      const pacientes = cargarPacientes();
+      const idx = pacientes.findIndex(p => p.id === id);
+      if (idx === -1) return;
+      pacientes[idx].respondido = !pacientes[idx].respondido;
+      guardarPacientes(pacientes);
+      renderLista();
+    }
+
     /* ── INIT ── */
     renderColumnas();
-    renderPipeline();
+    aplicarVista();
+    renderActiva();
   </script>
 
   <script src="sidebar.js"></script>

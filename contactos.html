@@ -229,6 +229,29 @@
     .badge-activo   { background: rgba(168,137,63,0.12); color: var(--verde); }
     .badge-inactivo { background: rgba(224,84,84,0.1);   color: var(--rojo); }
 
+    /* Servicio + Intención */
+    .badge-servicio {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 14px;
+      font-size: 10.5px; font-weight: 600;
+      background: rgba(201,168,76,0.15);
+      color: #7a5c1e;
+      border: 1px solid rgba(201,168,76,0.30);
+    }
+    .badge-intencion {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 2px 9px; border-radius: 14px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .badge-intencion::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      background: currentColor;
+    }
+    .badge-intencion.frio     { color: #4C8FCA; background: rgba(76,143,202,0.12);  border: 1px solid rgba(76,143,202,0.30); }
+    .badge-intencion.tibio    { color: #b8801b; background: rgba(224,164,53,0.15);  border: 1px solid rgba(224,164,53,0.35); }
+    .badge-intencion.caliente { color: #c84848; background: rgba(200,72,72,0.13);   border: 1px solid rgba(200,72,72,0.32); }
+
     .td-actions { display: flex; gap: 6px; }
 
     .btn-icon {
@@ -486,11 +509,25 @@
       <option value="activo">Activo</option>
       <option value="inactivo">Inactivo</option>
     </select>
-    <select class="filter-select" id="filterGenero" onchange="renderTabla()">
-      <option value="">Todos los géneros</option>
-      <option value="M">Masculino</option>
-      <option value="F">Femenino</option>
-      <option value="O">Otro</option>
+    <select class="filter-select" id="filterServicio" onchange="renderTabla()">
+      <option value="">Todos los servicios</option>
+      <option>Diseño de sonrisa</option>
+      <option>Cerámica</option>
+      <option>Resina</option>
+      <option>Implantes</option>
+      <option>Ortodoncia</option>
+      <option>Blanqueamiento Zoom</option>
+      <option>Limpieza</option>
+      <option>Rehabilitación oral</option>
+      <option>Periodoncia</option>
+      <option>Urgencia</option>
+      <option>Valoración virtual</option>
+    </select>
+    <select class="filter-select" id="filterIntencion" onchange="renderTabla()">
+      <option value="">Toda intención</option>
+      <option value="caliente">🔴 Caliente</option>
+      <option value="tibio">🟡 Tibio</option>
+      <option value="frio">🔵 Frío</option>
     </select>
   </div>
 
@@ -502,10 +539,10 @@
       <thead>
         <tr>
           <th>Contacto</th>
-          <th>Documento</th>
+          <th>Servicio</th>
+          <th>Intención</th>
           <th>Teléfono</th>
-          <th>EPS</th>
-          <th>Último ingreso</th>
+          <th>Origen</th>
           <th>Estado</th>
           <th></th>
         </tr>
@@ -671,6 +708,69 @@
         </div>
       </div>
 
+      <div class="form-divider">CRM comercial</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Servicio de interés</label>
+          <select id="servicio">
+            <option value="">— Sin asignar —</option>
+            <option>Diseño de sonrisa</option>
+            <option>Cerámica</option>
+            <option>Resina</option>
+            <option>Implantes</option>
+            <option>Ortodoncia</option>
+            <option>Blanqueamiento Zoom</option>
+            <option>Limpieza</option>
+            <option>Rehabilitación oral</option>
+            <option>Periodoncia</option>
+            <option>Urgencia</option>
+            <option>Valoración virtual</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Canal de origen</label>
+          <select id="origen">
+            <option value="">— Sin definir —</option>
+            <option>WhatsApp</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+            <option>Facebook</option>
+            <option>Página web</option>
+            <option>Google Ads</option>
+            <option>Google Business</option>
+            <option>Llamada</option>
+            <option>Referido</option>
+            <option>Correo</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nivel de intención</label>
+          <select id="intencion">
+            <option value="">— Sin definir —</option>
+            <option value="frio">🔵 Frío — está investigando</option>
+            <option value="tibio">🟡 Tibio — está comparando</option>
+            <option value="caliente">🔴 Caliente — quiere agendar</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Objeción principal</label>
+          <select id="objecion">
+            <option value="">— Sin objeción registrada —</option>
+            <option>Precio</option>
+            <option>Tiempo</option>
+            <option>Miedo</option>
+            <option>Viaje / distancia</option>
+            <option>Financiación</option>
+            <option>Comparación con otra clínica</option>
+            <option>Otra</option>
+          </select>
+        </div>
+      </div>
+
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
         <button type="submit" class="btn-guardar">Guardar contacto</button>
@@ -717,16 +817,18 @@
 
   /* ── Renderizado de tabla ────────────────── */
   function renderTabla() {
-    const q        = document.getElementById('searchInput').value.toLowerCase();
-    const filtEst  = document.getElementById('filterEstado').value;
-    const filtGen  = document.getElementById('filterGenero').value;
-    const datos    = cargar();
+    const q         = document.getElementById('searchInput').value.toLowerCase();
+    const filtEst   = document.getElementById('filterEstado').value;
+    const filtServ  = document.getElementById('filterServicio').value;
+    const filtInt   = document.getElementById('filterIntencion').value;
+    const datos     = cargar();
 
     let filtrados = datos.filter(p => {
-      const texto = `${p.nombres} ${p.apellidos} ${p.numDoc}`.toLowerCase();
+      const texto = `${p.nombres} ${p.apellidos} ${p.numDoc} ${p.servicio || ''}`.toLowerCase();
       return (!q || texto.includes(q))
           && (!filtEst || p.estado === filtEst)
-          && (!filtGen || p.genero === filtGen);
+          && (!filtServ || (p.servicio || '') === filtServ)
+          && (!filtInt || (p.intencion || '') === filtInt);
     });
 
     document.getElementById('totalCount').textContent = filtrados.length;
@@ -741,23 +843,30 @@
     }
     empty.style.display = 'none';
 
-    tbody.innerHTML = filtrados.map(p => `
+    tbody.innerHTML = filtrados.map(p => {
+      const intencion = (p.intencion || '').toLowerCase();
+      const intencionLabel = { frio: 'Frío', tibio: 'Tibio', caliente: 'Caliente' }[intencion];
+      const intencionHtml = intencionLabel
+        ? `<span class="badge-intencion ${intencion}">${intencionLabel}</span>`
+        : `<span style="color:#c4b49a;font-size:11px">—</span>`;
+      const servicioHtml = p.servicio
+        ? `<span class="badge-servicio">${p.servicio}</span>`
+        : `<span style="color:#c4b49a;font-size:11px">—</span>`;
+      return `
       <tr onclick="verPerfil('${p.id}')" style="cursor:pointer">
         <td>
           <div class="avatar-cell">
             <div class="avatar-mini">${inicialesNombre(p.nombres, p.apellidos)}</div>
             <div>
               <div class="td-name">${p.nombres} ${p.apellidos}</div>
-              <div class="td-doc">${calcularEdad(p.fechaNac)}</div>
+              <div class="td-doc">${p.tipoDoc || ''} ${p.numDoc || ''}</div>
             </div>
           </div>
         </td>
-        <td>
-          <div class="td-name">${p.tipoDoc} ${p.numDoc}</div>
-        </td>
+        <td>${servicioHtml}</td>
+        <td>${intencionHtml}</td>
         <td>${p.telefono || '—'}</td>
-        <td>${p.eps || '—'}</td>
-        <td>${formatFecha(p.fechaRegistro)}</td>
+        <td>${p.origen || '—'}</td>
         <td><span class="badge badge-${p.estado}">${p.estado}</span></td>
         <td>
           <div class="td-actions" onclick="event.stopPropagation()">
@@ -765,8 +874,8 @@
             <button class="btn-icon del" title="Eliminar" onclick="eliminarPaciente('${p.id}')">✕</button>
           </div>
         </td>
-      </tr>
-    `).join('');
+      </tr>`;
+    }).join('');
   }
 
   /* ── Modal ───────────────────────────────── */
@@ -791,6 +900,10 @@
       document.getElementById('grupoSanguineo').value = paciente.grupoSanguineo || '';
       document.getElementById('alergias').value    = paciente.alergias || '';
       document.getElementById('antecedentes').value = paciente.antecedentes || '';
+      document.getElementById('servicio').value    = paciente.servicio || '';
+      document.getElementById('origen').value      = paciente.origen || '';
+      document.getElementById('intencion').value   = paciente.intencion || '';
+      document.getElementById('objecion').value    = paciente.objecion || '';
     } else {
       document.getElementById('modalTitulo').innerHTML = 'Nuevo <span>Contacto</span>';
       document.getElementById('pacienteId').value = '';
@@ -826,6 +939,10 @@
       grupoSanguineo:document.getElementById('grupoSanguineo').value,
       alergias:      document.getElementById('alergias').value.trim(),
       antecedentes:  document.getElementById('antecedentes').value.trim(),
+      servicio:      document.getElementById('servicio').value,
+      origen:        document.getElementById('origen').value,
+      intencion:     document.getElementById('intencion').value,
+      objecion:      document.getElementById('objecion').value,
     };
 
     if (id) {

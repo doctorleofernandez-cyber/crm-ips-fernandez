@@ -211,6 +211,33 @@
       background: rgba(201,168,76,0.06);
     }
 
+    /* Píldoras de intención (frío / tibio / caliente) */
+    .intencion-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+    .intencion-pill::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: currentColor;
+    }
+    .intencion-pill.frio     { color: #4C8FCA; background: rgba(76,143,202,0.12);  border: 1px solid rgba(76,143,202,0.30); }
+    .intencion-pill.tibio    { color: #b8801b; background: rgba(224,164,53,0.15);  border: 1px solid rgba(224,164,53,0.35); }
+    .intencion-pill.caliente { color: #c84848; background: rgba(200,72,72,0.13);   border: 1px solid rgba(200,72,72,0.32); }
+    .intencion-pill.vacia    { color: #9c8c72; background: rgba(0,0,0,0.04);       border: 1px dashed rgba(0,0,0,0.18); }
+
+    /* Píldora de objeción */
+    .objecion-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px;
+      color: #7a5c1e;
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.30);
+    }
+    .objecion-pill.vacia { color: #9c8c72; background: rgba(0,0,0,0.04); border: 1px dashed rgba(0,0,0,0.18); }
+
     /* ── COLUMNA DERECHA — Tabs ── */
     .detail-area { display: flex; flex-direction: column; }
 
@@ -534,6 +561,147 @@
     .conv-time { color: #9c8c72; }
     .sidebar { background: #0e0e16 !important; }
 
+    /* ════════════ LÍNEA DE TIEMPO (estilo Kommo) ════════════ */
+    .tl-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      padding-left: 30px;
+    }
+    .tl-list::before {
+      content: '';
+      position: absolute;
+      left: 14px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(201,168,76,0.35) 0%, rgba(201,168,76,0.06) 100%);
+    }
+    .tl-item { position: relative; }
+    .tl-dot {
+      position: absolute;
+      left: -30px; top: 8px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid rgba(201,168,76,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      z-index: 1;
+      box-shadow: 0 2px 6px rgba(120,98,40,0.10);
+    }
+    .tl-dot.creacion { border-color: rgba(168,137,63,0.55); background: rgba(201,168,76,0.10); }
+    .tl-dot.nota     { border-color: rgba(76,143,202,0.55); background: rgba(76,143,202,0.10); }
+    .tl-dot.cita     { border-color: rgba(168,137,63,0.55); background: rgba(201,168,76,0.10); }
+    .tl-dot.factura  { border-color: rgba(224,164,53,0.55); background: rgba(224,164,53,0.10); }
+    .tl-dot.tarea    { border-color: rgba(224,164,53,0.55); background: rgba(224,164,53,0.10); }
+    .tl-dot.tarea-ok { border-color: rgba(168,137,63,0.55); background: rgba(168,137,63,0.12); }
+
+    .tl-card {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .tl-card:hover {
+      border-color: rgba(201,168,76,0.35);
+      transform: translateX(2px);
+    }
+    .tl-titulo { font-size: 13px; font-weight: 600; color: #1a1208; margin-bottom: 3px; }
+    .tl-cuerpo { font-size: 12.5px; color: #3a2e1c; line-height: 1.4; }
+    .tl-fecha  { font-size: 10.5px; color: #9c8c72; margin-top: 6px; letter-spacing: 0.3px; }
+
+    /* ════════════ WIDGET "PRÓXIMA TAREA" en columna izq. ════════════ */
+    .next-task {
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.30);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .next-task:hover {
+      background: rgba(201,168,76,0.18);
+      transform: translateY(-1px);
+    }
+    .next-task-icon {
+      font-size: 18px;
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .next-task-body { flex: 1; min-width: 0; }
+    .next-task-title {
+      font-size: 12.5px; font-weight: 600; color: #1a1208;
+      margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .next-task-meta {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .next-task-empty {
+      font-size: 12px; color: #9c8c72;
+      padding: 8px 0;
+    }
+
+    /* ════════════ FILAS DE TAREAS en su tab ════════════ */
+    .tarea-row.completada .item-title { text-decoration: line-through; opacity: 0.6; }
+    .tarea-row.completada { opacity: 0.78; }
+    .btn-tarea-mini {
+      font-size: 10.5px;
+      padding: 4px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .btn-tarea-mini.completar {
+      background: rgba(168,137,63,0.14);
+      border: 1px solid rgba(168,137,63,0.40);
+      color: #7a5c1e;
+    }
+    .btn-tarea-mini.completar:hover { background: rgba(168,137,63,0.25); }
+    .btn-tarea-mini.eliminar {
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.10);
+      color: #9c8c72;
+    }
+    .btn-tarea-mini.eliminar:hover {
+      background: rgba(224,85,85,0.08);
+      border-color: rgba(224,85,85,0.35);
+      color: #c84848;
+    }
+
+    .tab-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .btn-nueva-tarea {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+      color: #1a1208;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-nueva-tarea:hover {
+      box-shadow: 0 6px 16px rgba(201,168,76,0.30);
+      transform: translateY(-1px);
+    }
+
     /* ── RESPONSIVE: ficha de contacto en móvil ── */
     @media (max-width: 760px) {
       body {
@@ -643,7 +811,10 @@
 
         <!-- Acciones rápidas -->
         <div class="quick-actions">
-          <button class="quick-btn primary" onclick="irACitas()">
+          <button class="quick-btn primary" onclick="abrirModalTarea()">
+            <span class="quick-icon">🎯</span> Nueva tarea
+          </button>
+          <button class="quick-btn" onclick="irACitas()">
             <span class="quick-icon">📅</span> Nueva cita
           </button>
           <button class="quick-btn" onclick="irAFactura()">
@@ -655,6 +826,35 @@
           <button class="quick-btn" onclick="abrirModal()">
             <span class="quick-icon">✎</span> Editar perfil
           </button>
+        </div>
+
+        <!-- Widget: Próxima tarea pendiente -->
+        <div class="info-section" id="proximaTareaWrap">
+          <div class="info-title">Próxima tarea</div>
+          <div id="proximaTareaBody">
+            <div class="next-task-empty">Cargando…</div>
+          </div>
+        </div>
+
+        <!-- CRM comercial -->
+        <div class="info-section">
+          <div class="info-title">CRM comercial</div>
+          <div class="info-row">
+            <div class="info-label">Servicio de interés</div>
+            <div class="info-val" id="infServicio">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Canal de origen</div>
+            <div class="info-val" id="infOrigen">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Nivel de intención</div>
+            <div class="info-val" id="infIntencion"><span class="intencion-pill vacia">Sin definir</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Objeción principal</div>
+            <div class="info-val" id="infObjecion"><span class="objecion-pill vacia">Sin definir</span></div>
+          </div>
         </div>
 
         <!-- Info personal -->
@@ -700,16 +900,34 @@
       <div class="detail-area">
 
         <div class="tabs-bar">
-          <button class="tab-btn active" onclick="setTab('resumen')">Resumen</button>
-          <button class="tab-btn" onclick="setTab('citas')">Citas</button>
-          <button class="tab-btn" onclick="setTab('tratamientos')">Tratamientos</button>
-          <button class="tab-btn" onclick="setTab('facturas')">Facturas</button>
-          <button class="tab-btn" onclick="setTab('conversaciones')">Conversaciones</button>
-          <button class="tab-btn" onclick="setTab('notas')">Notas</button>
+          <button class="tab-btn active" data-tab="tiempo"        onclick="setTab('tiempo')">Línea de tiempo</button>
+          <button class="tab-btn"        data-tab="resumen"       onclick="setTab('resumen')">Resumen</button>
+          <button class="tab-btn"        data-tab="tareas"        onclick="setTab('tareas')">Tareas <span id="badgeTareas" style="display:none;font-size:10px;background:#C9A84C;color:#1a1208;border-radius:10px;padding:1px 7px;margin-left:4px;font-weight:700">0</span></button>
+          <button class="tab-btn"        data-tab="citas"         onclick="setTab('citas')">Citas</button>
+          <button class="tab-btn"        data-tab="tratamientos"  onclick="setTab('tratamientos')">Tratamientos</button>
+          <button class="tab-btn"        data-tab="facturas"      onclick="setTab('facturas')">Facturas</button>
+          <button class="tab-btn"        data-tab="conversaciones" onclick="setTab('conversaciones')">Conversaciones</button>
+          <button class="tab-btn"        data-tab="notas"         onclick="setTab('notas')">Notas</button>
+        </div>
+
+        <!-- TAB: LÍNEA DE TIEMPO -->
+        <div class="tab-content active" id="tab-tiempo">
+          <div class="tab-actions-bar">
+            <div class="section-title" style="margin-bottom:0">
+              Actividad del contacto
+            </div>
+            <button class="btn-nueva-tarea" onclick="abrirModalTarea()">＋ Nueva tarea</button>
+          </div>
+          <div class="tl-list" id="timelineList">
+            <div class="empty-tab">
+              <div class="empty-tab-icon">📭</div>
+              <div class="empty-tab-text">Cargando actividad…</div>
+            </div>
+          </div>
         </div>
 
         <!-- TAB: RESUMEN -->
-        <div class="tab-content active" id="tab-resumen">
+        <div class="tab-content" id="tab-resumen">
           <div class="overview-grid">
             <div class="ov-card">
               <div class="ov-label">Total citas</div>
@@ -781,6 +999,22 @@
             <div class="empty-tab">
               <div class="empty-tab-icon">💰</div>
               <div class="empty-tab-text">Sin facturas registradas para este contacto</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: TAREAS -->
+        <div class="tab-content" id="tab-tareas">
+          <div class="tab-actions-bar">
+            <div class="section-title" style="margin-bottom:0">
+              Tareas del contacto
+            </div>
+            <button class="btn-nueva-tarea" onclick="abrirModalTarea()">＋ Nueva tarea</button>
+          </div>
+          <div id="listaTareas">
+            <div class="empty-tab">
+              <div class="empty-tab-icon">🎯</div>
+              <div class="empty-tab-text">Cargando tareas…</div>
             </div>
           </div>
         </div>
@@ -922,12 +1156,118 @@
           </div>
           <div class="form-group full">
             <label>Etiquetas (separadas por coma)</label>
-            <input type="text" id="eTags" placeholder="Ej: Ortodoncia, VIP, Recurrente" />
+            <input type="text" id="eTags" placeholder="Ej: VIP, Recurrente, Referido" />
+          </div>
+
+          <!-- CRM comercial -->
+          <div class="form-group full">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7a5c1e;border-top:1px solid rgba(201,168,76,0.25);padding-top:14px;margin-top:6px">
+              CRM comercial
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Servicio de interés</label>
+            <select id="eServicio">
+              <option value="">— Sin asignar —</option>
+              <option>Diseño de sonrisa</option>
+              <option>Cerámica</option>
+              <option>Resina</option>
+              <option>Implantes</option>
+              <option>Ortodoncia</option>
+              <option>Blanqueamiento Zoom</option>
+              <option>Limpieza</option>
+              <option>Rehabilitación oral</option>
+              <option>Periodoncia</option>
+              <option>Urgencia</option>
+              <option>Valoración virtual</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Canal de origen</label>
+            <select id="eOrigen">
+              <option value="">— Sin definir —</option>
+              <option>WhatsApp</option>
+              <option>Instagram</option>
+              <option>TikTok</option>
+              <option>Facebook</option>
+              <option>Página web</option>
+              <option>Google Ads</option>
+              <option>Google Business</option>
+              <option>Llamada</option>
+              <option>Referido</option>
+              <option>Correo</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nivel de intención</label>
+            <select id="eIntencion">
+              <option value="">— Sin definir —</option>
+              <option value="frio">🔵 Frío — está investigando</option>
+              <option value="tibio">🟡 Tibio — está comparando</option>
+              <option value="caliente">🔴 Caliente — quiere agendar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Objeción principal</label>
+            <select id="eObjecion">
+              <option value="">— Sin objeción registrada —</option>
+              <option>Precio</option>
+              <option>Tiempo</option>
+              <option>Miedo</option>
+              <option>Viaje / distancia</option>
+              <option>Financiación</option>
+              <option>Comparación con otra clínica</option>
+              <option>Otra</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
           <button type="submit" class="btn-guardar">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MODAL NUEVA TAREA ── -->
+  <div class="overlay" id="overlayTarea" onclick="cerrarOverlayTarea(event)">
+    <div class="modal" style="max-width:480px">
+      <button class="modal-close" onclick="cerrarModalTarea()">✕</button>
+      <div class="modal-title">Nueva <span>Tarea</span></div>
+      <form id="formTarea" onsubmit="guardarTarea(event)">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Título</label>
+            <input type="text" id="tareaTitulo" placeholder="Ej: Llamar para confirmar cita" required />
+          </div>
+          <div class="form-group full">
+            <label>Tipo de tarea</label>
+            <select id="tareaTipo">
+              <option value="llamada">📞 Llamada</option>
+              <option value="whatsapp">💬 WhatsApp</option>
+              <option value="correo">✉️ Correo</option>
+              <option value="reunion">🗓️ Reunión</option>
+              <option value="otra">🎯 Otra</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fecha límite</label>
+            <input type="date" id="tareaFecha" />
+          </div>
+          <div class="form-group">
+            <label>Hora</label>
+            <input type="time" id="tareaHora" />
+          </div>
+          <div class="form-group full">
+            <label>Nota (opcional)</label>
+            <textarea id="tareaNota" rows="2" placeholder="Detalle adicional"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrarModalTarea()">Cancelar</button>
+          <button type="submit" class="btn-guardar">Crear tarea</button>
         </div>
       </form>
     </div>
@@ -962,6 +1302,8 @@
     cargarCitas();
     cargarFacturas();
     cargarNotas();
+    cargarTareas();
+    cargarTimeline();
 
     function renderPerfil() {
       const ini = pac.nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
@@ -981,6 +1323,25 @@
         document.getElementById('alertaAlergias').style.display = 'block';
         document.getElementById('alertaText').textContent = pac.alergias;
       }
+
+      // CRM comercial — servicio, origen, intención, objeción
+      document.getElementById('infServicio').textContent = pac.servicio || '—';
+      document.getElementById('infOrigen').textContent   = pac.origen   || '—';
+
+      const intencion = (pac.intencion || '').toLowerCase();
+      const intencionEl = document.getElementById('infIntencion');
+      if (intencion === 'frio' || intencion === 'tibio' || intencion === 'caliente') {
+        const txt = intencion === 'frio' ? 'Frío' : intencion === 'tibio' ? 'Tibio' : 'Caliente';
+        intencionEl.innerHTML = `<span class="intencion-pill ${intencion}">${txt}</span>`;
+      } else {
+        intencionEl.innerHTML = '<span class="intencion-pill vacia">Sin definir</span>';
+      }
+
+      const objecion = pac.objecion || '';
+      const objecionEl = document.getElementById('infObjecion');
+      objecionEl.innerHTML = objecion
+        ? `<span class="objecion-pill">${objecion}</span>`
+        : '<span class="objecion-pill vacia">Sin definir</span>';
 
       // Tags
       const tw = document.getElementById('tagsWrap');
@@ -1073,6 +1434,7 @@
       localStorage.setItem(key, JSON.stringify(notas));
       document.getElementById('notasText').value = '';
       renderNotas(notas);
+      cargarTimeline();
     }
 
     function renderNotas(notas) {
@@ -1095,8 +1457,10 @@
     function setTab(id) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById('tab-' + id).classList.add('active');
+      const btn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
+      if (btn) btn.classList.add('active');
+      const cont = document.getElementById('tab-' + id);
+      if (cont) cont.classList.add('active');
     }
 
     // ── MODAL EDITAR ──
@@ -1113,6 +1477,10 @@
       document.getElementById('eCiudad').value    = pac.ciudad    || '';
       document.getElementById('eAlergias').value  = pac.alergias  || '';
       document.getElementById('eTags').value      = pac.tags      || '';
+      document.getElementById('eServicio').value  = pac.servicio  || '';
+      document.getElementById('eOrigen').value    = pac.origen    || '';
+      document.getElementById('eIntencion').value = pac.intencion || '';
+      document.getElementById('eObjecion').value  = pac.objecion  || '';
       document.getElementById('overlay').classList.add('open');
     }
 
@@ -1134,6 +1502,10 @@
       pac.ciudad         = document.getElementById('eCiudad').value.trim();
       pac.alergias       = document.getElementById('eAlergias').value.trim();
       pac.tags           = document.getElementById('eTags').value.trim();
+      pac.servicio       = document.getElementById('eServicio').value;
+      pac.origen         = document.getElementById('eOrigen').value;
+      pac.intencion      = document.getElementById('eIntencion').value;
+      pac.objecion       = document.getElementById('eObjecion').value;
 
       // Espejos para compatibilidad (lo que muestra el render del perfil)
       pac.nombre     = `${pac.nombres} ${pac.apellidos}`.trim();
@@ -1172,6 +1544,309 @@
 
     function estadoColor(e) {
       return { confirmada:'verde', pendiente:'amarillo', completada:'azul', cancelada:'rojo' }[e] || 'azul';
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //                       TAREAS  (CRUD)
+    //   Almacenadas en localStorage clave 'tareas_ips' (igual
+    //   patrón que citas_ips y facturas_ips). Cada tarea tiene
+    //   pacienteId para vincularse a un contacto.
+    // ════════════════════════════════════════════════════════════
+
+    function obtenerTareas() {
+      return JSON.parse(localStorage.getItem('tareas_ips') || '[]')
+        .filter(t => t.pacienteId === (pacId || 'demo'));
+    }
+
+    function cargarTareas() {
+      const tareas = obtenerTareas();
+
+      // Próxima tarea pendiente para el widget de la columna izq.
+      const pendientes = tareas
+        .filter(t => t.estado === 'pendiente')
+        .sort((a, b) => {
+          // sin fecha al final, los demás cronológicos
+          if (!a.fechaVencimiento) return 1;
+          if (!b.fechaVencimiento) return -1;
+          return (a.fechaVencimiento + (a.horaVencimiento || ''))
+            .localeCompare(b.fechaVencimiento + (b.horaVencimiento || ''));
+        });
+
+      renderProximaTarea(pendientes[0]);
+      renderTareasList(tareas);
+
+      // Badge en la pestaña Tareas
+      const badge = document.getElementById('badgeTareas');
+      if (pendientes.length > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = pendientes.length;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderProximaTarea(t) {
+      const body = document.getElementById('proximaTareaBody');
+      if (!t) {
+        body.innerHTML = `
+          <div class="next-task-empty">Sin tareas pendientes</div>
+          <button class="quick-btn" style="width:100%;justify-content:center" onclick="abrirModalTarea()">
+            <span class="quick-icon">＋</span> Crear tarea
+          </button>`;
+        return;
+      }
+      const hoyISO = new Date().toISOString().slice(0, 10);
+      const venc = t.fechaVencimiento || '';
+      let estadoTxt, estadoColor;
+      if (!venc) {
+        estadoTxt = 'Sin fecha';
+        estadoColor = '#9c8c72';
+      } else if (venc < hoyISO) {
+        estadoTxt = 'Vencida';
+        estadoColor = '#c84848';
+      } else if (venc === hoyISO) {
+        estadoTxt = 'Hoy';
+        estadoColor = '#e0a435';
+      } else {
+        estadoTxt = formatFecha(venc);
+        estadoColor = '#7a5c1e';
+      }
+      body.innerHTML = `
+        <div class="next-task" onclick="setTab('tareas')" title="Ver todas las tareas">
+          <div class="next-task-icon">${iconoTarea(t.tipo)}</div>
+          <div class="next-task-body">
+            <div class="next-task-title">${escapeHtml(t.titulo)}</div>
+            <div class="next-task-meta" style="color:${estadoColor}">
+              ${estadoTxt}${t.horaVencimiento ? ' · ' + t.horaVencimiento : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTareasList(tareas) {
+      const cont = document.getElementById('listaTareas');
+      if (!tareas.length) {
+        cont.innerHTML = `
+          <div class="empty-tab">
+            <div class="empty-tab-icon">🎯</div>
+            <div class="empty-tab-text">Sin tareas para este contacto.<br/>Crea la primera para no perder el seguimiento.</div>
+          </div>`;
+        return;
+      }
+
+      const hoyISO = new Date().toISOString().slice(0, 10);
+      const pendientes = tareas
+        .filter(t => t.estado === 'pendiente')
+        .sort((a, b) => (a.fechaVencimiento || '9999').localeCompare(b.fechaVencimiento || '9999'));
+      const completadas = tareas
+        .filter(t => t.estado === 'completada')
+        .sort((a, b) => (b.fechaCompletada || '').localeCompare(a.fechaCompletada || ''))
+        .slice(0, 20);
+
+      let html = '';
+      if (pendientes.length) {
+        html += `<div class="section-title">Pendientes (${pendientes.length})</div><div class="item-list" style="margin-bottom:24px">`;
+        html += pendientes.map(t => renderTareaRow(t, hoyISO)).join('');
+        html += `</div>`;
+      }
+      if (completadas.length) {
+        html += `<div class="section-title">Completadas</div><div class="item-list">`;
+        html += completadas.map(t => renderTareaRow(t, hoyISO)).join('');
+        html += `</div>`;
+      }
+      cont.innerHTML = html;
+    }
+
+    function renderTareaRow(t, hoyISO) {
+      const venc = t.fechaVencimiento || '';
+      const esVencida = t.estado === 'pendiente' && venc && venc < hoyISO;
+      const esHoy     = t.estado === 'pendiente' && venc === hoyISO;
+      const badgeCls = t.estado === 'completada' ? 'verde' : esVencida ? 'rojo' : esHoy ? 'amarillo' : 'azul';
+      const badgeTxt = t.estado === 'completada' ? 'completada' : esVencida ? 'vencida' : esHoy ? 'hoy' : 'pendiente';
+      const fechaTxt = venc ? formatFecha(venc) + (t.horaVencimiento ? ' · ' + t.horaVencimiento : '')
+                            : 'Sin fecha';
+      return `
+        <div class="item-row tarea-row ${t.estado === 'completada' ? 'completada' : ''}">
+          <div class="item-icon">${iconoTarea(t.tipo)}</div>
+          <div class="item-body">
+            <div class="item-title">${escapeHtml(t.titulo)}</div>
+            <div class="item-sub">${fechaTxt}${t.nota ? ' · ' + escapeHtml(t.nota) : ''}</div>
+          </div>
+          <div class="item-right">
+            <span class="ibadge ${badgeCls}">${badgeTxt}</span>
+            <div class="item-date" style="margin-top:6px">
+              ${t.estado === 'pendiente'
+                ? `<button class="btn-tarea-mini completar" onclick="completarTarea('${t.id}')">✓ Completar</button>`
+                : `<button class="btn-tarea-mini eliminar" onclick="eliminarTarea('${t.id}')">Eliminar</button>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function iconoTarea(tipo) {
+      return ({ llamada: '📞', whatsapp: '💬', correo: '✉️', reunion: '🗓️', otra: '🎯' })[tipo] || '🎯';
+    }
+
+    function abrirModalTarea() {
+      document.getElementById('tareaTitulo').value = '';
+      document.getElementById('tareaTipo').value   = 'llamada';
+      document.getElementById('tareaFecha').value  = '';
+      document.getElementById('tareaHora').value   = '';
+      document.getElementById('tareaNota').value   = '';
+      document.getElementById('overlayTarea').classList.add('open');
+      setTimeout(() => document.getElementById('tareaTitulo').focus(), 80);
+    }
+    function cerrarModalTarea() { document.getElementById('overlayTarea').classList.remove('open'); }
+    function cerrarOverlayTarea(e) { if (e.target.id === 'overlayTarea') cerrarModalTarea(); }
+
+    function guardarTarea(e) {
+      e.preventDefault();
+      const titulo = document.getElementById('tareaTitulo').value.trim();
+      if (!titulo) return;
+      const tarea = {
+        id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        pacienteId: pacId || 'demo',
+        titulo: titulo,
+        tipo: document.getElementById('tareaTipo').value,
+        fechaVencimiento: document.getElementById('tareaFecha').value || '',
+        horaVencimiento: document.getElementById('tareaHora').value || '',
+        nota: document.getElementById('tareaNota').value.trim(),
+        estado: 'pendiente',
+        fechaCreacion: new Date().toISOString()
+      };
+      const todas = JSON.parse(localStorage.getItem('tareas_ips') || '[]');
+      todas.unshift(tarea);
+      localStorage.setItem('tareas_ips', JSON.stringify(todas));
+      cerrarModalTarea();
+      cargarTareas();
+      cargarTimeline();
+    }
+
+    function completarTarea(id) {
+      const todas = JSON.parse(localStorage.getItem('tareas_ips') || '[]');
+      const idx = todas.findIndex(t => t.id === id);
+      if (idx === -1) return;
+      todas[idx].estado = 'completada';
+      todas[idx].fechaCompletada = new Date().toISOString();
+      localStorage.setItem('tareas_ips', JSON.stringify(todas));
+      cargarTareas();
+      cargarTimeline();
+    }
+
+    function eliminarTarea(id) {
+      if (!confirm('¿Eliminar esta tarea?')) return;
+      const todas = JSON.parse(localStorage.getItem('tareas_ips') || '[]')
+        .filter(t => t.id !== id);
+      localStorage.setItem('tareas_ips', JSON.stringify(todas));
+      cargarTareas();
+      cargarTimeline();
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //                    LÍNEA DE TIEMPO
+    //   Funde en orden cronológico: creación del contacto, notas,
+    //   citas, facturas, tareas (creadas y completadas).
+    //   Todo se deriva de los datos existentes — no requiere un
+    //   log separado.
+    // ════════════════════════════════════════════════════════════
+
+    function cargarTimeline() {
+      const eventos = [];
+
+      // 1. Contacto creado
+      if (pac.fechaRegistro) {
+        eventos.push({
+          icono: '✨', categoria: 'creacion',
+          titulo: 'Contacto registrado en el CRM',
+          cuerpo: `${pac.nombre || 'Sin nombre'}${pac.telefono ? ' · ' + pac.telefono : ''}`,
+          fecha: pac.fechaRegistro
+        });
+      }
+
+      // 2. Notas
+      const notas = JSON.parse(localStorage.getItem('notas_pac_' + (pacId || 'demo')) || '[]');
+      notas.forEach(n => eventos.push({
+        icono: '📝', categoria: 'nota',
+        titulo: 'Nota agregada',
+        cuerpo: n.texto,
+        fecha: n.fecha
+      }));
+
+      // 3. Citas
+      JSON.parse(localStorage.getItem('citas_ips') || '[]')
+        .filter(c => c.pacienteId === pacId)
+        .forEach(c => eventos.push({
+          icono: '📅', categoria: 'cita',
+          titulo: c.tipoCita || 'Cita agendada',
+          cuerpo: `${formatFecha(c.fecha)}${c.hora ? ' · ' + c.hora : ''} · ${c.estado || 'pendiente'}`,
+          fecha: (c.fecha || '1970-01-01') + 'T08:00:00'
+        }));
+
+      // 4. Facturas
+      JSON.parse(localStorage.getItem('facturas_ips') || '[]')
+        .filter(f => f.pacienteId === pac.id)
+        .forEach(f => eventos.push({
+          icono: '💰', categoria: 'factura',
+          titulo: f.concepto || 'Factura emitida',
+          cuerpo: `$${Number(f.valor || 0).toLocaleString('es-CO')} · ${f.estado || 'pendiente'} · ${f.numero || ''}`,
+          fecha: (f.fecha || '1970-01-01') + 'T10:00:00'
+        }));
+
+      // 5. Tareas creadas
+      obtenerTareas().forEach(t => {
+        eventos.push({
+          icono: iconoTarea(t.tipo), categoria: 'tarea',
+          titulo: 'Tarea creada',
+          cuerpo: t.titulo + (t.fechaVencimiento ? ' — vence ' + formatFecha(t.fechaVencimiento) : ''),
+          fecha: t.fechaCreacion
+        });
+        if (t.estado === 'completada' && t.fechaCompletada) {
+          eventos.push({
+            icono: '✓', categoria: 'tarea-ok',
+            titulo: 'Tarea completada',
+            cuerpo: t.titulo,
+            fecha: t.fechaCompletada
+          });
+        }
+      });
+
+      // Orden cronológico inverso (lo más reciente arriba)
+      eventos.sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+      renderTimeline(eventos);
+    }
+
+    function renderTimeline(eventos) {
+      const c = document.getElementById('timelineList');
+      if (!eventos.length) {
+        c.innerHTML = `
+          <div class="empty-tab">
+            <div class="empty-tab-icon">📭</div>
+            <div class="empty-tab-text">Aún no hay actividad para este contacto.<br/>Crea una tarea o agrega una nota para empezar.</div>
+          </div>`;
+        return;
+      }
+      c.innerHTML = eventos.map(e => `
+        <div class="tl-item">
+          <div class="tl-dot ${e.categoria}">${e.icono}</div>
+          <div class="tl-card">
+            <div class="tl-titulo">${escapeHtml(e.titulo)}</div>
+            <div class="tl-cuerpo">${escapeHtml(e.cuerpo || '')}</div>
+            <div class="tl-fecha">${formatFechaHora(e.fecha)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Escape básico de HTML — evita romper el layout si el texto trae <, >, & ──
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
   </script>
   <script src="sidebar.js"></script>
