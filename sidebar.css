@@ -327,6 +327,9 @@
     gap: 10px;
   }
 
-  /* Evitar cualquier desplazamiento horizontal de la página */
-  html, body { max-width: 100%; overflow-x: hidden; }
+  /* Evitar cualquier desplazamiento horizontal de la página.
+     Usamos `clip` en vez de `hidden` porque `hidden` bloquea el
+     touch-scroll horizontal de elementos hijos en iOS Safari (bug
+     conocido). `clip` clipea igual pero NO crea contexto de scroll. */
+  html, body { max-width: 100%; overflow-x: clip; }
 }

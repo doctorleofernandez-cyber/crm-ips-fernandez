@@ -253,6 +253,8 @@
       border-radius: 12px;
       overflow: hidden;
     }
+    /* Pista de scroll horizontal — solo visible en móvil (la activa el @media) */
+    .scroll-hint { display: none; }
 
     table {
       width: 100%;
@@ -537,10 +539,9 @@
       .filter-chips { width: 100%; }
       .chip { padding: 7px 12px; font-size: 11px; }
       /* Solo la tabla se desliza horizontalmente; la paginación queda fija abajo.
-         IMPORTANTE: sidebar.css también pone overflow-x:auto en .table-wrap
-         y eso confunde a iOS con dos contenedores deslizables anidados.
-         Forzamos overflow:visible en el padre con !important para que
-         solo .table-scroll sea el que se desliza. */
+         Forzamos overflow:visible en el padre con !important porque
+         sidebar.css también lo hace deslizable y iOS se confunde con
+         scrolls horizontales anidados. */
       .table-wrap { overflow: visible !important; }
       .table-scroll {
         overflow-x: auto !important;
@@ -551,21 +552,18 @@
         border-bottom: 1px solid rgba(0,0,0,0.07);
       }
       .table-scroll table { min-width: 720px; }
-      /* Barrita visible para que el usuario sepa que se puede deslizar */
       .table-scroll::-webkit-scrollbar { height: 6px; }
       .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
       .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
-      /* Pista textual de scroll — solo visible si hay tabla con datos */
-      .table-scroll::after {
-        content: "← desliza para ver más columnas →";
+      /* Pista visible debajo del cuadro — separada del scroll */
+      .scroll-hint {
         display: block;
         text-align: center;
         font-size: 11px;
         color: #b8801b;
-        padding: 8px;
+        padding: 8px 12px;
         background: rgba(224,164,53,0.06);
-        position: sticky;
-        left: 0;
+        border-top: 1px solid rgba(224,164,53,0.18);
       }
       .td-actions { opacity: 1; }
       .pagination { flex-direction: column; gap: 10px; align-items: stretch; padding: 12px; }
@@ -711,6 +709,7 @@
           <tbody id="tablaBody"></tbody>
         </table>
       </div>
+      <div class="scroll-hint">← desliza para ver más columnas →</div>
       <div id="emptyState" class="table-empty" style="display:none">
         <div class="table-empty-icon">💰</div>
         <div class="table-empty-text">Sin facturas registradas</div>

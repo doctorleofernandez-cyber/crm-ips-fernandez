@@ -58,6 +58,8 @@
 
     /* Tabla de campañas */
     .table-card { background: rgba(255,255,255,0.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(120,98,40,0.07); }
+    /* Pista de scroll — solo visible en móvil (la activa el @media) */
+    .scroll-hint { display: none; }
     .table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid rgba(0,0,0,0.07); }
     .table-header h3 { font-size: 14px; font-weight: 600; color: #1a1208; }
     .search-input { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 8px 14px; font-size: 12.5px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; width: 220px; }
@@ -144,9 +146,9 @@
       }
 
       /* La tabla ancha (8 columnas) se desplaza horizontalmente.
-         IMPORTANTE: forzamos overflow:visible en el padre con !important
-         para que sidebar.css no lo haga deslizable también (iOS se
-         confunde con scrolls anidados). */
+         Forzamos overflow:visible en el padre con !important porque
+         sidebar.css también lo hace deslizable e iOS se confunde con
+         scrolls anidados. */
       .table-card { overflow: visible !important; }
       .table-scroll {
         overflow-x: auto !important;
@@ -159,16 +161,14 @@
       .table-scroll::-webkit-scrollbar { height: 6px; }
       .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
       .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
-      .table-scroll::after {
-        content: "← desliza para ver más columnas →";
+      .scroll-hint {
         display: block;
         text-align: center;
         font-size: 11px;
         color: #b8801b;
-        padding: 8px;
+        padding: 8px 12px;
         background: rgba(224,164,53,0.06);
-        position: sticky;
-        left: 0;
+        border-top: 1px solid rgba(224,164,53,0.18);
       }
 
       /* Celdas un poco más compactas para móvil */
@@ -334,6 +334,7 @@
           </tbody>
         </table>
       </div>
+      <div class="scroll-hint">← desliza para ver más columnas →</div>
     </div>
   </div>
 
