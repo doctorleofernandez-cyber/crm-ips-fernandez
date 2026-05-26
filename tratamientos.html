@@ -361,6 +361,36 @@
     .btn-guardar { padding: 10px 24px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); color: #1a1208; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
     .btn-guardar:hover { opacity: 0.85; }
     .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 18px; }
+      .page-title { font-size: 20px; }
+      .topbar-actions { flex-wrap: wrap; gap: 8px; }
+      .view-toggle { order: 2; }
+      .btn-nuevo { flex: 1; padding: 12px 14px; min-height: 44px; font-size: 12.5px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+      .stat-card { padding: 14px; }
+      .stat-value { font-size: 22px; }
+      .toolbar { gap: 8px; margin-bottom: 14px; }
+      .search-wrap { flex: 1 1 100%; min-width: 0; padding: 8px 12px; }
+      .search-wrap input { font-size: 14px; }
+      .cat-chips { width: 100%; }
+      .chip { padding: 7px 12px; font-size: 11px; }
+      .cards-grid { grid-template-columns: 1fr; gap: 12px; }
+      .t-card { padding: 16px; }
+      .t-actions { opacity: 1; }
+      .list-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 600px; }
+      .td-actions-list { opacity: 1; }
+      .modal { padding: 22px 18px; max-width: 95vw; max-height: 92vh; border-radius: 14px; }
+      .modal-title { font-size: 16px; margin-bottom: 18px; }
+      .form-grid { grid-template-columns: 1fr; gap: 10px; }
+      .form-group.full { grid-column: span 1; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 14px; padding: 11px 12px; }
+      .modal-footer { flex-direction: column-reverse; gap: 8px; }
+      .btn-cancel, .btn-guardar { width: 100%; min-height: 44px; padding: 12px; }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 <link rel="stylesheet" href="crm.css" />

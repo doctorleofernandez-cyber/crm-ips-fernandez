@@ -347,12 +347,29 @@
     }
     @media (max-width: 760px) {
       body { overflow-x: hidden; }
-      .topbar { padding: 14px 16px; }
-      .content { padding: 20px 14px 28px; }
+      .topbar { padding: 14px 14px; padding-top: 64px; flex-wrap: wrap; gap: 8px; }
+      .search-wrap { flex: 1 1 100%; padding: 8px 12px; }
+      .search-wrap input { font-size: 14px; }
+      .btn-actividades { width: 100%; justify-content: center; padding: 10px; min-height: 40px; }
+      .content { padding: 18px 14px 28px; }
+      .page-head { margin-bottom: 16px; }
+      .page-title { font-size: 20px; }
+      .filters { gap: 6px; margin-bottom: 18px; }
+      .filter-group { padding: 3px; }
+      .f-btn { padding: 7px 11px; font-size: 11.5px; min-height: 36px; }
+      .f-select, .f-config { padding: 7px 12px; font-size: 11.5px; min-height: 36px; }
       .cards-grid {
         grid-template-columns: 1fr !important;
         grid-template-rows: auto !important;
+        gap: 12px;
       }
+      .card { padding: 16px 14px; }
+      .card-value { font-size: 36px; }
+      .card-value.md { font-size: 28px; }
+      .sources-body { flex-direction: column; align-items: stretch; gap: 16px; }
+      .arc-wrap { margin: 0 auto; }
+      .sources-legend { flex-direction: row; flex-wrap: wrap; }
+      .legend-row { flex: 0 0 calc(50% - 8px); }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />

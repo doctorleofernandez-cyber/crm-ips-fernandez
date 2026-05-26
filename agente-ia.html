@@ -304,6 +304,36 @@
     .stat-bar-fill  { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--dorado), var(--dorado-claro)); transition: width 0.8s ease; }
     .stat-bar-pct   { font-size: 11px; color: #7a5c1e; font-weight: 600; width: 36px; text-align: right; }
     .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 20px; }
+      .page-title { font-size: 20px; flex-wrap: wrap; }
+      .model-badge { font-size: 10.5px; }
+      .topbar > div:last-child { flex-direction: column; width: 100%; gap: 8px !important; }
+      .topbar .btn-save { width: 100%; justify-content: center; min-height: 44px; padding: 12px; }
+      .agent-hero { flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 20px 18px; margin-bottom: 18px; }
+      .agent-avatar { width: 64px; height: 64px; font-size: 28px; }
+      .agent-name { font-size: 17px; }
+      .agent-desc { font-size: 12px; }
+      .agent-tags { justify-content: center; }
+      .kpi-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+      .kpi-card { padding: 14px 14px; }
+      .kpi-value { font-size: 22px; }
+      .tabs { width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+      .tab-btn { flex-shrink: 0; padding: 8px 14px; font-size: 12px; min-height: 40px; }
+      .card { padding: 16px 14px; margin-bottom: 12px; }
+      .form-grid { grid-template-columns: 1fr; gap: 12px; }
+      .form-group.full { grid-column: span 1; }
+      input[type="text"], input[type="number"], select, textarea { font-size: 14px; padding: 11px 12px; }
+      textarea.prompt-area { min-height: 120px; }
+      .btn-save { width: 100%; justify-content: center; min-height: 44px; padding: 12px; }
+      .regla-row { flex-wrap: wrap; gap: 10px; }
+      .h-preview { max-width: 100%; }
+      .h-meta { text-align: left; }
+      .stat-bar-label { width: 90px; font-size: 11px; }
+      .toast { left: 14px; right: 14px; bottom: 14px; }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 <link rel="stylesheet" href="crm.css" />

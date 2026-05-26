@@ -139,6 +139,29 @@
     .toast { position: fixed; bottom: 28px; right: 28px; background: #fdf8f0; border: 1px solid rgba(201,168,76,0.4); color: #7a5c1e; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 12px 32px rgba(120,98,40,0.25); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 20px; }
+      .page-title { font-size: 20px; }
+      .btn-nuevo { width: 100%; justify-content: center; padding: 12px; min-height: 44px; font-size: 12.5px; }
+      .bots-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px; }
+      .bot-card { padding: 16px; }
+      .bot-header { padding-right: 70px; gap: 10px; }
+      .bot-icon { width: 40px; height: 40px; font-size: 18px; }
+      .bot-stats { gap: 12px; }
+      .bot-actions { flex-wrap: wrap; }
+      .btn-sm { padding: 7px 12px; min-height: 36px; }
+      .templates-grid { grid-template-columns: 1fr; gap: 10px; }
+      .templates-grid .tpl-card { padding: 16px; }
+      .modal { width: 100%; max-width: 95vw; max-height: 92vh; padding: 22px 18px; border-radius: 14px; }
+      .modal-title { font-size: 16px; }
+      .modal-sub { font-size: 12px; margin-bottom: 18px; }
+      input[type="text"], select, textarea { font-size: 14px; padding: 11px 12px; }
+      .modal-footer { flex-direction: column-reverse; gap: 8px; }
+      .btn-cancel, .btn-create { width: 100%; min-height: 44px; padding: 12px; }
+      .toast { left: 14px; right: 14px; bottom: 14px; }
+    }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
 <link rel="stylesheet" href="crm.css" />

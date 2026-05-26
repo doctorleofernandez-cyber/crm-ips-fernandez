@@ -710,8 +710,11 @@
         overflow-x: hidden;
       }
       .main {
+        margin-left: 0;
+        padding-top: 56px;
         min-height: 100vh;
       }
+      .breadcrumb { padding: 12px 14px; font-size: 11.5px; flex-wrap: wrap; }
       /* La columna lateral de la ficha pasa a ocupar todo el ancho */
       .profile-layout {
         display: block;
@@ -720,6 +723,29 @@
       .detail-area {
         width: 100% !important;
       }
+      .contact-card { border-right: none !important; padding: 22px 16px; gap: 18px; }
+      .pac-avatar-lg { width: 72px; height: 72px; font-size: 24px; }
+      .pac-name-lg { font-size: 17px; }
+      .quick-actions { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+      .quick-btn { flex: 1 1 calc(50% - 4px); min-height: 44px; padding: 10px 12px; justify-content: center; font-size: 12px; }
+      .tabs-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0 12px; flex-wrap: nowrap; }
+      .tab-btn { padding: 14px 12px; font-size: 12.5px; flex-shrink: 0; }
+      .tab-content { padding: 18px 14px; }
+      .overview-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+      .ov-card { padding: 14px; }
+      .ov-value { font-size: 20px; }
+      .item-row { padding: 10px 12px; gap: 10px; }
+      .item-icon { width: 30px; height: 30px; font-size: 13px; }
+      .item-title { font-size: 12.5px; }
+      .conv-row { flex-wrap: wrap; }
+      .conv-time { margin-left: 0; }
+      .modal { padding: 22px 18px; max-width: 95vw; max-height: 92vh; border-radius: 14px; }
+      .modal-title { font-size: 16px; }
+      .form-grid { grid-template-columns: 1fr; gap: 10px; }
+      .form-group.full { grid-column: span 1; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 14px; padding: 11px 12px; }
+      .modal-footer { flex-direction: column-reverse; gap: 8px; }
+      .btn-cancel, .btn-guardar { width: 100%; min-height: 44px; padding: 12px; }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />

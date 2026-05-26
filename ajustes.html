@@ -499,16 +499,36 @@
     /* ── RESPONSIVE: ajustes en móvil ── */
     @media (max-width: 760px) {
       /* El panel de pestañas y el contenido se apilan */
-      .main { display: block; }
+      .main { margin-left: 0; display: block; padding-top: 56px; }
       .settings-sidebar {
         width: 100%;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border-right: none;
         border-bottom: 1px solid rgba(0,0,0,0.07);
-        padding: 14px;
+        padding: 10px;
+        gap: 6px;
       }
-      .settings-content { padding: 20px 14px; }
+      .settings-title { display: none; }
+      .s-section { display: none; }
+      .s-tab { flex: 0 0 auto; font-size: 12px; padding: 9px 14px; white-space: nowrap; min-height: 40px; }
+      .settings-content { padding: 18px 14px 28px; }
+      .section-header { margin-bottom: 18px; }
+      .section-header h2 { font-size: 17px; }
+      .section-header p { font-size: 12px; }
+      .config-card { padding: 16px 14px; margin-bottom: 12px; }
+      .config-card-title { font-size: 12.5px; margin-bottom: 14px; }
+      .form-grid, .form-grid.cols3 { grid-template-columns: 1fr; gap: 12px; }
+      .form-group.full, .form-group.full3 { grid-column: span 1; }
+      input[type="text"], input[type="email"], input[type="tel"],
+      input[type="password"], input[type="time"], input[type="url"],
+      select, textarea { font-size: 14px; padding: 11px 12px; }
+      .btn-save { width: 100%; justify-content: center; min-height: 44px; padding: 12px; }
+      .horario-grid { grid-template-columns: 90px 1fr 1fr 60px; gap: 6px; font-size: 12px; }
+      .horario-day { font-size: 12px; }
+      .btn-invite, .btn-conectar { width: 100%; justify-content: center; padding: 12px; min-height: 44px; }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css" />
