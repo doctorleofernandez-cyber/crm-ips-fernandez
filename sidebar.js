@@ -143,10 +143,29 @@
   // En iPhone el click sintético sobre un <a> dentro de un sidebar con
   // transform/animación no siempre se dispara, así que respondemos al
   // touchend (que sí llega) y forzamos la navegación con window.location.
-  // El click se queda como respaldo para escritorio y navegadores que no
-  // disparen touchend.
+  //
+  // IMPORTANTE: distinguimos "tap" de "scroll" midiendo cuánto se movió
+  // el dedo. Si el usuario desliza para hacer scroll en el menú, al
+  // levantar el dedo NO debe navegar — antes ese era el bug que abría
+  // cualquier item cuando se intentaba desplazar el menú.
+  var TAP_MAX_MOVE = 10; // px de tolerancia
+
   sidebar.querySelectorAll('.nav-item').forEach(function (item) {
-    var yaNavegando = false;
+    var startX = 0, startY = 0, moved = false, yaNavegando = false;
+
+    item.addEventListener('touchstart', function (e) {
+      if (!e.touches || !e.touches[0]) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      moved = false;
+    }, { passive: true });
+
+    item.addEventListener('touchmove', function (e) {
+      if (!e.touches || !e.touches[0]) return;
+      var dx = Math.abs(e.touches[0].clientX - startX);
+      var dy = Math.abs(e.touches[0].clientY - startY);
+      if (dx > TAP_MAX_MOVE || dy > TAP_MAX_MOVE) moved = true;
+    }, { passive: true });
 
     function navegar(e) {
       if (yaNavegando) return;
@@ -161,7 +180,11 @@
       window.location.href = href;
     }
 
-    item.addEventListener('touchend', navegar, { passive: false });
+    item.addEventListener('touchend', function (e) {
+      if (moved) return;          // fue un scroll, no un tap → ignorar
+      navegar(e);
+    }, { passive: false });
+
     item.addEventListener('click', navegar);
   });
 

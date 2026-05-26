@@ -218,6 +218,11 @@
   .sidebar.mobile-open {
     transform: translateX(0);
   }
+  /* Scroll suave en iOS dentro del menú */
+  .sidebar.mobile-open .nav {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
   /* En móvil el menú siempre se muestra expandido (con texto) */
   .sidebar.collapsed.mobile-open,
   .sidebar.mobile-open {
@@ -227,9 +232,11 @@
   .sidebar.mobile-open .nav-section { opacity: 1; height: auto; padding: 8px 10px 3px; overflow: visible; }
   .sidebar.collapsed.mobile-open .nav-item,
   .sidebar.mobile-open .nav-item {
-    font-size: 12.5px;
+    font-size: 13.5px;
     justify-content: flex-start;
-    padding: 9px 10px;
+    /* Items más altos en móvil → más fáciles de tocar sin equivocarse */
+    padding: 13px 12px;
+    min-height: 44px;
     /* Refuerzos para iPhone: que cada item se comporte como tocable */
     cursor: pointer;
     touch-action: manipulation;
