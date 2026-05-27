@@ -113,37 +113,47 @@
 }
 
 /* ── BOTÓN "CERRAR SESIÓN" (pie del menú lateral) ── */
-/* Estilo unificado para todas las páginas del CRM */
+/* Estilo unificado: igual en móvil, iPad y PC */
 .logout-btn {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   width: 100%;
   text-align: left;
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  color: #6b5c3e;
-  background: none;
-  border: none;
-  padding: 4px 8px;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: #C9A84C;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.30);
+  border-radius: 8px;
+  padding: 11px 14px;
+  min-height: 42px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(201,168,76,0.30);
 }
-.logout-btn:hover { color: #C9A84C; }
+.logout-btn:hover {
+  background: rgba(201,168,76,0.12);
+  border-color: rgba(201,168,76,0.50);
+  color: #d9b85c;
+}
 
-/* Cuando el menú está colapsado, el botón se muestra centrado y compacto */
+/* Cuando el menú está colapsado, el botón se muestra como ícono centrado */
 .sidebar.collapsed .logout-btn {
   text-align: center;
   font-size: 0;
-  padding: 4px 0;
+  padding: 10px 0;
+  min-height: 38px;
 }
 .sidebar.collapsed .logout-btn::before {
   content: "→";
-  font-size: 14px;
+  font-size: 15px;
 }
 .sidebar.collapsed:hover .logout-btn {
   text-align: left;
-  font-size: 11px;
-  padding: 4px 8px;
+  font-size: 13px;
+  padding: 11px 14px;
+  min-height: 42px;
 }
 .sidebar.collapsed:hover .logout-btn::before { content: ""; font-size: 0; }
 
