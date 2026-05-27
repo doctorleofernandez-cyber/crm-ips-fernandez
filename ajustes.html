@@ -1196,8 +1196,8 @@
         <div class="danger-zone">
           <div class="danger-title">⚠️ Zona de peligro</div>
           <div class="danger-row">
-            <div class="danger-row-info">Eliminar todos los datos (contactos, citas y facturas)</div>
-            <button class="btn-danger" onclick="limpiarDatos()">Limpiar datos</button>
+            <div class="danger-row-info">Borrar todos los datos del CRM (contactos, citas, facturas, difusiones, plantillas, bots, tareas y configuración). Conserva tema y preferencias visuales.</div>
+            <button class="btn-danger" onclick="limpiarDatos()">Limpiar todo</button>
           </div>
           <div class="danger-row">
             <div class="danger-row-info">Cerrar sesión en este dispositivo</div>
@@ -1328,10 +1328,28 @@
     }
 
     // ── LIMPIAR DATOS ──
+    // Borra TODOS los datos del CRM (contactos, citas, facturas, difusiones,
+    // bots, plantillas, tareas, notas, configuración de clínica, etapas del
+    // pipeline, horarios, agente IA). Conserva solo las preferencias visuales
+    // (tema, tamaño de fuente, estado del menú lateral).
     function limpiarDatos() {
-      if (!confirm('¿Eliminar todos los datos de prueba del localStorage? Esta acción no se puede deshacer.')) return;
-      ['pacientes_ips','citas_ips','facturas_ips','tratamientos_ips'].forEach(k => localStorage.removeItem(k));
-      showToast('Datos de prueba eliminados');
+      if (!confirm('¿Borrar TODOS los datos del CRM?\n\nSe eliminarán: contactos, citas, facturas, tratamientos, difusiones, plantillas, bots, tareas, notas y configuración de la clínica.\n\nSe conservarán: tema y preferencias visuales.\n\nEsta acción no se puede deshacer.')) return;
+
+      const datosOperacionales = [
+        'pacientes_ips', 'citas_ips', 'facturas_ips', 'tratamientos_ips',
+        'difusiones_ips', 'bots_ips', 'plantillas_ips', 'tareas_ips',
+        'etapas_pipeline_ips', 'vista_pipeline_ips', 'horarios_ips',
+        'agente_ia_config', 'agente_ia_activo', 'config_clinica'
+      ];
+      datosOperacionales.forEach(k => localStorage.removeItem(k));
+
+      // Notas de pacientes: cada paciente tiene su propia llave "notas_pac_<id>"
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('notas_pac_'))
+        .forEach(k => localStorage.removeItem(k));
+
+      showToast('CRM limpio — listo para una prueba nueva');
+      setTimeout(() => { window.location.reload(); }, 1200);
     }
 
     // ── DATOS DE PRUEBA ──
