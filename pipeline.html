@@ -871,8 +871,15 @@
         min-height: 44px;
       }
 
-      /* El tablero kanban conserva su scroll horizontal propio */
-      .kanban { padding-bottom: 12px; }
+      /* El tablero kanban conserva su scroll horizontal propio.
+         min-height = pantalla - topbar (~180px) para que las columnas
+         siempre tengan altura completa y la línea divisoria entre
+         etapas llegue hasta el final, aunque la etapa esté vacía. */
+      .kanban {
+        padding-bottom: 12px;
+        min-height: calc(100vh - 200px);
+      }
+      .column { min-height: 100%; }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css?v=3" />
