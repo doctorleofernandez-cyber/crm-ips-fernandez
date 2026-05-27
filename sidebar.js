@@ -101,6 +101,7 @@
   function openMobileMenu() {
     sidebar.classList.add('mobile-open');
     overlay.classList.add('show');
+    hamburger.classList.add('is-open');
     hamburger.innerHTML = '✕';
     hamburger.setAttribute('aria-label', 'Cerrar menú');
   }
@@ -108,6 +109,7 @@
   function closeMobileMenu() {
     sidebar.classList.remove('mobile-open');
     overlay.classList.remove('show');
+    hamburger.classList.remove('is-open');
     hamburger.innerHTML = '☰';
     hamburger.setAttribute('aria-label', 'Abrir menú');
   }
