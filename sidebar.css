@@ -186,15 +186,20 @@
           appearance: none;
   font-family: inherit;
 }
-/* Cuando el menú está abierto, la X se mueve a la esquina superior derecha
-   del sidebar (240px de ancho) para no quedar encima del logo. */
+/* Cuando el menú está abierto, la X se va a la esquina superior derecha
+   de la pantalla (fuera del menú), sobre la capa oscura. Así no queda
+   sobre el logo ni sobre el texto "O&M". */
 .mobile-menu-btn.is-open {
-  left: 184px;
+  left: auto;
+  right: 14px;
   width: 42px;
   height: 42px;
   font-size: 18px;
-  border-color: rgba(201,168,76,0.30);
-  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.30);
+  background: rgba(20,20,28,0.65);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .mobile-menu-btn:active {
   background: #C9A84C;
