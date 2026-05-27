@@ -122,6 +122,10 @@
 
     /* ── RESPONSIVE: difusiones en celular ── */
     @media (max-width: 760px) {
+      /* Garantías de ancho — nada en el main puede exceder la pantalla */
+      .main { max-width: 100vw; overflow-x: hidden; }
+      .main > * { max-width: 100%; min-width: 0; }
+
       /* Topbar: título + botón en filas separadas */
       .topbar { flex-wrap: wrap; row-gap: 10px; }
       .page-title { flex: 1 1 100%; font-size: 22px; }
@@ -132,7 +136,7 @@
         min-height: 44px;
       }
 
-      /* Tarjeta de campañas: cabecera apilada y tabla con scroll horizontal */
+      /* Tarjeta de campañas: cabecera apilada */
       .table-header {
         flex-direction: column;
         align-items: stretch;
@@ -145,35 +149,70 @@
         padding: 10px 14px;
       }
 
-      /* La tabla ancha (8 columnas) se desplaza horizontalmente.
-         Forzamos overflow:visible en el padre con !important porque
-         sidebar.css también lo hace deslizable e iOS se confunde con
-         scrolls anidados. */
-      .table-card { overflow: visible !important; }
-      .table-scroll {
-        overflow-x: auto !important;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        /* pan-x pan-y: deslizar horizontal mueve la tabla, vertical pasa a la página */
-        touch-action: pan-x pan-y;
-        max-width: 100%;
+      /* En móvil cada campaña se vuelve una tarjeta apilada.
+         Sin scroll horizontal: toda la info cabe en pantalla. */
+      .table-card { background: transparent; border: none; box-shadow: none; }
+      .table-scroll { overflow: visible; padding: 0 12px 12px; }
+      .scroll-hint { display: none; }
+      .table-scroll table,
+      .table-scroll thead,
+      .table-scroll tbody,
+      .table-scroll tr,
+      .table-scroll td { display: block; width: 100%; }
+      .table-scroll thead { display: none; }
+      .table-scroll tr {
+        background: rgba(255,255,255,0.65);
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
       }
-      .table-scroll table { min-width: 720px; }
-      .table-scroll::-webkit-scrollbar { height: 6px; }
-      .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
-      .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
-      .scroll-hint {
+      .table-scroll td {
+        padding: 6px 0;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+      }
+      .table-scroll td::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #9c8c72;
+        flex-shrink: 0;
+      }
+      /* Campaña en columna (nombre + plantilla arriba del todo) */
+      .table-scroll td[data-label="Campaña"] {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        margin-bottom: 6px;
+      }
+      .table-scroll td[data-label="Campaña"]::before { display: none; }
+      /* Acciones siempre visibles, a la derecha */
+      .table-scroll td[data-label="Acciones"] {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        justify-content: flex-end;
+      }
+      .table-scroll td[data-label="Acciones"]::before { display: none; }
+      .btn-sm { min-height: 36px; min-width: 44px; padding: 6px 12px; font-size: 13px; }
+      /* Fila vacía (sin difusiones) se ve como tarjeta centrada */
+      .table-scroll tr.empty-row { text-align: center; padding: 28px 16px; }
+      .table-scroll tr.empty-row td {
         display: block;
-        text-align: center;
-        font-size: 11px;
-        color: #b8801b;
-        padding: 8px 12px;
-        background: rgba(224,164,53,0.06);
-        border-top: 1px solid rgba(224,164,53,0.18);
+        padding: 0;
+        border: none;
       }
-
-      /* Celdas un poco más compactas para móvil */
-      thead th, td { padding: 10px 12px; }
+      .table-scroll tr.empty-row td::before { display: none; }
 
       /* KPIs: 4 columnas no caben → 2x2 */
       .kpi-row {
@@ -474,14 +513,14 @@
       }
       tbody.innerHTML = difs.map(d => `
         <tr>
-          <td><div style="font-weight:500">${d.nombre}</div><div style="font-size:11px;color:#9c8c72">${d.plantilla}</div></td>
-          <td class="canal-ico">${d.canal.includes('WhatsApp') ? '📱' : d.canal.includes('Instagram') ? '📸' : '✉️'}</td>
-          <td style="font-size:12px;color:#9c8c72">${d.audiencia}</td>
-          <td>${d.enviados}</td>
-          <td>${d.apertura}</td>
-          <td><span class="badge badge-${d.estado === 'enviada' ? 'enviada' : 'programada'}">${d.estado}</span></td>
-          <td style="font-size:12px;color:#9c8c72">${new Date(d.fecha).toLocaleDateString('es-CO')}</td>
-          <td style="display:flex;gap:6px">
+          <td data-label="Campaña"><div style="font-weight:500">${d.nombre}</div><div style="font-size:11px;color:#9c8c72">${d.plantilla}</div></td>
+          <td data-label="Canal" class="canal-ico">${d.canal.includes('WhatsApp') ? '📱' : d.canal.includes('Instagram') ? '📸' : '✉️'}</td>
+          <td data-label="Audiencia" style="font-size:12px;color:#9c8c72">${d.audiencia}</td>
+          <td data-label="Enviados">${d.enviados}</td>
+          <td data-label="Apertura">${d.apertura}</td>
+          <td data-label="Estado"><span class="badge badge-${d.estado === 'enviada' ? 'enviada' : 'programada'}">${d.estado}</span></td>
+          <td data-label="Fecha" style="font-size:12px;color:#9c8c72">${new Date(d.fecha).toLocaleDateString('es-CO')}</td>
+          <td data-label="Acciones" style="display:flex;gap:6px">
             <button class="btn-sm" onclick="showToast('Detalle disponible con backend')">Ver</button>
             <button class="btn-sm" onclick="showToast('Difusión duplicada')">⎘</button>
           </td>
