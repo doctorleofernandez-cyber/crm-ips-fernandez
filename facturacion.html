@@ -538,35 +538,76 @@
       .search-wrap input { font-size: 14px; }
       .filter-chips { width: 100%; }
       .chip { padding: 7px 12px; font-size: 11px; }
-      /* Solo la tabla se desliza horizontalmente; la paginación queda fija abajo.
-         Forzamos overflow:visible en el padre con !important porque
-         sidebar.css también lo hace deslizable y iOS se confunde con
-         scrolls horizontales anidados. */
-      .table-wrap { overflow: visible !important; }
-      .table-scroll {
-        overflow-x: auto !important;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        /* pan-x pan-y: deslizar horizontal mueve la tabla, vertical pasa a la página */
-        touch-action: pan-x pan-y;
-        max-width: 100%;
-        border-bottom: 1px solid rgba(0,0,0,0.07);
+      /* En móvil cada factura se vuelve una tarjeta apilada.
+         Sin scroll horizontal: toda la info cabe en pantalla. */
+      .table-wrap { background: transparent; border: none; }
+      .table-scroll { overflow: visible; }
+      .scroll-hint { display: none; }
+      .table-scroll table,
+      .table-scroll thead,
+      .table-scroll tbody,
+      .table-scroll tr,
+      .table-scroll td { display: block; width: 100%; }
+      /* Ocultar encabezados — las etiquetas van dentro de cada celda */
+      .table-scroll thead { display: none; }
+      .table-scroll tr {
+        background: rgba(255,255,255,0.65);
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
       }
-      .table-scroll table { min-width: 720px; }
-      .table-scroll::-webkit-scrollbar { height: 6px; }
-      .table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
-      .table-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.45); border-radius: 3px; }
-      /* Pista visible debajo del cuadro — separada del scroll */
-      .scroll-hint {
-        display: block;
-        text-align: center;
+      .table-scroll td {
+        padding: 6px 0;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+      }
+      /* Etiqueta a la izquierda usando data-label */
+      .table-scroll td::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #9c8c72;
+        flex-shrink: 0;
+      }
+      /* La fila de Contacto va en columna (avatar + nombre arriba, etiqueta no hace falta) */
+      .table-scroll td[data-label="Contacto"] {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        margin-bottom: 6px;
+      }
+      .table-scroll td[data-label="Contacto"]::before { display: none; }
+      .table-scroll td[data-label="Contacto"] .td-paciente { width: 100%; }
+      /* N° Factura como título pequeño arriba del todo */
+      .table-scroll td[data-label="N° Factura"] {
+        font-family: monospace;
         font-size: 11px;
-        color: #b8801b;
-        padding: 8px 12px;
-        background: rgba(224,164,53,0.06);
-        border-top: 1px solid rgba(224,164,53,0.18);
+        color: #9c8c72;
+        padding-bottom: 4px;
       }
-      .td-actions { opacity: 1; }
+      /* Valor más grande y dorado */
+      .table-scroll td[data-label="Valor"] { font-size: 16px; }
+      .table-scroll td[data-label="Valor"] .td-valor { font-size: 18px; }
+      /* Acciones siempre visibles y a todo el ancho */
+      .table-scroll td[data-label="Acciones"] {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        justify-content: flex-end;
+      }
+      .table-scroll td[data-label="Acciones"]::before { display: none; }
+      .td-actions { opacity: 1; gap: 8px; }
+      .btn-action { min-height: 36px; min-width: 44px; font-size: 14px; }
       .pagination { flex-direction: column; gap: 10px; align-items: stretch; padding: 12px; }
       .page-info { text-align: center; }
       .page-btns { justify-content: center; }
@@ -858,8 +899,8 @@
         empty.style.display = 'none';
         tbody.innerHTML = pagina.map(f => `
           <tr onclick="editarFactura('${f.id}')">
-            <td class="td-num">${f.numero}</td>
-            <td>
+            <td class="td-num" data-label="N° Factura">${f.numero}</td>
+            <td data-label="Contacto">
               <div class="td-paciente">
                 <div class="pac-avatar">${iniciales(f.paciente)}</div>
                 <div>
@@ -868,17 +909,17 @@
                 </div>
               </div>
             </td>
-            <td style="color:#9c8c72;font-size:12px">${formatFecha(f.fecha)}</td>
-            <td style="color:#9c8c72;font-size:12px">${f.vencimiento ? formatFecha(f.vencimiento) : '—'}</td>
-            <td style="color:#5a4e3a;font-size:12px">${f.concepto}</td>
-            <td class="td-valor">$${Number(f.valor).toLocaleString('es-CO')}</td>
-            <td>
+            <td data-label="Fecha" style="color:#9c8c72;font-size:12px">${formatFecha(f.fecha)}</td>
+            <td data-label="Vencimiento" style="color:#9c8c72;font-size:12px">${f.vencimiento ? formatFecha(f.vencimiento) : '—'}</td>
+            <td data-label="Concepto" style="color:#5a4e3a;font-size:12px">${f.concepto}</td>
+            <td data-label="Valor" class="td-valor">$${Number(f.valor).toLocaleString('es-CO')}</td>
+            <td data-label="Estado">
               <span class="badge ${f.estado}">
                 <span class="badge-dot"></span>
                 ${f.estado.charAt(0).toUpperCase() + f.estado.slice(1)}
               </span>
             </td>
-            <td>
+            <td data-label="Acciones" class="td-actions-cell">
               <div class="td-actions" onclick="event.stopPropagation()">
                 <button class="btn-action" onclick="editarFactura('${f.id}')">✎</button>
                 <button class="btn-action danger" onclick="eliminarFactura('${f.id}')">✕</button>
