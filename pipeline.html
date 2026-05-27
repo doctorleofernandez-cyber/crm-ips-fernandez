@@ -872,14 +872,12 @@
       }
 
       /* El tablero kanban conserva su scroll horizontal propio.
-         min-height = pantalla - topbar (~180px) para que las columnas
-         siempre tengan altura completa y la línea divisoria entre
-         etapas llegue hasta el final, aunque la etapa esté vacía. */
-      .kanban {
-        padding-bottom: 12px;
-        min-height: calc(100vh - 200px);
-      }
-      .column { min-height: 100%; }
+         Le damos a cada columna una altura mínima en unidades de pantalla
+         (no en %), porque % depende del height del padre — y el padre
+         en móvil tiene height: auto. La línea divisoria llega hasta el
+         final aunque la etapa esté vacía. */
+      .kanban { padding-bottom: 12px; }
+      .column { min-height: calc(100vh - 220px); }
     }
   </style>
 <link rel="stylesheet" href="sidebar.css?v=3" />
