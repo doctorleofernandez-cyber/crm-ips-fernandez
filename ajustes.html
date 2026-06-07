@@ -738,6 +738,11 @@
         <span class="s-tab-icon">🔔</span> Notificaciones
       </button>
 
+      <div class="s-section">Herramientas</div>
+      <button class="s-tab" onclick="setTab(this,'datos')">
+        <span class="s-tab-icon">🧪</span> Datos de prueba
+      </button>
+
       <div class="s-section">Cuenta</div>
       <button class="s-tab" onclick="setTab(this,'perfil')">
         <span class="s-tab-icon">👤</span> Mi perfil
@@ -764,6 +769,8 @@
           <button type="button" class="msel-opt" data-id="usuarios" onclick="pickMsel('usuarios')">👥 Usuarios</button>
           <button type="button" class="msel-opt" data-id="integraciones" onclick="pickMsel('integraciones')">🔌 Integraciones</button>
           <button type="button" class="msel-opt" data-id="notificaciones" onclick="pickMsel('notificaciones')">🔔 Notificaciones</button>
+          <div class="msel-group">Herramientas</div>
+          <button type="button" class="msel-opt" data-id="datos" onclick="pickMsel('datos')">🧪 Datos de prueba</button>
           <div class="msel-group">Cuenta</div>
           <button type="button" class="msel-opt" data-id="perfil" onclick="pickMsel('perfil')">👤 Mi perfil</button>
           <button type="button" class="msel-opt" data-id="seguridad" onclick="pickMsel('seguridad')">🔒 Seguridad</button>
@@ -1328,14 +1335,6 @@
           </button>
         </div>
 
-        <div class="config-card">
-          <div class="config-card-title">🧪 Datos de prueba</div>
-          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
-            Carga 10 contactos de ejemplo en distintas etapas del pipeline, junto con citas y facturas, para que pueda explorar todas las funciones del CRM sin tener que crearlos a mano.
-          </p>
-          <button class="btn-save" onclick="cargarDatosDemo()">📥 &nbsp;Cargar datos de prueba</button>
-        </div>
-
         <div class="danger-zone">
           <div class="danger-title">⚠️ Zona de peligro</div>
           <div class="danger-row">
@@ -1346,6 +1345,21 @@
             <div class="danger-row-info">Cerrar sesión en este dispositivo</div>
             <button class="btn-danger" onclick="window.location.href='index.html'">Cerrar sesión</button>
           </div>
+        </div>
+      </div>
+
+      <!-- ── DATOS DE PRUEBA ── -->
+      <div class="section" id="sec-datos">
+        <div class="section-header">
+          <h2>Datos de <span>prueba</span></h2>
+          <p>Carga contactos de ejemplo para explorar el CRM sin tener que crearlos a mano.</p>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">🧪 Cargar datos de prueba</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Carga 10 contactos de ejemplo en distintas etapas del pipeline, junto con citas y facturas, para que pueda explorar todas las funciones del CRM (pipeline, gamificación, reportes) sin crearlos a mano.
+          </p>
+          <button class="btn-save" onclick="cargarDatosDemo()">📥 &nbsp;Cargar datos de prueba</button>
         </div>
       </div>
 
