@@ -206,7 +206,6 @@
       <div class="nav-section">Gestión</div>
       <a href="contactos.html"    class="nav-item"><span class="nav-icon">◇</span> Contactos</a>
       <a href="citas.html"        class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
-      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
       <a href="facturacion.html"  class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
       <a href="reportes.html"     class="nav-item active"><span class="nav-icon">📊</span> Reportes</a>
 
@@ -270,11 +269,11 @@
       </div>
       <div class="kpi-card k4">
         <div class="kpi-top">
-          <span class="kpi-icon">🦷</span>
-          <span class="kpi-trend up" id="trendTratamientos">↑ 0%</span>
+          <span class="kpi-icon">🔥</span>
+          <span class="kpi-trend up" id="trendCalientes">↑ 0%</span>
         </div>
-        <div class="kpi-value" id="kpiTratamientos">0</div>
-        <div class="kpi-label">Tratamientos activos</div>
+        <div class="kpi-value" id="kpiCalientes">0</div>
+        <div class="kpi-label">Leads calientes</div>
       </div>
     </div>
 
@@ -311,7 +310,7 @@
       </div>
     </div>
 
-    <!-- Fila 2: Contactos nuevos + Top tratamientos + Canales -->
+    <!-- Fila 2: Contactos nuevos + Servicios más solicitados + Canales -->
     <div class="charts-row cols-3">
 
       <div class="chart-card">
@@ -330,11 +329,11 @@
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <div class="chart-title">Top tratamientos</div>
-            <div class="chart-sub">Más solicitados</div>
+            <div class="chart-title">Servicios más solicitados</div>
+            <div class="chart-sub">Por interés de los leads</div>
           </div>
         </div>
-        <div class="top-list" id="topTratamientos"></div>
+        <div class="top-list" id="topServicios"></div>
       </div>
 
       <div class="chart-card">
@@ -404,7 +403,6 @@
     const pacientes    = JSON.parse(localStorage.getItem('pacientes_ips')    || '[]');
     const citas        = JSON.parse(localStorage.getItem('citas_ips')        || '[]');
     const facturas     = JSON.parse(localStorage.getItem('facturas_ips')     || '[]');
-    const tratamientos = JSON.parse(localStorage.getItem('tratamientos_ips') || '[]');
 
     // Colores de marca
     const C = {
@@ -431,12 +429,12 @@
     // ── KPI ──
     const totalFacturado = facturas.reduce((s,f) => s + Number(f.valor||0), 0);
     const citasCompletadas = citas.filter(c => c.estado === 'completada').length;
-    const tratActivos = tratamientos.filter(t => t.estado === 'activo').length;
+    const leadsCalientes = pacientes.filter(p => (p.intencion || '').toLowerCase() === 'caliente').length;
 
     document.getElementById('kpiIngresos').textContent    = '$' + totalFacturado.toLocaleString('es-CO');
     document.getElementById('kpiPacientes').textContent   = pacientes.length;
     document.getElementById('kpiCitas').textContent       = citas.length;
-    document.getElementById('kpiTratamientos').textContent = tratActivos || tratamientos.length;
+    document.getElementById('kpiCalientes').textContent   = leadsCalientes;
 
     // ── CHART 1: Ingresos por mes (barras) ──
     const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -553,19 +551,35 @@
       <div class="legend-item"><div class="legend-dot" style="background:${C.morado}"></div>Recurrentes<span class="legend-val">${datosPac[1]}</span></div>
     `;
 
-    // ── TOP TRATAMIENTOS ──
-    const topTrat = tratamientos.length > 0
-      ? tratamientos.slice(0, 5).map((t, i) => ({ nombre: t.nombre, emoji: t.emoji || '🦷', count: Math.max(1, 20 - i * 3) }))
-      : [
-          { emoji:'⚙️', nombre:'Ortodoncia fija', count: 24 },
-          { emoji:'😁', nombre:'Blanqueamiento dental', count: 18 },
-          { emoji:'🦷', nombre:'Limpieza dental', count: 32 },
-          { emoji:'🔬', nombre:'Endodoncia', count: 11 },
-          { emoji:'🏥', nombre:'Implante dental', count: 9 },
-        ];
+    // ── SERVICIOS MÁS SOLICITADOS (por interés de los leads) ──
+    const emojiServicio = {
+      'Diseño de sonrisa':'😁', 'Cerámica':'🦷', 'Resina':'🦷',
+      'Implantes':'🦿', 'Ortodoncia':'⚙️', 'Blanqueamiento Zoom':'✨',
+      'Limpieza':'🪥', 'Rehabilitación oral':'🦷', 'Periodoncia':'🦷',
+      'Urgencia':'🚑', 'Valoración virtual':'💻', 'Otro':'🦷'
+    };
+    const conteoServicios = {};
+    pacientes.forEach(p => {
+      const s = (p.servicio || '').trim();
+      if (s) conteoServicios[s] = (conteoServicios[s] || 0) + 1;
+    });
+    let topTrat = Object.entries(conteoServicios)
+      .map(([nombre, count]) => ({ nombre, count, emoji: emojiServicio[nombre] || '🦷' }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    if (topTrat.length === 0) {
+      // Sin leads aún → datos de ejemplo para que la tarjeta no quede vacía
+      topTrat = [
+        { emoji:'😁', nombre:'Diseño de sonrisa', count: 24 },
+        { emoji:'⚙️', nombre:'Ortodoncia', count: 18 },
+        { emoji:'🦿', nombre:'Implantes', count: 12 },
+        { emoji:'✨', nombre:'Blanqueamiento Zoom', count: 9 },
+        { emoji:'🪥', nombre:'Limpieza', count: 7 },
+      ];
+    }
 
     const maxCount = Math.max(...topTrat.map(t => t.count));
-    document.getElementById('topTratamientos').innerHTML = topTrat.map((t, i) => `
+    document.getElementById('topServicios').innerHTML = topTrat.map((t, i) => `
       <div class="top-item">
         <div class="top-rank">${i + 1}</div>
         <div class="top-emoji">${t.emoji}</div>

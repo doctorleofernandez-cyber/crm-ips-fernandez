@@ -383,18 +383,6 @@
     .conv-time  { font-size: 10px; color: #8c8472; margin-left: auto; }
     .conv-msg   { font-size: 12px; color: #888; }
 
-    /* Alergias / notas */
-    .alerta-box {
-      background: rgba(224,85,85,0.06);
-      border: 1px solid rgba(224,85,85,0.2);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #cc8888;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
 
     /* Estado vacío */
     .empty-tab {
@@ -788,7 +776,6 @@
       <div class="nav-section">Gestión</div>
       <a href="contactos.html" class="nav-item active"><span class="nav-icon">◇</span> Contactos</a>
       <a href="citas.html"     class="nav-item"><span class="nav-icon">📅</span> Calendario</a>
-      <a href="tratamientos.html" class="nav-item"><span class="nav-icon">🦷</span> Tratamientos</a>
       <a href="facturacion.html" class="nav-item"><span class="nav-icon">💰</span> Facturación</a>
       <a href="reportes.html" class="nav-item"><span class="nav-icon">📊</span> Reportes</a>
 
@@ -899,10 +886,6 @@
             <div class="info-val" id="infEmail">—</div>
           </div>
           <div class="info-row">
-            <div class="info-label">Tipo de sangre</div>
-            <div class="info-val" id="infSangre">—</div>
-          </div>
-          <div class="info-row">
             <div class="info-label">EPS / Seguro</div>
             <div class="info-val" id="infEps">—</div>
           </div>
@@ -930,7 +913,6 @@
           <button class="tab-btn"        data-tab="resumen"       onclick="setTab('resumen')">Resumen</button>
           <button class="tab-btn"        data-tab="tareas"        onclick="setTab('tareas')">Tareas <span id="badgeTareas" style="display:none;font-size:10px;background:#C9A84C;color:#1a1208;border-radius:10px;padding:1px 7px;margin-left:4px;font-weight:700">0</span></button>
           <button class="tab-btn"        data-tab="citas"         onclick="setTab('citas')">Citas</button>
-          <button class="tab-btn"        data-tab="tratamientos"  onclick="setTab('tratamientos')">Tratamientos</button>
           <button class="tab-btn"        data-tab="facturas"      onclick="setTab('facturas')">Facturas</button>
           <button class="tab-btn"        data-tab="conversaciones" onclick="setTab('conversaciones')">Conversaciones</button>
           <button class="tab-btn"        data-tab="notas"         onclick="setTab('notas')">Notas</button>
@@ -977,17 +959,6 @@
             </div>
           </div>
 
-          <!-- Alergias -->
-          <div id="alertaAlergias" style="display:none;margin-bottom:20px">
-            <div class="alerta-box">
-              <span>⚠️</span>
-              <div>
-                <div style="font-size:11px;font-weight:700;color:var(--rojo);margin-bottom:2px">ALERGIAS / ADVERTENCIAS</div>
-                <div id="alertaText">—</div>
-              </div>
-            </div>
-          </div>
-
           <!-- Últimas citas -->
           <div class="section-title">
             Últimas citas
@@ -1008,14 +979,6 @@
               <div class="empty-tab-icon">📅</div>
               <div class="empty-tab-text">Sin citas registradas para este contacto</div>
             </div>
-          </div>
-        </div>
-
-        <!-- TAB: TRATAMIENTOS -->
-        <div class="tab-content" id="tab-tratamientos">
-          <div class="empty-tab">
-            <div class="empty-tab-icon">🦷</div>
-            <div class="empty-tab-text">Sin tratamientos registrados</div>
           </div>
         </div>
 
@@ -1058,7 +1021,7 @@
           <div style="margin-bottom:16px">
             <textarea id="notasText" rows="4"
               style="width:100%;background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.10);border-radius:8px;padding:12px 14px;font-size:13px;color:#1a1208;font-family:'Inter',sans-serif;outline:none;resize:vertical;transition:border-color 0.2s"
-              placeholder="Escribe una nota clínica o comentario…"
+              placeholder="Escribe una nota de seguimiento o comentario…"
               onfocus="this.style.borderColor='rgba(201,168,76,0.45)'"
               onblur="this.style.borderColor='rgba(0,0,0,0.10)'"></textarea>
             <button onclick="guardarNota()"
@@ -1117,16 +1080,6 @@
             <input type="date" id="eNacimiento" />
           </div>
           <div class="form-group">
-            <label>Tipo de sangre</label>
-            <select id="eSangre">
-              <option value="">—</option>
-              <option>A+</option><option>A-</option>
-              <option>B+</option><option>B-</option>
-              <option>AB+</option><option>AB-</option>
-              <option>O+</option><option>O-</option>
-            </select>
-          </div>
-          <div class="form-group">
             <label>EPS / Seguro</label>
             <select id="eEps">
               <option value="">Seleccione…</option>
@@ -1175,10 +1128,6 @@
           <div class="form-group">
             <label>Ciudad</label>
             <input type="text" id="eCiudad" placeholder="Ciudad de residencia" />
-          </div>
-          <div class="form-group full">
-            <label>Alergias / Advertencias</label>
-            <textarea id="eAlergias" rows="2" placeholder="Ej: Alérgico a la penicilina…"></textarea>
           </div>
           <div class="form-group full">
             <label>Etiquetas (separadas por coma)</label>
@@ -1311,18 +1260,17 @@
       pac = {
         id: 'demo', nombres: 'Contacto', apellidos: 'Demo',
         tipoDoc: 'CC', numDoc: '000000000',
-        telefono: '', email: '', fechaNac: '', grupoSanguineo: '', eps: '',
-        ciudad: '', alergias: '', tags: ''
+        telefono: '', email: '', fechaNac: '', eps: '',
+        ciudad: '', tags: ''
       };
     }
 
-    // Normalizar: derivar campos viejos (nombre, documento, nacimiento, sangre)
-    // desde los nuevos (nombres+apellidos, tipoDoc+numDoc, fechaNac, grupoSanguineo).
+    // Normalizar: derivar campos viejos (nombre, documento, nacimiento)
+    // desde los nuevos (nombres+apellidos, tipoDoc+numDoc, fechaNac).
     // Esto permite que el resto del código siga usando los nombres antiguos.
     if (!pac.nombre)     pac.nombre     = `${pac.nombres || ''} ${pac.apellidos || ''}`.trim() || 'Sin nombre';
     if (!pac.documento)  pac.documento  = `${pac.tipoDoc || ''} ${pac.numDoc || ''}`.trim();
     if (!pac.nacimiento) pac.nacimiento = pac.fechaNac || '';
-    if (!pac.sangre)     pac.sangre     = pac.grupoSanguineo || '';
 
     renderPerfil();
     cargarCitas();
@@ -1340,15 +1288,8 @@
       document.getElementById('infNac').textContent     = pac.nacimiento ? formatFecha(pac.nacimiento) : '—';
       document.getElementById('infTel').textContent     = pac.telefono   || '—';
       document.getElementById('infEmail').textContent   = pac.email      || '—';
-      document.getElementById('infSangre').textContent  = pac.sangre     || '—';
       document.getElementById('infEps').textContent     = pac.eps        || '—';
       document.getElementById('infCiudad').textContent  = pac.ciudad     || '—';
-
-      // Alergias
-      if (pac.alergias) {
-        document.getElementById('alertaAlergias').style.display = 'block';
-        document.getElementById('alertaText').textContent = pac.alergias;
-      }
 
       // CRM comercial — servicio, origen, intención, objeción
       document.getElementById('infServicio').textContent = pac.servicio || '—';
@@ -1476,7 +1417,7 @@
               </div>
             </div>
           `).join('')
-        : `<div class="empty-tab"><div class="empty-tab-icon">📝</div><div class="empty-tab-text">Sin notas clínicas</div></div>`;
+        : `<div class="empty-tab"><div class="empty-tab-icon">📝</div><div class="empty-tab-text">Sin notas de seguimiento</div></div>`;
     }
 
     // ── TABS ──
@@ -1498,10 +1439,8 @@
       document.getElementById('eTelefono').value  = pac.telefono  || '';
       document.getElementById('eEmail').value     = pac.email     || '';
       document.getElementById('eNacimiento').value= pac.fechaNac  || pac.nacimiento || '';
-      document.getElementById('eSangre').value    = pac.grupoSanguineo || pac.sangre || '';
       document.getElementById('eEps').value       = pac.eps       || '';
       document.getElementById('eCiudad').value    = pac.ciudad    || '';
-      document.getElementById('eAlergias').value  = pac.alergias  || '';
       document.getElementById('eTags').value      = pac.tags      || '';
       document.getElementById('eServicio').value  = pac.servicio  || '';
       document.getElementById('eOrigen').value    = pac.origen    || '';
@@ -1523,10 +1462,8 @@
       pac.telefono       = document.getElementById('eTelefono').value.trim();
       pac.email          = document.getElementById('eEmail').value.trim();
       pac.fechaNac       = document.getElementById('eNacimiento').value;
-      pac.grupoSanguineo = document.getElementById('eSangre').value;
       pac.eps            = document.getElementById('eEps').value.trim();
       pac.ciudad         = document.getElementById('eCiudad').value.trim();
-      pac.alergias       = document.getElementById('eAlergias').value.trim();
       pac.tags           = document.getElementById('eTags').value.trim();
       pac.servicio       = document.getElementById('eServicio').value;
       pac.origen         = document.getElementById('eOrigen').value;
@@ -1537,7 +1474,6 @@
       pac.nombre     = `${pac.nombres} ${pac.apellidos}`.trim();
       pac.documento  = `${pac.tipoDoc || ''} ${pac.numDoc || ''}`.trim();
       pac.nacimiento = pac.fechaNac;
-      pac.sangre     = pac.grupoSanguineo;
 
       // Actualizar en localStorage
       const idx = pacientes.findIndex(p => p.id === pac.id);
