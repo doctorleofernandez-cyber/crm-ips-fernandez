@@ -387,7 +387,7 @@
       font-weight: 600;
       color: #1a1208;
       margin-bottom: 4px;
-      padding-right: 22px;
+      padding-right: 4px;
     }
     .lead-card-info {
       font-size: 11px;
@@ -422,14 +422,15 @@
     .lead-tag-intencion.tibio    { color: #b8801b; background: rgba(224,164,53,0.15);  border: 1px solid rgba(224,164,53,0.35); }
     .lead-tag-intencion.caliente { color: #c84848; background: rgba(200,72,72,0.13);   border: 1px solid rgba(200,72,72,0.32); }
     .lead-card-move {
-      position: absolute;
-      top: 8px; right: 8px;
+      display: block;
+      width: fit-content;
+      margin: 10px 0 0 auto;        /* al pie de la tarjeta, alineado a la derecha */
       background: rgba(201,168,76,0.10);
       border: 1px solid rgba(201,168,76,0.35);
       border-radius: 7px;
       font-size: 12px;
       color: #7a5c1e;
-      padding: 4px 8px;
+      padding: 6px 12px;
       cursor: pointer;
       font-weight: 600;
     }
@@ -452,7 +453,7 @@
 
     /* En celular el botón de mover es más grande (fácil de tocar con el dedo) */
     @media (max-width: 760px) {
-      .lead-card-move { font-size: 13px; padding: 7px 12px; top: 10px; right: 10px; }
+      .lead-card-move { font-size: 13px; padding: 9px 16px; }
     }
 
     /* Resaltado cuando se arrastra encima */
@@ -1348,13 +1349,13 @@
         <div class="lead-status-dot ${respondido ? 'respondido' : 'pendiente'}"
              title="${tituloEstado}"
              onclick="event.stopPropagation(); toggleRespondido('${p.id}')"></div>
-        <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄ Mover</button>
         <div class="lead-card-name">${escapeHtml(nombre)}</div>
         <div class="lead-card-info">
           ${doc ? `<span>📄</span> ${escapeHtml(doc)}<br>` : ''}
           ${tel ? `<span>📞</span> ${escapeHtml(tel)}` : ''}
         </div>
         ${tagsHtml}
+        <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄ Mover</button>
       `;
       card.addEventListener('dragstart', onDragStart);
       card.addEventListener('dragend', onDragEnd);
