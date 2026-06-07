@@ -966,6 +966,15 @@
     .logros-stat-num { font-size: 20px; font-weight: 700; color: #1a1208; }
     .logros-stat-lbl { font-size: 9px; color: #9c8c72; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
     .logros-sub { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #7a5c1e; margin: 18px 0 8px; }
+    .meta-card { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.20); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+    .meta-card.done { background: rgba(168,137,63,0.16); border-color: rgba(168,137,63,0.50); }
+    .meta-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .meta-titulo { font-size: 12.5px; font-weight: 600; color: #1a1208; }
+    .meta-estado { font-size: 11px; font-weight: 700; color: #7a5c1e; white-space: nowrap; }
+    .meta-bar-wrap { height: 8px; background: rgba(201,168,76,0.15); border-radius: 5px; overflow: hidden; }
+    .meta-bar { height: 100%; background: #C9A84C; border-radius: 5px; transition: width 0.4s; }
+    .meta-premio { font-size: 11px; color: #9c8c72; margin-top: 6px; }
+    .meta-card.done .meta-premio { color: #7a5c1e; font-weight: 600; }
     .lb-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; }
     .lb-row.tu { background: rgba(201,168,76,0.16); }
     .lb-pos { font-weight: 700; color: #9c8c72; width: 20px; text-align: center; }
@@ -1432,18 +1441,24 @@
 
       // 🏆 Puntos: solo al AVANZAR y solo la PRIMERA vez que ese contacto
       //    alcanza esa etapa (así no se gana puntos moviéndolo ida y vuelta).
-      let premio = null;
+      let premio = null, metaCumplida = null;
       if (avanza) {
         const pts = premiarAvance(pacientes[idx], nuevaEtapa);
-        if (pts > 0) premio = sumarPuntos(pts);
+        if (pts > 0) {
+          const antes = metasCumplidasSet();
+          premio = sumarPuntos(pts, nuevaEtapa);
+          const despues = metasCumplidasSet();
+          metaCumplida = METAS.find(m => despues.has(m.id) && !antes.has(m.id)) || null;
+        }
       }
 
       guardarPacientes(pacientes);
       renderPipeline();
 
-      // 🎉 Celebrar solo si ganó puntos (las etapas sin premio, como
-      //    Profesional/proveedor, se mueven sin celebración).
-      if (premio) celebrarAvance(nuevaEtapa, premio);
+      // 🎁 Si se cumplió una meta, esa celebración manda; si no, la del avance.
+      //    (Las etapas sin premio, como Profesional/proveedor, no celebran.)
+      if (metaCumplida) celebrarMeta(metaCumplida);
+      else if (premio) celebrarAvance(nuevaEtapa, premio);
     }
 
     /* ════════ GAMIFICACIÓN: celebración al avanzar de etapa ════════ */
@@ -1475,9 +1490,15 @@
           ${ptsTxt}
         </div>`;
 
-      // Lluvia de estrellitas saliendo del centro
+      lanzarEstrellas(cont, grande ? 28 : 16);
+      cont.classList.add('show');
+      sonidoExito(grande);
+      ocultarCeleTras(cont, 2200);
+    }
+
+    // Helper: lluvia de estrellitas saliendo del centro
+    function lanzarEstrellas(cont, cantidad) {
       const estrellas = ['⭐','🌟','✨','💫','🎊'];
-      const cantidad = grande ? 28 : 16;
       for (let i = 0; i < cantidad; i++) {
         const s = document.createElement('div');
         s.className = 'cele-star';
@@ -1491,15 +1512,27 @@
         s.style.animationDelay = `${Math.random() * 0.15}s`;
         cont.appendChild(s);
       }
-
-      cont.classList.add('show');
-      sonidoExito(grande);
-
+    }
+    function ocultarCeleTras(cont, ms) {
       clearTimeout(cont._timer);
-      cont._timer = setTimeout(() => {
-        cont.classList.remove('show');
-        cont.innerHTML = '';
-      }, 2200);
+      cont._timer = setTimeout(() => { cont.classList.remove('show'); cont.innerHTML = ''; }, ms);
+    }
+
+    // 🎁 Celebración especial al CUMPLIR una meta semanal (el "bono")
+    function celebrarMeta(meta) {
+      const cont = document.getElementById('celebracion');
+      if (!cont) return;
+      cont.innerHTML = `
+        <div class="cele-card">
+          <div class="cele-emoji">🎁</div>
+          <div class="cele-titulo">¡Meta cumplida!</div>
+          <div class="cele-sub">${escapeHtml(meta.titulo)}</div>
+          <div class="cele-pts">${escapeHtml(meta.premio)}</div>
+        </div>`;
+      lanzarEstrellas(cont, 34);
+      cont.classList.add('show');
+      sonidoExito(true);
+      ocultarCeleTras(cont, 2800);
     }
 
     /* ════════ SISTEMA DE PUNTOS, NIVELES Y TABLA DE POSICIONES ════════ */
@@ -1522,6 +1555,35 @@
     function nivelDe(pts)      { let n = NIVELES[0]; for (const x of NIVELES) if (pts >= x.min) n = x; return n; }
     function siguienteNivel(pts) { return NIVELES.find(x => x.min > pts) || null; }
 
+    // ── METAS (retos con premio) ──
+    const METAS = [
+      { id: 'citas_dia',  icono: '📅', titulo: 'Agenda 1-2 citas hoy',         objetivo: 2,   etapa: 'agendada', periodo: 'dia',    premio: '¡Meta del día! ⭐' },
+      { id: 'citas_sem',  icono: '🗓️', titulo: 'Agenda 5 citas esta semana',   objetivo: 5,   etapa: 'agendada', periodo: 'semana', premio: '¡Bono semanal! 🎁' },
+      { id: 'pac_sem',    icono: '🏆', titulo: 'Suma 3 pacientes esta semana', objetivo: 3,   etapa: 'paciente', periodo: 'semana', premio: '¡Bono extra! 💰' },
+      { id: 'pts_sem',    icono: '⭐', titulo: 'Gana 150 puntos esta semana',  objetivo: 150, tipo: 'puntos',    periodo: 'semana', premio: '¡Reconocimiento de la semana! 🌟' },
+    ];
+    function inicioDia() { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
+    function inicioSemana() {
+      const d = new Date();
+      const dia = (d.getDay() + 6) % 7;   // lunes = 0
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - dia);
+      return d.getTime();
+    }
+    function progresoMeta(u, meta) {
+      const ini = meta.periodo === 'dia' ? inicioDia() : inicioSemana();
+      const periodo = (u.historial || []).filter(h => new Date(h.fecha).getTime() >= ini);
+      if (meta.tipo === 'puntos') return periodo.reduce((s, h) => s + (h.pts || 0), 0);
+      return periodo.filter(h => h.etapa === meta.etapa).length;
+    }
+    function metasCumplidasSet() {
+      const g = cargarGami();
+      const u = g.usuarios[USUARIO_ACTUAL];
+      const s = new Set();
+      METAS.forEach(m => { if (progresoMeta(u, m) >= m.objetivo) s.add(m.id); });
+      return s;
+    }
+
     function cargarGami() {
       let g;
       try { g = JSON.parse(localStorage.getItem('gamificacion_ips')); } catch (e) {}
@@ -1543,12 +1605,12 @@
       return pts;
     }
 
-    function sumarPuntos(pts) {
+    function sumarPuntos(pts, etapaId) {
       const g = cargarGami();
       const u = g.usuarios[USUARIO_ACTUAL];
       const nivelAntes = nivelDe(u.puntos);
       u.puntos += pts;
-      u.historial.push({ pts, fecha: new Date().toISOString() });
+      u.historial.push({ pts, etapa: etapaId || '', fecha: new Date().toISOString() });
       if (u.historial.length > 300) u.historial = u.historial.slice(-300);
       guardarGami(g);
       actualizarBadgeGami();
@@ -1609,6 +1671,21 @@
         </div>`;
       }).join('');
 
+      // Metas (retos con premio)
+      const metasHtml = METAS.map(m => {
+        const prog = progresoMeta(u, m);
+        const done = prog >= m.objetivo;
+        const pct = Math.min(100, Math.round(prog / m.objetivo * 100));
+        return `<div class="meta-card ${done ? 'done' : ''}">
+          <div class="meta-top">
+            <span class="meta-titulo">${m.icono} ${escapeHtml(m.titulo)}</span>
+            <span class="meta-estado">${done ? '✓ ¡Cumplida!' : prog + '/' + m.objetivo}</span>
+          </div>
+          <div class="meta-bar-wrap"><div class="meta-bar" style="width:${pct}%"></div></div>
+          <div class="meta-premio">${done ? '🎁 ' : 'Premio: '}${escapeHtml(m.premio)}</div>
+        </div>`;
+      }).join('');
+
       // Guía de cómo se ganan puntos
       const guia = ETAPAS
         .filter(e => PUNTOS_ETAPA[e.id])
@@ -1628,6 +1705,8 @@
           <div class="logros-stat"><div class="logros-stat-num">${semana}</div><div class="logros-stat-lbl">Esta semana</div></div>
           <div class="logros-stat"><div class="logros-stat-num">${u.puntos}</div><div class="logros-stat-lbl">Total</div></div>
         </div>
+        <div class="logros-sub">🎯 Metas con premio</div>
+        ${metasHtml}
         <div class="logros-sub">🏅 Tabla de posiciones</div>
         ${filas}
         <div class="logros-sub">⭐ Cómo ganar puntos</div>
