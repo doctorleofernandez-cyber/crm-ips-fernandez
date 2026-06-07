@@ -914,6 +914,45 @@
       0%   { transform: translate(-50%,-50%) scale(0.4) rotate(0deg); opacity: 1; }
       100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1) rotate(var(--rot)); opacity: 0; }
     }
+    .cele-pts {
+      margin-top: 12px; display: inline-block;
+      background: #C9A84C; color: #1a1208;
+      font-weight: 800; font-size: 15px;
+      padding: 5px 16px; border-radius: 999px;
+    }
+
+    /* ── Marcador de gamificación en la barra superior ── */
+    .gami-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.45);
+      color: #C9A84C; font-weight: 700; font-size: 13px;
+      padding: 6px 13px; border-radius: 999px; cursor: pointer;
+      white-space: nowrap; transition: background 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .gami-badge:hover { background: rgba(201,168,76,0.22); }
+
+    /* ── Panel "Mis logros" ── */
+    .logros-nivel { text-align: center; margin-bottom: 14px; }
+    .logros-medalla { font-size: 52px; line-height: 1; }
+    .logros-nivel-nombre { font-family: 'Playfair Display', serif; font-size: 23px; font-weight: 700; color: #C9A84C; margin-top: 4px; }
+    .logros-puntos { font-size: 13px; color: #9c8c72; }
+    .logros-progress-wrap { height: 10px; background: rgba(201,168,76,0.15); border-radius: 6px; overflow: hidden; margin: 12px 0 6px; }
+    .logros-progress { height: 100%; background: #C9A84C; border-radius: 6px; transition: width 0.5s; }
+    .logros-progress-txt { font-size: 11px; color: #9c8c72; text-align: center; }
+    .logros-stats { display: flex; gap: 9px; margin: 16px 0; }
+    .logros-stat { flex: 1; background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.18); border-radius: 10px; padding: 10px 6px; text-align: center; }
+    .logros-stat-num { font-size: 20px; font-weight: 700; color: #1a1208; }
+    .logros-stat-lbl { font-size: 9px; color: #9c8c72; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .logros-sub { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #7a5c1e; margin: 18px 0 8px; }
+    .lb-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; }
+    .lb-row.tu { background: rgba(201,168,76,0.16); }
+    .lb-pos { font-weight: 700; color: #9c8c72; width: 20px; text-align: center; }
+    .lb-medalla { font-size: 18px; }
+    .lb-nombre { flex: 1; font-size: 13px; color: #1a1208; }
+    .lb-pts { font-weight: 700; color: #C9A84C; font-size: 13px; }
+    .guia-pts { font-size: 12.5px; color: #5a4e3a; line-height: 1.9; }
+    .guia-pts b { color: #7a5c1e; }
   </style>
 <link rel="stylesheet" href="sidebar.css?v=3" />
 <link rel="stylesheet" href="crm.css" />
@@ -998,6 +1037,7 @@
       </select>
 
       <span class="topbar-meta" id="leadCount">0 contactos</span>
+      <button class="gami-badge" id="gamiBadge" onclick="abrirLogros()" title="Mis logros y tabla de posiciones">🌱 0 pts</button>
       <button class="btn-new" onclick="abrirModalNuevo()">+ Nuevo contacto</button>
     </div>
 
@@ -1114,6 +1154,17 @@
 
   <!-- Capa de celebración (gamificación al avanzar de etapa) -->
   <div class="celebracion" id="celebracion" aria-hidden="true"></div>
+
+  <!-- Panel "Mis logros" -->
+  <div class="overlay" id="overlayLogros" onclick="cerrarLogros(event)">
+    <div class="modal" style="width:min(94vw,420px); max-height:88vh; overflow-y:auto">
+      <div class="modal-title">Mis <span>logros</span></div>
+      <div id="logrosBody"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn save" onclick="cerrarLogros()">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     /* ════════ ETAPAS DEL PIPELINE (configurable por el Dr.) ════════ */
@@ -1331,14 +1382,24 @@
       const idx = pacientes.findIndex(p => p.id === id);
       if (idx === -1) return;
       const etapaAnterior = etapaDe(pacientes[idx]);
+      const orden = ETAPAS.map(e => e.id);
+      const avanza = orden.indexOf(nuevaEtapa) > orden.indexOf(etapaAnterior);
+
       pacientes[idx].etapa = nuevaEtapa;
+
+      // 🏆 Puntos: solo al AVANZAR y solo la PRIMERA vez que ese contacto
+      //    alcanza esa etapa (así no se gana puntos moviéndolo ida y vuelta).
+      let premio = null;
+      if (avanza) {
+        const pts = premiarAvance(pacientes[idx], nuevaEtapa);
+        if (pts > 0) premio = sumarPuntos(pts);
+      }
+
       guardarPacientes(pacientes);
       renderPipeline();
-      // 🎉 Celebrar solo si el contacto AVANZÓ (subió a una etapa más adelante)
-      const orden = ETAPAS.map(e => e.id);
-      if (orden.indexOf(nuevaEtapa) > orden.indexOf(etapaAnterior)) {
-        celebrarAvance(nuevaEtapa);
-      }
+
+      // 🎉 Celebrar solo si el contacto AVANZÓ
+      if (avanza) celebrarAvance(nuevaEtapa, premio);
     }
 
     /* ════════ GAMIFICACIÓN: celebración al avanzar de etapa ════════ */
@@ -1351,21 +1412,29 @@
     };
     const MENSAJE_DEFAULT = { emoji: '✨', titulo: '¡Vas muy bien!', sub: 'Sigue avanzando en el pipeline', grande: false };
 
-    function celebrarAvance(nuevaEtapaId) {
+    function celebrarAvance(nuevaEtapaId, premio) {
       const msg = MENSAJES_ETAPA[nuevaEtapaId] || MENSAJE_DEFAULT;
       const cont = document.getElementById('celebracion');
       if (!cont) return;
 
+      const subioNivel = premio && premio.subioNivel;
+      const emoji  = subioNivel ? premio.nivel.emoji : msg.emoji;
+      const titulo = subioNivel ? `¡Nivel ${premio.nivel.nombre}!` : msg.titulo;
+      const sub    = subioNivel ? 'Subiste de nivel 🎯 ¡Sigue así!' : msg.sub;
+      const ptsTxt = (premio && premio.pts) ? `<div class="cele-pts">+${premio.pts} pts</div>` : '';
+      const grande = msg.grande || subioNivel;
+
       cont.innerHTML = `
         <div class="cele-card">
-          <div class="cele-emoji">${msg.emoji}</div>
-          <div class="cele-titulo">${msg.titulo}</div>
-          <div class="cele-sub">${msg.sub}</div>
+          <div class="cele-emoji">${emoji}</div>
+          <div class="cele-titulo">${titulo}</div>
+          <div class="cele-sub">${sub}</div>
+          ${ptsTxt}
         </div>`;
 
       // Lluvia de estrellitas saliendo del centro
       const estrellas = ['⭐','🌟','✨','💫','🎊'];
-      const cantidad = msg.grande ? 26 : 16;
+      const cantidad = grande ? 28 : 16;
       for (let i = 0; i < cantidad; i++) {
         const s = document.createElement('div');
         s.className = 'cele-star';
@@ -1381,13 +1450,141 @@
       }
 
       cont.classList.add('show');
-      sonidoExito(msg.grande);
+      sonidoExito(grande);
 
       clearTimeout(cont._timer);
       cont._timer = setTimeout(() => {
         cont.classList.remove('show');
         cont.innerHTML = '';
-      }, 2000);
+      }, 2200);
+    }
+
+    /* ════════ SISTEMA DE PUNTOS, NIVELES Y TABLA DE POSICIONES ════════ */
+    // Usuario actual (cuando haya login real, será quien inició sesión).
+    const USUARIO_ACTUAL = 'Dr. Leo';
+
+    // Puntos que da llegar a cada etapa (por id).
+    const PUNTOS_ETAPA = { interesado: 10, agendada: 30, paciente: 50, profesional: 20 };
+
+    // Niveles / medallas según puntos acumulados.
+    const NIVELES = [
+      { min: 0,    nombre: 'Aprendiz', emoji: '🌱' },
+      { min: 100,  nombre: 'Bronce',   emoji: '🥉' },
+      { min: 300,  nombre: 'Plata',    emoji: '🥈' },
+      { min: 700,  nombre: 'Oro',      emoji: '🥇' },
+      { min: 1500, nombre: 'Platino',  emoji: '💎' },
+      { min: 3000, nombre: 'Leyenda',  emoji: '👑' },
+    ];
+    function nivelDe(pts)      { let n = NIVELES[0]; for (const x of NIVELES) if (pts >= x.min) n = x; return n; }
+    function siguienteNivel(pts) { return NIVELES.find(x => x.min > pts) || null; }
+
+    function cargarGami() {
+      let g;
+      try { g = JSON.parse(localStorage.getItem('gamificacion_ips')); } catch (e) {}
+      if (!g || typeof g !== 'object' || !g.usuarios) g = { usuarios: {} };
+      // Garantizar el usuario actual y un usuario de ejemplo (para ver la competencia)
+      if (!g.usuarios[USUARIO_ACTUAL]) g.usuarios[USUARIO_ACTUAL] = { puntos: 0, historial: [] };
+      if (!g.usuarios['Ejemplo'])      g.usuarios['Ejemplo']      = { puntos: 150, historial: [] };
+      return g;
+    }
+    function guardarGami(g) { localStorage.setItem('gamificacion_ips', JSON.stringify(g)); }
+
+    // Marca que un contacto ya alcanzó una etapa (para no premiar dos veces).
+    function premiarAvance(contacto, nuevaEtapaId) {
+      if (!Array.isArray(contacto._etapasGanadas)) contacto._etapasGanadas = [];
+      if (contacto._etapasGanadas.includes(nuevaEtapaId)) return 0;
+      contacto._etapasGanadas.push(nuevaEtapaId);
+      return PUNTOS_ETAPA[nuevaEtapaId] || 10;
+    }
+
+    function sumarPuntos(pts) {
+      const g = cargarGami();
+      const u = g.usuarios[USUARIO_ACTUAL];
+      const nivelAntes = nivelDe(u.puntos);
+      u.puntos += pts;
+      u.historial.push({ pts, fecha: new Date().toISOString() });
+      if (u.historial.length > 300) u.historial = u.historial.slice(-300);
+      guardarGami(g);
+      actualizarBadgeGami();
+      const nivelDespues = nivelDe(u.puntos);
+      return { pts, subioNivel: nivelDespues.nombre !== nivelAntes.nombre, nivel: nivelDespues };
+    }
+
+    function actualizarBadgeGami() {
+      const g = cargarGami();
+      const u = g.usuarios[USUARIO_ACTUAL];
+      const nivel = nivelDe(u.puntos);
+      const badge = document.getElementById('gamiBadge');
+      if (badge) badge.innerHTML = `${nivel.emoji} ${u.puntos} pts`;
+    }
+
+    // ── Panel "Mis logros" ──
+    function abrirLogros() { renderLogros(); document.getElementById('overlayLogros').classList.add('open'); }
+    function cerrarLogros(e) {
+      // Si viene de un clic dentro del modal, no cerrar (solo backdrop o botón)
+      if (e && e.target !== document.getElementById('overlayLogros')) return;
+      document.getElementById('overlayLogros').classList.remove('open');
+    }
+
+    function puntosEnVentana(historial, dias) {
+      const limite = Date.now() - dias * 24 * 60 * 60 * 1000;
+      return (historial || []).filter(h => new Date(h.fecha).getTime() >= limite).reduce((s, h) => s + h.pts, 0);
+    }
+
+    function renderLogros() {
+      const g = cargarGami();
+      const u = g.usuarios[USUARIO_ACTUAL];
+      const nivel = nivelDe(u.puntos);
+      const sig = siguienteNivel(u.puntos);
+
+      // Progreso al siguiente nivel
+      let progPct = 100, progTxt = '¡Nivel máximo alcanzado! 👑';
+      if (sig) {
+        const base = nivel.min;
+        progPct = Math.round(((u.puntos - base) / (sig.min - base)) * 100);
+        progTxt = `${sig.min - u.puntos} pts para ${sig.emoji} ${sig.nombre}`;
+      }
+
+      const hoy    = puntosEnVentana(u.historial, 1);
+      const semana = puntosEnVentana(u.historial, 7);
+
+      // Tabla de posiciones
+      const ranking = Object.entries(g.usuarios)
+        .map(([nombre, x]) => ({ nombre, puntos: x.puntos }))
+        .sort((a, b) => b.puntos - a.puntos);
+      const filas = ranking.map((r, i) => {
+        const med = nivelDe(r.puntos);
+        const esTu = r.nombre === USUARIO_ACTUAL;
+        return `<div class="lb-row ${esTu ? 'tu' : ''}">
+          <span class="lb-pos">${i + 1}</span>
+          <span class="lb-medalla">${med.emoji}</span>
+          <span class="lb-nombre">${escapeHtml(r.nombre)}${esTu ? ' (tú)' : ''}</span>
+          <span class="lb-pts">${r.puntos} pts</span>
+        </div>`;
+      }).join('');
+
+      // Guía de cómo se ganan puntos
+      const guia = ETAPAS.slice(1)
+        .map(e => `Llegar a <b>${escapeHtml(e.label)}</b>: +${PUNTOS_ETAPA[e.id] || 10} pts`)
+        .join('<br>');
+
+      document.getElementById('logrosBody').innerHTML = `
+        <div class="logros-nivel">
+          <div class="logros-medalla">${nivel.emoji}</div>
+          <div class="logros-nivel-nombre">${nivel.nombre}</div>
+          <div class="logros-puntos">${u.puntos} puntos en total</div>
+        </div>
+        <div class="logros-progress-wrap"><div class="logros-progress" style="width:${Math.max(0, Math.min(100, progPct))}%"></div></div>
+        <div class="logros-progress-txt">${progTxt}</div>
+        <div class="logros-stats">
+          <div class="logros-stat"><div class="logros-stat-num">${hoy}</div><div class="logros-stat-lbl">Hoy</div></div>
+          <div class="logros-stat"><div class="logros-stat-num">${semana}</div><div class="logros-stat-lbl">Esta semana</div></div>
+          <div class="logros-stat"><div class="logros-stat-num">${u.puntos}</div><div class="logros-stat-lbl">Total</div></div>
+        </div>
+        <div class="logros-sub">🏅 Tabla de posiciones</div>
+        ${filas}
+        <div class="logros-sub">⭐ Cómo ganar puntos</div>
+        <div class="guia-pts">${guia}</div>`;
     }
 
     // Sonido de éxito sintetizado (Web Audio) — sin archivos externos.
@@ -1837,6 +2034,7 @@
     renderColumnas();
     aplicarVista();
     renderActiva();
+    actualizarBadgeGami();
   </script>
 
   <script src="sidebar.js?v=3"></script>
