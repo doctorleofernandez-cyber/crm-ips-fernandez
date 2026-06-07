@@ -516,7 +516,7 @@
     `).join('');
 
     // ── CHART 3: Contactos nuevos (leads) vs recurrentes (ya pacientes) ──
-    const recurrentes = pacientes.filter(p => p.etapa === 'tratamiento' || p.etapa === 'finalizado').length;
+    const recurrentes = pacientes.filter(p => p.etapa === 'paciente').length;
     const nuevos      = pacientes.length - recurrentes;
     const datosPac = [nuevos, recurrentes];
 

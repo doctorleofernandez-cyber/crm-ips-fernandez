@@ -596,8 +596,8 @@
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">En tratamiento</div>
-          <div class="stat-icon">🦷</div>
+          <div class="stat-label">Pacientes</div>
+          <div class="stat-icon">👤</div>
         </div>
         <div class="stat-value" id="statTratamiento">—</div>
         <div class="stat-sub" id="subTratamiento">Cargando…</div>
@@ -739,9 +739,10 @@
                      'julio','agosto','septiembre','octubre','noviembre','diciembre'];
       const DEFAULT_ETAPAS = [
         { id: 'contacto',    label: 'Contacto inicial' },
-        { id: 'agendada',    label: 'Interesado' },
-        { id: 'tratamiento', label: 'En tratamiento' },
-        { id: 'finalizado',  label: 'Finalizado' }
+        { id: 'interesado',  label: 'Interesado' },
+        { id: 'agendada',    label: 'Cita agendada' },
+        { id: 'paciente',    label: 'Paciente' },
+        { id: 'profesional', label: 'Profesional/proveedor' }
       ];
 
       function cargar(key) {
@@ -806,12 +807,12 @@
       document.getElementById('subFacturacion').textContent =
         pendiente > 0 ? `$${pendiente.toLocaleString('es-CO')} pendiente` : 'Sin saldo pendiente';
 
-      // ── Stat 4: En tratamiento
-      const enTrat = pacientes.filter(p => p.etapa === 'tratamiento').length;
+      // ── Stat 4: Pacientes
+      const enTrat = pacientes.filter(p => p.etapa === 'paciente').length;
       document.getElementById('statTratamiento').textContent = enTrat;
       document.getElementById('subTratamiento').textContent =
-        enTrat === 0 ? 'Ningún tratamiento activo' :
-        enTrat === 1 ? '1 contacto en curso' : `${enTrat} contactos en curso`;
+        enTrat === 0 ? 'Ningún paciente aún' :
+        enTrat === 1 ? '1 paciente' : `${enTrat} pacientes`;
 
       // ── Pipeline mini
       const pipelineMini = document.getElementById('pipelineMini');
