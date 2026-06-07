@@ -281,11 +281,7 @@
 
         <div class="form-group">
           <label>Ingresar como</label>
-          <select id="rolSelect">
-            <option value="admin">👑 Administrador (acceso total)</option>
-            <option value="asistente">🦷 Asistente (citas y contactos)</option>
-            <option value="recepcionista">📋 Recepcionista (agenda y chat)</option>
-          </select>
+          <select id="usuarioSelect"></select>
         </div>
 
         <label class="remember">
@@ -306,18 +302,33 @@
           window.location.replace('dashboard.html');
         }
 
+        // Llenar el selector con los usuarios del sistema (guardados en Ajustes → Usuarios)
+        (function () {
+          var users = [];
+          try { users = JSON.parse(localStorage.getItem('usuarios_sistema') || '[]'); } catch (e) {}
+          if (!Array.isArray(users) || !users.length) {
+            users = [{ id: 'u_owner', nombre: 'Dr. Leo Fernández', rol: 'admin' }];
+          }
+          var labels = { admin: 'Administrador', marketing: 'Marketing', asistente: 'Asistente', recepcionista: 'Recepcionista' };
+          var sel = document.getElementById('usuarioSelect');
+          sel.innerHTML = users.map(function (u) {
+            var rl = labels[u.rol] || u.rol || '';
+            return '<option value="' + u.id + '" data-rol="' + (u.rol || '') + '">' +
+                   (u.nombre || 'Usuario') + (rl ? ' — ' + rl : '') + '</option>';
+          }).join('');
+        })();
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
           e.preventDefault();
-          var rol = document.getElementById('rolSelect').value;
-          // Guardar la sesión + rol: si "mantener" está marcado, persiste aunque
-          // cierre el navegador (localStorage); si no, solo dura hasta cerrar.
-          if (document.getElementById('mantenerSesion').checked) {
-            localStorage.setItem('crm_sesion', 'activa');
-            localStorage.setItem('crm_rol', rol);
-          } else {
-            sessionStorage.setItem('crm_sesion', 'activa');
-            sessionStorage.setItem('crm_rol', rol);
-          }
+          var opt = document.getElementById('usuarioSelect').selectedOptions[0];
+          var uid = opt ? opt.value : '';
+          var rol = opt ? opt.getAttribute('data-rol') : 'admin';
+          // Guardar la sesión + usuario + rol: si "mantener" está marcado, persiste
+          // aunque cierre el navegador (localStorage); si no, solo hasta cerrar.
+          var store = document.getElementById('mantenerSesion').checked ? localStorage : sessionStorage;
+          store.setItem('crm_sesion', 'activa');
+          store.setItem('crm_usuario', uid);
+          store.setItem('crm_rol', rol);
           window.location.href = 'dashboard.html';
         });
       </script>
@@ -329,6 +340,6 @@
     </div>
   </div>
 
-  <script src="sidebar.js?v=6"></script>
+  <script src="sidebar.js?v=7"></script>
 </body>
 </html>

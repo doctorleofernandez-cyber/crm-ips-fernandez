@@ -5,17 +5,37 @@ window.cerrarSesion = function () {
   sessionStorage.removeItem('crm_sesion');
   localStorage.removeItem('crm_rol');
   sessionStorage.removeItem('crm_rol');
+  localStorage.removeItem('crm_usuario');
+  sessionStorage.removeItem('crm_usuario');
   location.href = 'index.html';
 };
 
-/* ════════ PERMISOS POR ROL ════════
-   Qué módulos puede ver cada rol. (Seguridad "blanda": organiza el acceso;
-   el blindaje real llega con el login de Supabase.) */
+/* ════════ PERMISOS ════════
+   Cada usuario tiene sus permisos individuales (configurables en Ajustes).
+   Como respaldo, si no hay usuario, se usan los permisos por rol.
+   (Seguridad "blanda": organiza el acceso; el blindaje real llega con Supabase.) */
 var PERMISOS = {
   admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
+  marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
   asistente:     ['dashboard','contactos','calendario','comunicacion'],
   recepcionista: ['dashboard','contactos','calendario','comunicacion']
 };
+/* Lista de módulos permitidos para el usuario que inició sesión.
+   Usa los permisos individuales del usuario; si no, cae al rol. */
+function permisosActuales() {
+  var uid = localStorage.getItem('crm_usuario') || sessionStorage.getItem('crm_usuario');
+  if (uid) {
+    try {
+      var users = JSON.parse(localStorage.getItem('usuarios_sistema') || '[]');
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].id === uid && users[i].permisos) {
+          return Object.keys(users[i].permisos).filter(function (k) { return users[i].permisos[k]; });
+        }
+      }
+    } catch (e) {}
+  }
+  return PERMISOS[rolActual()] || PERMISOS.admin;
+}
 var PAGINA_MODULO = {
   'index.html':'dashboard', 'dashboard.html':'dashboard',
   'pipeline.html':'contactos', 'contactos.html':'contactos', 'contacto-perfil.html':'contactos',
@@ -35,8 +55,7 @@ function moduloDeHref(href) {
 }
 function puedeAcceder(modulo) {
   if (!modulo) return true;
-  var p = PERMISOS[rolActual()] || PERMISOS.admin;
-  return p.indexOf(modulo) !== -1;
+  return permisosActuales().indexOf(modulo) !== -1;
 }
 
 /* Guardia de acceso: si NO estamos en el login y NO hay sesión activa,
