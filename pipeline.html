@@ -424,16 +424,36 @@
     .lead-card-move {
       position: absolute;
       top: 8px; right: 8px;
-      background: transparent;
-      border: 1px solid rgba(0,0,0,0.10);
-      border-radius: 6px;
-      font-size: 10px;
-      color: #5a4e3a;
-      padding: 2px 4px;
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 7px;
+      font-size: 12px;
+      color: #7a5c1e;
+      padding: 4px 8px;
       cursor: pointer;
-      max-width: 28px;
+      font-weight: 600;
     }
-    .lead-card-move:hover { background: rgba(201,168,76,0.10); }
+    .lead-card-move:hover { background: rgba(201,168,76,0.20); }
+
+    /* Opciones del menú "Mover a etapa" (botones grandes, fáciles de tocar) */
+    .mover-opt {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; text-align: left;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 9px;
+      padding: 13px 14px; margin-bottom: 8px; min-height: 48px;
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #1a1208;
+      cursor: pointer;
+    }
+    .mover-opt:hover { background: rgba(201,168,76,0.14); }
+    .mover-opt.actual { opacity: 0.5; cursor: default; }
+    .mover-actual-tag { font-size: 10px; font-weight: 600; color: #9c8c72; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* En celular el botón de mover es más grande (fácil de tocar con el dedo) */
+    @media (max-width: 760px) {
+      .lead-card-move { font-size: 13px; padding: 7px 12px; top: 10px; right: 10px; }
+    }
 
     /* Resaltado cuando se arrastra encima */
     .column-body.drop-target {
@@ -1155,6 +1175,17 @@
   <!-- Capa de celebración (gamificación al avanzar de etapa) -->
   <div class="celebracion" id="celebracion" aria-hidden="true"></div>
 
+  <!-- Menú "Mover a etapa" (toque, funciona en celular) -->
+  <div class="overlay" id="overlayMover" onclick="cerrarMover(event)">
+    <div class="modal" style="width:min(94vw,360px)">
+      <div class="modal-title">Mover a <span>etapa</span></div>
+      <div id="moverOpciones"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn cancel" onclick="cerrarMover()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Panel "Mis logros" -->
   <div class="overlay" id="overlayLogros" onclick="cerrarLogros(event)">
     <div class="modal" style="width:min(94vw,420px); max-height:88vh; overflow-y:auto">
@@ -1317,7 +1348,7 @@
         <div class="lead-status-dot ${respondido ? 'respondido' : 'pendiente'}"
              title="${tituloEstado}"
              onclick="event.stopPropagation(); toggleRespondido('${p.id}')"></div>
-        <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄</button>
+        <button class="lead-card-move" title="Mover a otra etapa" onclick="event.stopPropagation(); moverEtapa('${p.id}')">⇄ Mover</button>
         <div class="lead-card-name">${escapeHtml(nombre)}</div>
         <div class="lead-card-info">
           ${doc ? `<span>📄</span> ${escapeHtml(doc)}<br>` : ''}
@@ -1361,20 +1392,31 @@
       cambiarEtapa(arrastrandoId, nuevaEtapa);
     }
 
-    /* ── MOVER (móvil / selector) ── */
+    /* ── MOVER (menú con botones — funciona en celular y PC) ── */
+    let moverId = null;
     function moverEtapa(id) {
       const pacientes = cargarPacientes();
       const p = pacientes.find(x => x.id === id);
       if (!p) return;
+      moverId = id;
       const actual = etapaDe(p);
-      const candidatas = ETAPAS.filter(e => e.id !== actual);
-      if (candidatas.length === 0) return;
-      const opciones = candidatas.map((e, i) => `${i + 1}) ${e.label}`).join('\n');
-      const r = prompt(`Mover a etapa (escriba el número):\n\n${opciones}`);
-      if (!r) return;
-      const idx = parseInt(r, 10) - 1;
-      if (isNaN(idx) || !candidatas[idx]) return;
-      cambiarEtapa(id, candidatas[idx].id);
+      document.getElementById('moverOpciones').innerHTML = ETAPAS.map(e => {
+        const esActual = e.id === actual;
+        return `<button type="button" class="mover-opt ${esActual ? 'actual' : ''}" ${esActual ? 'disabled' : ''}
+          onclick="elegirMover('${escapeHtml(e.id)}')">
+          ${escapeHtml(e.label)} ${esActual ? '<span class="mover-actual-tag">etapa actual</span>' : ''}
+        </button>`;
+      }).join('');
+      document.getElementById('overlayMover').classList.add('open');
+    }
+    function elegirMover(etapaId) {
+      const id = moverId;
+      cerrarMover();
+      if (id) cambiarEtapa(id, etapaId);
+    }
+    function cerrarMover(e) {
+      if (e && e.target !== document.getElementById('overlayMover')) return;
+      document.getElementById('overlayMover').classList.remove('open');
     }
 
     function cambiarEtapa(id, nuevaEtapa) {
