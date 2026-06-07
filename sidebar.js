@@ -3,15 +3,73 @@
 window.cerrarSesion = function () {
   localStorage.removeItem('crm_sesion');
   sessionStorage.removeItem('crm_sesion');
+  localStorage.removeItem('crm_rol');
+  sessionStorage.removeItem('crm_rol');
   location.href = 'index.html';
 };
+
+/* ════════ PERMISOS POR ROL ════════
+   Qué módulos puede ver cada rol. (Seguridad "blanda": organiza el acceso;
+   el blindaje real llega con el login de Supabase.) */
+var PERMISOS = {
+  admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
+  doctor:        ['dashboard','contactos','calendario','comunicacion','facturacion','reportes'],
+  asistente:     ['dashboard','contactos','calendario','comunicacion'],
+  recepcionista: ['dashboard','contactos','calendario','comunicacion']
+};
+var PAGINA_MODULO = {
+  'index.html':'dashboard', 'dashboard.html':'dashboard',
+  'pipeline.html':'contactos', 'contactos.html':'contactos', 'contacto-perfil.html':'contactos',
+  'citas.html':'calendario',
+  'chat.html':'comunicacion', 'correo.html':'comunicacion', 'chats-equipo.html':'comunicacion', 'plantillas.html':'comunicacion',
+  'facturacion.html':'facturacion',
+  'reportes.html':'reportes', 'insights.html':'reportes',
+  'difusiones.html':'marketing', 'bots.html':'marketing', 'agente-ia.html':'marketing',
+  'ajustes.html':'ajustes'
+};
+function rolActual() {
+  return localStorage.getItem('crm_rol') || sessionStorage.getItem('crm_rol') || 'admin';
+}
+function moduloDeHref(href) {
+  var f = (href || '').split('/').pop().split('?')[0];
+  return PAGINA_MODULO[f] || null;
+}
+function puedeAcceder(modulo) {
+  if (!modulo) return true;
+  var p = PERMISOS[rolActual()] || PERMISOS.admin;
+  return p.indexOf(modulo) !== -1;
+}
 
 /* Guardia de acceso: si NO estamos en el login y NO hay sesión activa,
    redirige al login. Así el CRM siempre exige iniciar sesión. */
 (function () {
   var enLogin = /index\.html$/.test(location.pathname) || /\/$/.test(location.pathname);
   var sesion = localStorage.getItem('crm_sesion') || sessionStorage.getItem('crm_sesion');
-  if (!enLogin && !sesion) { location.replace('index.html'); }
+  if (!enLogin && !sesion) { location.replace('index.html'); return; }
+
+  /* Guardia por rol: si la página no está permitida para el rol, al dashboard. */
+  if (!enLogin) {
+    var pagina = location.pathname.split('/').pop().split('?')[0] || 'index.html';
+    var modulo = PAGINA_MODULO[pagina];
+    if (modulo && !puedeAcceder(modulo)) { location.replace('dashboard.html'); return; }
+  }
+})();
+
+/* Oculta del menú las secciones que el rol no puede ver. */
+(function () {
+  document.querySelectorAll('.nav-item[href]').forEach(function (a) {
+    var m = moduloDeHref(a.getAttribute('href'));
+    if (m && !puedeAcceder(m)) a.style.display = 'none';
+  });
+  // Oculta los títulos de sección que quedaron sin items visibles
+  document.querySelectorAll('.nav-section').forEach(function (sec) {
+    var el = sec.nextElementSibling, visibles = 0;
+    while (el && !el.classList.contains('nav-section')) {
+      if (el.classList.contains('nav-item') && el.style.display !== 'none') visibles++;
+      el = el.nextElementSibling;
+    }
+    if (visibles === 0) sec.style.display = 'none';
+  });
 })();
 
 (function () {

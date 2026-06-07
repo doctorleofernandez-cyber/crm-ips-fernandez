@@ -129,7 +129,8 @@
       margin-bottom: 8px;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(201,168,76,0.2);
@@ -141,6 +142,8 @@
       transition: all 0.3s ease;
       outline: none;
     }
+    .form-group select { cursor: pointer; }
+    .form-group select option { background: #1a1a1a; color: var(--blanco); }
 
     .form-group input::placeholder {
       color: #444;
@@ -276,6 +279,16 @@
           <input type="password" placeholder="••••••••" />
         </div>
 
+        <div class="form-group">
+          <label>Ingresar como</label>
+          <select id="rolSelect">
+            <option value="admin">👑 Administrador (acceso total)</option>
+            <option value="doctor">🩺 Doctor (citas, contactos, facturación, reportes)</option>
+            <option value="asistente">🦷 Asistente (citas y contactos)</option>
+            <option value="recepcionista">📋 Recepcionista (agenda y chat)</option>
+          </select>
+        </div>
+
         <label class="remember">
           <input type="checkbox" id="mantenerSesion" checked />
           Mantener la sesión iniciada en este dispositivo
@@ -296,12 +309,15 @@
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
           e.preventDefault();
-          // Guardar la sesión: si "mantener" está marcado, persiste aunque cierre
-          // el navegador (localStorage); si no, solo dura hasta cerrar (sessionStorage).
+          var rol = document.getElementById('rolSelect').value;
+          // Guardar la sesión + rol: si "mantener" está marcado, persiste aunque
+          // cierre el navegador (localStorage); si no, solo dura hasta cerrar.
           if (document.getElementById('mantenerSesion').checked) {
             localStorage.setItem('crm_sesion', 'activa');
+            localStorage.setItem('crm_rol', rol);
           } else {
             sessionStorage.setItem('crm_sesion', 'activa');
+            sessionStorage.setItem('crm_rol', rol);
           }
           window.location.href = 'dashboard.html';
         });
@@ -314,6 +330,6 @@
     </div>
   </div>
 
-  <script src="sidebar.js?v=4"></script>
+  <script src="sidebar.js?v=5"></script>
 </body>
 </html>
