@@ -316,3 +316,12 @@ function puedeAcceder(modulo) {
   });
 
 })();
+
+/* ════════ ANTI-CACHÉ: registrar el service worker ════════
+   Hace que el CRM siempre cargue la última versión cuando hay internet.
+   (Solo funciona en https / el sitio público; en archivos locales se ignora.) */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}

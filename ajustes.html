@@ -1533,9 +1533,10 @@
       return o;
     }
     const DEFAULT_USUARIOS = [
-      { id: 'u_owner', nombre: 'Dr. Leo Fernández', email: 'doctorleofernandez@gmail.com', rol: 'admin', owner: true },
-      { id: 'u_asis',  nombre: 'Asistente Clínica',  email: 'asistente@ipsfernandez.com',   rol: 'asistente' },
-      { id: 'u_recep', nombre: 'Recepcionista',      email: 'recepcion@ipsfernandez.com',   rol: 'recepcionista' },
+      { id: 'u_owner', nombre: 'Dr. Leo Fernández',   email: 'doctorleofernandez@gmail.com', rol: 'admin', owner: true },
+      { id: 'u_mkt',   nombre: 'Equipo de Marketing', email: 'marketing@ipsfernandez.com',   rol: 'marketing' },
+      { id: 'u_asis',  nombre: 'Asistente Clínica',   email: 'asistente@ipsfernandez.com',   rol: 'asistente' },
+      { id: 'u_recep', nombre: 'Recepcionista',       email: 'recepcion@ipsfernandez.com',   rol: 'recepcionista' },
     ];
     function cargarUsuarios() {
       let u; try { u = JSON.parse(localStorage.getItem('usuarios_sistema')); } catch (e) {}
@@ -1793,6 +1794,6 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
   </script>
-  <script src="sidebar.js?v=7"></script>
+  <script src="sidebar.js?v=8"></script>
 </body>
 </html>
