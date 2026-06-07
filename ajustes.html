@@ -243,7 +243,9 @@
       align-items: center;
       margin-bottom: 8px;
     }
-    .horario-grid input { width: 100%; min-width: 0; }
+    .horario-campo { display: flex; align-items: center; gap: 8px; }
+    .horario-campo input { flex: 1; width: 100%; min-width: 0; }
+    .horario-mini { display: none; font-size: 11px; font-weight: 600; color: #9c8c72; flex-shrink: 0; min-width: 42px; }
 
     .horario-day { font-size: 13px; font-weight: 500; color: #1a1208; }
     .horario-header { font-size: 10px; color: #9c8c72; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
@@ -624,15 +626,16 @@
 
       /* Horarios: día arriba, horas en una fila debajo, apagar/encender al lado */
       .horario-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px 10px;
+        grid-template-columns: 1fr;
+        gap: 8px;
         font-size: 12.5px;
-        padding: 10px 0;
+        padding: 12px 0;
         border-bottom: 1px solid rgba(0,0,0,0.06);
       }
-      .horario-day { font-size: 13px; font-weight: 600; grid-column: span 2; }
+      .horario-day { font-size: 13px; font-weight: 700; }
       .horario-header { display: none; }
-      .toggle-wrap { grid-column: span 2; justify-content: flex-start; padding-top: 4px; }
+      .horario-mini { display: inline-flex; }
+      .toggle-wrap { justify-content: flex-start; padding-top: 2px; }
 
       /* Apariencia: 3 temas no caben → 1 columna, cada uno más alto */
       .tema-grid { grid-template-columns: 1fr !important; gap: 12px; }
@@ -1428,8 +1431,8 @@
     document.getElementById('horariosWrap').innerHTML = dias.map((dia, i) => `
       <div class="horario-grid">
         <div class="horario-day">${dia}</div>
-        <input type="time" id="h_open_${i}" value="${horariosSaved[i].open}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
-        <input type="time" id="h_close_${i}" value="${horariosSaved[i].close}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
+        <div class="horario-campo"><span class="horario-mini">Abre</span><input type="time" id="h_open_${i}" value="${horariosSaved[i].open}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} /></div>
+        <div class="horario-campo"><span class="horario-mini">Cierra</span><input type="time" id="h_close_${i}" value="${horariosSaved[i].close}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} /></div>
         <div class="toggle-wrap">
           <label class="toggle">
             <input type="checkbox" id="h_active_${i}" ${horariosSaved[i].activo ? 'checked' : ''}
