@@ -93,6 +93,68 @@
     /* Selector de sección: solo aparece en celular */
     .settings-mobile-nav { display: none; }
 
+    /* Desplegable propio del sub-menú (celular) */
+    .msel { position: relative; }
+    .msel-btn {
+      width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px;
+      min-height: 50px;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 600; color: #1a1208;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(120,98,40,0.06);
+    }
+    .msel-caret { color: #7a5c1e; font-size: 14px; transition: transform 0.2s; }
+    .msel.open .msel-caret { transform: rotate(180deg); }
+
+    .msel-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px); left: 0; right: 0;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(40,30,10,0.18);
+      padding: 8px;
+      z-index: 60;
+    }
+    .msel.open .msel-panel { display: block; }
+
+    .msel-group {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #9c8c72;
+      padding: 12px 12px 6px;
+    }
+    .msel-group:first-child { padding-top: 6px; }
+
+    .msel-opt {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%;
+      padding: 13px 12px;
+      min-height: 48px;
+      background: none; border: none;
+      border-radius: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; color: #3a3122; text-align: left;
+      cursor: pointer;
+    }
+    .msel-opt:active { background: rgba(201,168,76,0.12); }
+    .msel-opt.active {
+      background: rgba(201,168,76,0.14);
+      color: #7a5c1e; font-weight: 600;
+    }
+    .msel-opt.active::after {
+      content: "✓";
+      margin-left: auto;
+      color: #7a5c1e; font-weight: 700;
+    }
+
     /* ── CONTENIDO ── */
     .settings-content { flex: 1; padding: 32px 40px; overflow-y: auto; }
 
@@ -521,16 +583,6 @@
         letter-spacing: 1.5px; text-transform: uppercase;
         color: #7a5c1e; margin-bottom: 7px;
       }
-      #settings-select {
-        width: 100%;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 13px 14px;
-        min-height: 48px;
-        border-radius: 10px;
-        background: #ffffff;
-        color: #1a1208;
-      }
       .settings-content { padding: 20px 14px 28px; }
 
       .section-header { margin-bottom: 18px; }
@@ -692,23 +744,26 @@
 
     <!-- Selector de sección (solo en celular) -->
     <div class="settings-mobile-nav">
-      <label class="settings-mobile-label" for="settings-select">Sección de ajustes</label>
-      <select id="settings-select" onchange="activateSection(this.value)">
-        <optgroup label="Clínica">
-          <option value="clinica">🏥  Perfil clínica</option>
-          <option value="horarios">🕐  Horarios</option>
-        </optgroup>
-        <optgroup label="Sistema">
-          <option value="apariencia">🎨  Apariencia</option>
-          <option value="usuarios">👥  Usuarios</option>
-          <option value="integraciones">🔌  Integraciones</option>
-          <option value="notificaciones">🔔  Notificaciones</option>
-        </optgroup>
-        <optgroup label="Cuenta">
-          <option value="perfil">👤  Mi perfil</option>
-          <option value="seguridad">🔒  Seguridad</option>
-        </optgroup>
-      </select>
+      <label class="settings-mobile-label">Sección de ajustes</label>
+      <div class="msel" id="msel">
+        <button type="button" class="msel-btn" onclick="toggleMsel(event)">
+          <span class="msel-current" id="msel-current">🏥 Perfil clínica</span>
+          <span class="msel-caret">▾</span>
+        </button>
+        <div class="msel-panel" id="msel-panel">
+          <div class="msel-group">Clínica</div>
+          <button type="button" class="msel-opt" data-id="clinica" onclick="pickMsel('clinica')">🏥 Perfil clínica</button>
+          <button type="button" class="msel-opt" data-id="horarios" onclick="pickMsel('horarios')">🕐 Horarios</button>
+          <div class="msel-group">Sistema</div>
+          <button type="button" class="msel-opt" data-id="apariencia" onclick="pickMsel('apariencia')">🎨 Apariencia</button>
+          <button type="button" class="msel-opt" data-id="usuarios" onclick="pickMsel('usuarios')">👥 Usuarios</button>
+          <button type="button" class="msel-opt" data-id="integraciones" onclick="pickMsel('integraciones')">🔌 Integraciones</button>
+          <button type="button" class="msel-opt" data-id="notificaciones" onclick="pickMsel('notificaciones')">🔔 Notificaciones</button>
+          <div class="msel-group">Cuenta</div>
+          <button type="button" class="msel-opt" data-id="perfil" onclick="pickMsel('perfil')">👤 Mi perfil</button>
+          <button type="button" class="msel-opt" data-id="seguridad" onclick="pickMsel('seguridad')">🔒 Seguridad</button>
+        </div>
+      </div>
     </div>
 
     <!-- Contenido -->
@@ -1307,18 +1362,42 @@
       if (tab) tab.classList.add('active');
       const sec = document.getElementById('sec-' + id);
       if (sec) sec.classList.add('active');
-      const sel = document.getElementById('settings-select');
-      if (sel && sel.value !== id) sel.value = id;
+      // Sincronizar el desplegable propio del celular
+      document.querySelectorAll('.msel-opt').forEach(o => o.classList.remove('active'));
+      const opt = document.querySelector(`.msel-opt[data-id="${id}"]`);
+      if (opt) {
+        opt.classList.add('active');
+        const cur = document.getElementById('msel-current');
+        if (cur) cur.textContent = opt.textContent.trim();
+      }
       location.hash = id;
     }
 
     // Las pestañas de PC siguen llamando a setTab(this, id)
     function setTab(btn, id) { activateSection(id); }
 
-    // Activar la sección indicada en la URL (#integraciones, etc.)
+    // ── Desplegable propio del sub-menú (celular) ──
+    function toggleMsel(e) {
+      e.stopPropagation();
+      document.getElementById('msel').classList.toggle('open');
+    }
+    function pickMsel(id) {
+      activateSection(id);
+      document.getElementById('msel').classList.remove('open');
+    }
+    // Cerrar al tocar fuera
+    document.addEventListener('click', function(e) {
+      const m = document.getElementById('msel');
+      if (m && !m.contains(e.target)) m.classList.remove('open');
+    });
+
+    // Activar la sección indicada en la URL (#integraciones, etc.) o, si no
+    // hay ninguna, la primera (Perfil clínica) — así el desplegable del
+    // celular ya marca la sección actual con su palomita.
     (function() {
       const hash = location.hash.replace('#', '');
-      if (hash && document.getElementById('sec-' + hash)) activateSection(hash);
+      const id = (hash && document.getElementById('sec-' + hash)) ? hash : 'clinica';
+      activateSection(id);
     })();
 
     // ── HORARIOS ──
