@@ -238,10 +238,12 @@
     /* ── HORARIOS ── */
     .horario-grid {
       display: grid;
-      grid-template-columns: 120px 1fr 1fr 80px;
+      grid-template-columns: 140px 1fr 1fr 100px;
       gap: 10px;
       align-items: center;
+      margin-bottom: 8px;
     }
+    .horario-grid input { width: 100%; min-width: 0; }
 
     .horario-day { font-size: 13px; font-weight: 500; color: #1a1208; }
     .horario-header { font-size: 10px; color: #9c8c72; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
@@ -890,7 +892,7 @@
         <div class="config-card">
           <div class="config-card-title">🕐 Horario semanal</div>
 
-          <div style="display:grid;grid-template-columns:140px 1fr 1fr 100px;gap:10px;margin-bottom:10px">
+          <div class="horario-grid">
             <div class="horario-header">Día</div>
             <div class="horario-header">Apertura</div>
             <div class="horario-header">Cierre</div>
@@ -1424,7 +1426,7 @@
     const horariosSaved = JSON.parse(localStorage.getItem('horarios_ips') || 'null') || horariosDefault;
 
     document.getElementById('horariosWrap').innerHTML = dias.map((dia, i) => `
-      <div style="display:grid;grid-template-columns:140px 1fr 1fr 100px;gap:10px;align-items:center;margin-bottom:8px">
+      <div class="horario-grid">
         <div class="horario-day">${dia}</div>
         <input type="time" id="h_open_${i}" value="${horariosSaved[i].open}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
         <input type="time" id="h_close_${i}" value="${horariosSaved[i].close}" ${!horariosSaved[i].activo ? 'disabled style="opacity:.3"' : ''} />
