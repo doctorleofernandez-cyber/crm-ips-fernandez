@@ -1,3 +1,19 @@
+/* ════════ SESIÓN ════════
+   Cierra la sesión: borra la marca y vuelve al login. */
+window.cerrarSesion = function () {
+  localStorage.removeItem('crm_sesion');
+  sessionStorage.removeItem('crm_sesion');
+  location.href = 'index.html';
+};
+
+/* Guardia de acceso: si NO estamos en el login y NO hay sesión activa,
+   redirige al login. Así el CRM siempre exige iniciar sesión. */
+(function () {
+  var enLogin = /index\.html$/.test(location.pathname) || /\/$/.test(location.pathname);
+  var sesion = localStorage.getItem('crm_sesion') || sessionStorage.getItem('crm_sesion');
+  if (!enLogin && !sesion) { location.replace('index.html'); }
+})();
+
 (function () {
 
   /* ── ACORDEÓN DE SECCIONES ── */
