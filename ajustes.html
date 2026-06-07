@@ -335,6 +335,16 @@
 
     .btn-invite:hover { background: rgba(201,168,76,0.10); border-color: rgba(201,168,76,0.6); }
 
+    /* Modal crear/editar usuario */
+    .umodal-overlay { display: none; position: fixed; inset: 0; background: rgba(40,30,12,0.45); z-index: 400; align-items: center; justify-content: center; padding: 16px; }
+    .umodal-overlay.open { display: flex; }
+    .umodal { background: #fdf8f0; border: 1px solid rgba(201,168,76,0.35); border-radius: 16px; padding: 26px; width: min(94vw, 420px); box-shadow: 0 24px 60px rgba(120,98,40,0.22); }
+    .umodal h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: #1a1208; margin-bottom: 16px; }
+    .umodal h3 span { color: #7a5c1e; }
+    .umodal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+    .umodal-btn { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: 1px solid rgba(0,0,0,0.12); background: #fff; color: #5a4e3a; }
+    .umodal-btn.save { background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); border: none; color: #1a1208; }
+
     /* ── INTEGRACIONES ── */
     .integration-row {
       display: flex; align-items: center; gap: 16px;
@@ -930,57 +940,9 @@
         <div class="config-card">
           <div class="config-card-title">👥 Equipo actual</div>
 
-          <div id="usuariosLista">
-            <div class="user-row">
-              <div class="u-avatar">LF</div>
-              <div class="u-info">
-                <div class="u-name">Dr. Leo Fernández</div>
-                <div class="u-email">doctorleofernandez@gmail.com</div>
-              </div>
-              <span class="u-role-badge admin">Administrador</span>
-              <div class="u-actions">
-                <button class="btn-sm">Editar</button>
-              </div>
-            </div>
-            <div class="user-row">
-              <div class="u-avatar" style="background:rgba(76,143,202,0.1);border-color:rgba(76,143,202,0.2);color:var(--azul)">DR</div>
-              <div class="u-info">
-                <div class="u-name">Dr. Residente</div>
-                <div class="u-email">residente@ipsfernandez.com</div>
-              </div>
-              <span class="u-role-badge doctor">Doctor</span>
-              <div class="u-actions">
-                <button class="btn-sm">Editar</button>
-                <button class="btn-sm danger">Eliminar</button>
-              </div>
-            </div>
-            <div class="user-row">
-              <div class="u-avatar" style="background:rgba(168,137,63,0.1);border-color:rgba(168,137,63,0.2);color:var(--verde)">AS</div>
-              <div class="u-info">
-                <div class="u-name">Asistente Clínica</div>
-                <div class="u-email">asistente@ipsfernandez.com</div>
-              </div>
-              <span class="u-role-badge asistente">Asistente</span>
-              <div class="u-actions">
-                <button class="btn-sm">Editar</button>
-                <button class="btn-sm danger">Eliminar</button>
-              </div>
-            </div>
-            <div class="user-row">
-              <div class="u-avatar" style="background:rgba(155,89,182,0.1);border-color:rgba(155,89,182,0.2);color:#9B59B6">RC</div>
-              <div class="u-info">
-                <div class="u-name">Recepcionista</div>
-                <div class="u-email">recepcion@ipsfernandez.com</div>
-              </div>
-              <span class="u-role-badge recep">Recepcionista</span>
-              <div class="u-actions">
-                <button class="btn-sm">Editar</button>
-                <button class="btn-sm danger">Eliminar</button>
-              </div>
-            </div>
-          </div>
+          <div id="usuariosLista"></div>
 
-          <button class="btn-invite" onclick="invitarUsuario()">+ Invitar nuevo usuario</button>
+          <button class="btn-invite" onclick="abrirUsuario(null)">+ Agregar nuevo usuario</button>
         </div>
 
         <div class="config-card">
@@ -1257,10 +1219,10 @@
           <div class="config-card-title">👤 Datos personales</div>
 
           <div style="display:flex;align-items:center;gap:18px;margin-bottom:22px">
-            <div style="width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--dorado);flex-shrink:0">LF</div>
+            <div id="pAvatar" style="width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--dorado);flex-shrink:0">LF</div>
             <div>
-              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">Dr. Leo Fernández</div>
-              <div style="font-size:12px;color:#9c8c72;margin-top:2px">doctorleofernandez@gmail.com</div>
+              <div id="pNombreCompleto" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">Dr. Leo Fernández</div>
+              <div id="pCorreoHeader" style="font-size:12px;color:#9c8c72;margin-top:2px">doctorleofernandez@gmail.com</div>
               <div style="font-size:11px;margin-top:6px;background:rgba(201,168,76,0.1);color:var(--dorado);padding:2px 10px;border-radius:10px;display:inline-block;font-weight:600">Administrador</div>
             </div>
           </div>
@@ -1268,27 +1230,27 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Nombre</label>
-              <input type="text" value="Leo" />
+              <input type="text" id="pNombre" value="Leo" />
             </div>
             <div class="form-group">
               <label>Apellido</label>
-              <input type="text" value="Fernández" />
+              <input type="text" id="pApellido" value="Fernández" />
             </div>
             <div class="form-group">
               <label>Correo</label>
-              <input type="email" value="doctorleofernandez@gmail.com" />
+              <input type="email" id="pCorreo" value="doctorleofernandez@gmail.com" />
             </div>
             <div class="form-group">
               <label>Teléfono</label>
-              <input type="tel" placeholder="+57 300 000 0000" />
+              <input type="tel" id="pTelefono" placeholder="+57 300 000 0000" />
             </div>
             <div class="form-group">
               <label>Especialidad</label>
-              <input type="text" placeholder="Ej: Odontólogo General" />
+              <input type="text" id="pEspecialidad" placeholder="Ej: Odontólogo General" />
             </div>
             <div class="form-group">
               <label>Registro profesional</label>
-              <input type="text" placeholder="TP-00000" />
+              <input type="text" id="pRegistro" placeholder="TP-00000" />
             </div>
           </div>
           <button class="btn-save" onclick="guardar('perfil')">✓ &nbsp;Actualizar perfil</button>
@@ -1363,6 +1325,34 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Modal crear/editar usuario -->
+  <div class="umodal-overlay" id="umodalOverlay" onclick="cerrarUsuario(event)">
+    <div class="umodal">
+      <h3 id="umodalTitulo">Nuevo <span>usuario</span></h3>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="uNombre" placeholder="Ej: María Gómez" />
+      </div>
+      <div class="form-group">
+        <label>Correo</label>
+        <input type="email" id="uEmail" placeholder="correo@ipsfernandez.com" />
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="uRol">
+          <option value="admin">Administrador — acceso total</option>
+          <option value="doctor">Doctor — citas, contactos, facturación, reportes</option>
+          <option value="asistente">Asistente — citas y contactos</option>
+          <option value="recepcionista">Recepcionista — agenda y chat</option>
+        </select>
+      </div>
+      <div class="umodal-actions">
+        <button type="button" class="umodal-btn" onclick="cerrarUsuario()">Cancelar</button>
+        <button type="button" class="umodal-btn save" onclick="guardarUsuario()">Guardar</button>
+      </div>
     </div>
   </div>
 
@@ -1497,10 +1487,91 @@
     }
 
     // ── INVITAR USUARIO ──
-    function invitarUsuario() {
-      const email = prompt('Correo del nuevo usuario:');
-      if (email) showToast('Invitación enviada a ' + email);
+    /* ════════ USUARIOS DEL SISTEMA (CRUD con roles) ════════ */
+    const ROLES_INFO = {
+      admin:         { label: 'Administrador', badge: 'admin',     color: '201,168,76' },
+      doctor:        { label: 'Doctor',        badge: 'doctor',    color: '76,143,202' },
+      asistente:     { label: 'Asistente',     badge: 'asistente', color: '168,137,63' },
+      recepcionista: { label: 'Recepcionista', badge: 'recep',     color: '155,89,182' },
+    };
+    const DEFAULT_USUARIOS = [
+      { id: 'u_owner', nombre: 'Dr. Leo Fernández', email: 'doctorleofernandez@gmail.com', rol: 'admin', owner: true },
+      { id: 'u_asis',  nombre: 'Asistente Clínica',  email: 'asistente@ipsfernandez.com',   rol: 'asistente' },
+      { id: 'u_recep', nombre: 'Recepcionista',      email: 'recepcion@ipsfernandez.com',   rol: 'recepcionista' },
+    ];
+    function cargarUsuarios() {
+      let u; try { u = JSON.parse(localStorage.getItem('usuarios_sistema')); } catch (e) {}
+      if (!Array.isArray(u) || !u.length) { u = DEFAULT_USUARIOS.slice(); guardarUsuarios(u); }
+      return u;
     }
+    function guardarUsuarios(u) { localStorage.setItem('usuarios_sistema', JSON.stringify(u)); }
+    function escapeHtmlU(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function inicialesDe(nombre) { return (nombre || '?').split(' ').filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase(); }
+
+    function renderUsuarios() {
+      const cont = document.getElementById('usuariosLista');
+      if (!cont) return;
+      cont.innerHTML = cargarUsuarios().map(x => {
+        const r = ROLES_INFO[x.rol] || ROLES_INFO.recepcionista;
+        return `<div class="user-row">
+          <div class="u-avatar" style="background:rgba(${r.color},0.1);border-color:rgba(${r.color},0.25);color:rgb(${r.color})">${inicialesDe(x.nombre)}</div>
+          <div class="u-info">
+            <div class="u-name">${escapeHtmlU(x.nombre)}</div>
+            <div class="u-email">${escapeHtmlU(x.email)}</div>
+          </div>
+          <span class="u-role-badge ${r.badge}">${r.label}</span>
+          <div class="u-actions">
+            <button class="btn-sm" onclick="abrirUsuario('${x.id}')">Editar</button>
+            ${x.owner ? '' : `<button class="btn-sm danger" onclick="eliminarUsuario('${x.id}')">Eliminar</button>`}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    let usuarioEditando = null;
+    function abrirUsuario(id) {
+      usuarioEditando = id;
+      const x = id ? cargarUsuarios().find(y => y.id === id) : null;
+      document.getElementById('umodalTitulo').innerHTML = x ? 'Editar <span>usuario</span>' : 'Nuevo <span>usuario</span>';
+      document.getElementById('uNombre').value = x ? x.nombre : '';
+      document.getElementById('uEmail').value  = x ? x.email  : '';
+      document.getElementById('uRol').value    = x ? x.rol    : 'recepcionista';
+      document.getElementById('uRol').disabled = !!(x && x.owner);   // el admin principal no cambia de rol
+      document.getElementById('umodalOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('uNombre').focus(), 60);
+    }
+    function cerrarUsuario(e) {
+      if (e && e.target !== document.getElementById('umodalOverlay')) return;
+      document.getElementById('umodalOverlay').classList.remove('open');
+    }
+    function guardarUsuario() {
+      const nombre = document.getElementById('uNombre').value.trim();
+      const email  = document.getElementById('uEmail').value.trim();
+      const rol    = document.getElementById('uRol').value;
+      if (!nombre) { showToast('Escribe el nombre'); return; }
+      const u = cargarUsuarios();
+      if (usuarioEditando) {
+        const i = u.findIndex(y => y.id === usuarioEditando);
+        if (i !== -1) { u[i].nombre = nombre; u[i].email = email; if (!u[i].owner) u[i].rol = rol; }
+      } else {
+        u.push({ id: 'u_' + Date.now(), nombre, email, rol });
+      }
+      guardarUsuarios(u);
+      renderUsuarios();
+      cerrarUsuario();
+      showToast('Usuario guardado');
+    }
+    function eliminarUsuario(id) {
+      const u = cargarUsuarios();
+      const x = u.find(y => y.id === id);
+      if (x && x.owner) { showToast('No se puede eliminar al administrador principal'); return; }
+      if (!confirm('¿Eliminar a ' + (x ? x.nombre : 'este usuario') + '?')) return;
+      guardarUsuarios(u.filter(y => y.id !== id));
+      renderUsuarios();
+      showToast('Usuario eliminado');
+    }
+
+    renderUsuarios();
 
     // ── LOGO PREVIEW ──
     function previewLogo(input) {
