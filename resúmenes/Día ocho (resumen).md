@@ -71,6 +71,33 @@ Montamos **Playwright (navegador headless)** para renderizar el CRM a tamaño iP
 
 ---
 
+## 🔀 Bloque 4 — Pipeline comercial (nuevas etapas)
+
+Reestructuramos el embudo, quitando las etapas clínicas y dejándolo de captación. Tras varias idas y vueltas, el Dr. fijó estas **5 etapas**:
+
+1. **Contacto inicial** · 2. **Interesado** · 3. **Cita agendada** · 4. **Paciente** · 5. **Profesional/proveedor**
+
+Ajustes en cadena: `pipeline.html` y `dashboard.html` (etapas por defecto), el contador del dashboard "En tratamiento" → **"Pacientes"**, `reportes.html` (cálculo de "ya pacientes") y los datos de prueba de `ajustes.html` (los 10 contactos repartidos en las nuevas etapas).
+
+**Bug arreglado:** al agregar la 5ª columna, la **línea dorada** bajo los títulos se cortaba (estaba pensada para 4 columnas y la 5ª quedaba con borde transparente). Ahora la progresión cubre 5 columnas y el borde por defecto es dorado pleno → la línea nunca se corta, aunque se agreguen más etapas.
+
+---
+
+## 🎮 Bloque 5 — Gamificación (motivar como un juego)
+
+El Dr. pidió motivar al equipo de forma sana y competitiva, como un juego. Construimos:
+
+- **Celebración al avanzar** un contacto de etapa: lluvia de estrellitas, mensaje motivador y **sonido** de éxito (sintetizado con Web Audio, sin archivos externos). Solo celebra al avanzar; se cierra sola.
+- **Mensajes por etapa:** Interesado → *"¡Sigue adelante! Vas muy bien"* (ánimo); **Cita agendada → "¡Lo lograste!" con bono** (gran celebración); Paciente → *"¡Increíble!"*; Profesional/proveedor → *"¡Nuevo aliado!"*.
+- **Sistema de puntos:** llegar a cada etapa da puntos (Interesado +10, Cita agendada +30, Paciente +50, Profesional +20), **una sola vez por contacto** (no se puede "farmear" moviéndolo ida y vuelta).
+- **Niveles/medallas:** 🌱 Aprendiz → 🥉 Bronce → 🥈 Plata → 🥇 Oro → 💎 Platino → 👑 Leyenda. Subir de nivel dispara una celebración especial.
+- **Marcador en la barra superior** + panel **"Mis logros"**: nivel, progreso al siguiente, puntos hoy/semana/total, **tabla de posiciones** y guía de cómo ganar puntos.
+- Se agregó un usuario **"Ejemplo"** (150 pts) para ver la competencia.
+
+⚠️ Nota: por ahora los puntos viven en cada dispositivo por separado (demostración). La competencia **real entre el equipo** requiere la base de datos compartida (Supabase).
+
+---
+
 ## 🎓 Lecciones del día
 
 1. **Definir el alcance cambia todo.** "Es comercial, no clínico" nos dio un criterio claro para decidir qué quitar y qué dejar en cada pantalla.
@@ -82,9 +109,9 @@ Montamos **Playwright (navegador headless)** para renderizar el CRM a tamaño iP
 
 ## ⏭️ Por dónde seguir
 
-1. **Etapas del pipeline (pendiente de su decisión).** Hoy el embudo todavía tiene "En tratamiento" y "Tratamiento finalizado", que son clínicas. Falta la etapa más importante: **"Cita agendada"**. Propusimos versiones comerciales; el Dr. lo dejó para decidir con calma.
+1. **Datos reales (Supabase)** — para que recepción, asistentes y el Dr. compartan la misma información desde cualquier dispositivo (incluida la tabla de posiciones real de la gamificación). Es el salto a CRM funcional de verdad.
 2. **Automatizaciones de seguimiento** — los momentos de la guía (bienvenida, recordatorio 24h antes, seguimiento de presupuesto, reactivación). La pantalla de Bots existe; faltan diseñar los flujos.
-3. **Datos reales (Supabase)** — para que recepción, asistentes y el Dr. compartan la misma información desde cualquier dispositivo. Es el salto a CRM funcional de verdad.
+3. **Posible pendiente menor:** confirmar si la etapa "Cita agendada" se queda con ese nombre o se renombra a "Programado" (el Dr. lo mencionó al final).
 
 ---
 
@@ -95,4 +122,6 @@ Montamos **Playwright (navegador headless)** para renderizar el CRM a tamaño iP
 - `reportes.html` — Servicios más solicitados, Leads calientes, gráficas con datos reales
 - `ajustes.html` — sub-menú desplegable en celular + tarjetas de Roles 2x2 + "Historia" fuera
 - `correo.html` · `chats-equipo.html` · `bots.html` · `agente-ia.html` — limpieza de ejemplos
+- `pipeline.html` — nuevas etapas, línea dorada continua, gamificación completa (celebración + sonido + puntos + niveles + tabla de posiciones)
+- `dashboard.html` — nuevas etapas + contador "Pacientes"
 - `.gitignore` (nuevo) — ignora la herramienta de prueba (node_modules)
