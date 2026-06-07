@@ -13,7 +13,6 @@ window.cerrarSesion = function () {
    el blindaje real llega con el login de Supabase.) */
 var PERMISOS = {
   admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
-  doctor:        ['dashboard','contactos','calendario','comunicacion','facturacion','reportes'],
   asistente:     ['dashboard','contactos','calendario','comunicacion'],
   recepcionista: ['dashboard','contactos','calendario','comunicacion']
 };

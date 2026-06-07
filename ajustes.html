@@ -91,7 +91,7 @@
     .s-tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 
     /* Tarjetas de Roles y permisos */
-    .roles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
     /* Selector de sección: solo aparece en celular */
     .settings-mobile-nav { display: none; }
@@ -958,11 +958,6 @@
               <div style="font-size:12px;font-weight:600;color:var(--dorado)">Administrador</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Acceso total</div>
             </div>
-            <div style="background:rgba(76,143,202,0.06);border:1px solid rgba(76,143,202,0.15);border-radius:8px;padding:14px;text-align:center">
-              <div style="font-size:18px;margin-bottom:6px">🩺</div>
-              <div style="font-size:12px;font-weight:600;color:var(--azul)">Doctor</div>
-              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Citas, contactos y reportes</div>
-            </div>
             <div style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
               <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
@@ -1349,7 +1344,6 @@
         <label>Rol</label>
         <select id="uRol">
           <option value="admin">Administrador — acceso total</option>
-          <option value="doctor">Doctor — citas, contactos, facturación, reportes</option>
           <option value="asistente">Asistente — citas y contactos</option>
           <option value="recepcionista">Recepcionista — agenda y chat</option>
         </select>
@@ -1495,7 +1489,6 @@
     /* ════════ USUARIOS DEL SISTEMA (CRUD con roles) ════════ */
     const ROLES_INFO = {
       admin:         { label: 'Administrador', badge: 'admin',     color: '201,168,76' },
-      doctor:        { label: 'Doctor',        badge: 'doctor',    color: '76,143,202' },
       asistente:     { label: 'Asistente',     badge: 'asistente', color: '168,137,63' },
       recepcionista: { label: 'Recepcionista', badge: 'recep',     color: '155,89,182' },
     };
@@ -1732,6 +1725,6 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
   </script>
-  <script src="sidebar.js?v=5"></script>
+  <script src="sidebar.js?v=6"></script>
 </body>
 </html>
