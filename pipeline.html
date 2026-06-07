@@ -1405,12 +1405,12 @@
     /* ════════ GAMIFICACIÓN: celebración al avanzar de etapa ════════ */
     // Mensaje motivador según la etapa alcanzada (por id de etapa).
     const MENSAJES_ETAPA = {
-      interesado:  { emoji: '🔥', titulo: '¡Ya casi!',      sub: 'Un paso más y agendas la cita 💪', grande: false },
-      agendada:    { emoji: '🎉', titulo: '¡Lo lograste!',  sub: '¡Cita agendada! Excelente trabajo ⭐', grande: true  },
-      paciente:    { emoji: '🏆', titulo: '¡Increíble!',    sub: 'Convertiste un lead en paciente 🙌', grande: true  },
-      profesional: { emoji: '🤝', titulo: '¡Nuevo aliado!', sub: 'Sumaste un profesional/proveedor a tu red', grande: false },
+      interesado:  { emoji: '💪', titulo: '¡Sigue adelante!', sub: 'Vas muy bien 🙌', grande: false },
+      agendada:    { emoji: '🎉', titulo: '¡Lo lograste!',    sub: '¡Cita agendada! Te ganaste un bono ⭐', grande: true  },
+      paciente:    { emoji: '🏆', titulo: '¡Increíble!',      sub: 'Convertiste un lead en paciente 🙌', grande: true  },
+      profesional: { emoji: '🤝', titulo: '¡Nuevo aliado!',   sub: 'Sumaste un profesional/proveedor a tu red', grande: false },
     };
-    const MENSAJE_DEFAULT = { emoji: '✨', titulo: '¡Vas muy bien!', sub: 'Sigue avanzando en el pipeline', grande: false };
+    const MENSAJE_DEFAULT = { emoji: '✨', titulo: '¡Sigue adelante!', sub: 'Vas muy bien 🙌', grande: false };
 
     function celebrarAvance(nuevaEtapaId, premio) {
       const msg = MENSAJES_ETAPA[nuevaEtapaId] || MENSAJE_DEFAULT;
