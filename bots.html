@@ -221,73 +221,10 @@
     <!-- Bots existentes -->
     <div class="section-title">Mis bots</div>
     <div class="bots-grid" id="botsGrid">
-
-      <div class="bot-card">
-        <span class="bot-status bs-activo">Activo</span>
-        <div class="bot-header">
-          <div class="bot-icon bi-verde">👋</div>
-          <div>
-            <div class="bot-name">Bienvenida automática</div>
-            <div class="bot-trigger">⚡ Se activa: Nuevo contacto entra al CRM</div>
-          </div>
-        </div>
-        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía saludo inicial + menú de opciones al primer mensaje de un nuevo contacto.</div>
-        <div class="bot-stats">
-          <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Activaciones</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Último envío</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Tasa respuesta</div></div>
-        </div>
-        <div class="bot-actions">
-          <button class="btn-sm" onclick="editarBot('Bienvenida automática')">✏ Editar flujo</button>
-          <button class="btn-sm" onclick="showToast('Bot desactivado')">⏸ Pausar</button>
-          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
-        </div>
+      <div class="empty-state" style="grid-column:1/-1;text-align:center;color:#9c8c72;padding:40px 20px">
+        <span style="font-size:34px">⚡</span>
+        <p style="margin-top:8px">Aún no has creado ningún bot.<br/>Crea uno con "+ Nuevo bot" o desde una plantilla de abajo.</p>
       </div>
-
-      <div class="bot-card">
-        <span class="bot-status bs-activo">Activo</span>
-        <div class="bot-header">
-          <div class="bot-icon bi-dorado">📅</div>
-          <div>
-            <div class="bot-name">Recordatorio de cita</div>
-            <div class="bot-trigger">⏰ Se activa: 24h antes de cada cita</div>
-          </div>
-        </div>
-        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía recordatorio por WhatsApp con fecha, hora y dirección de la clínica.</div>
-        <div class="bot-stats">
-          <div class="bs-item"><div class="bs-num">0</div><div class="bs-lbl">Enviados</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Confirmados</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Cancelados</div></div>
-        </div>
-        <div class="bot-actions">
-          <button class="btn-sm" onclick="editarBot('Recordatorio de cita')">✏ Editar flujo</button>
-          <button class="btn-sm" onclick="showToast('Bot pausado')">⏸ Pausar</button>
-          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
-        </div>
-      </div>
-
-      <div class="bot-card">
-        <span class="bot-status bs-borrador">Borrador</span>
-        <div class="bot-header">
-          <div class="bot-icon bi-azul">💰</div>
-          <div>
-            <div class="bot-name">Seguimiento de cotización</div>
-            <div class="bot-trigger">📋 Se activa: Contacto en etapa "Interesado"</div>
-          </div>
-        </div>
-        <div style="font-size:12px;color:#9c8c72;line-height:1.5">Envía seguimiento 48h después de enviar una cotización sin respuesta del contacto.</div>
-        <div class="bot-stats">
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Activaciones</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Conversiones</div></div>
-          <div class="bs-item"><div class="bs-num">—</div><div class="bs-lbl">Pendientes</div></div>
-        </div>
-        <div class="bot-actions">
-          <button class="btn-sm" onclick="editarBot('Seguimiento de cotización')">✏ Completar</button>
-          <button class="btn-sm" onclick="showToast('Bot activado')">▶ Activar</button>
-          <button class="btn-sm danger" onclick="showToast('Bot eliminado')">🗑</button>
-        </div>
-      </div>
-
     </div>
 
     <!-- Plantillas de inicio rápido -->

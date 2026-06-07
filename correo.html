@@ -337,7 +337,6 @@
 
     <div class="cs-item active" onclick="filtrarBandeja('entrada')">
       <span class="cs-icon">📥</span> Bandeja de entrada
-      <span class="cs-count">3</span>
     </div>
     <div class="cs-item" onclick="filtrarBandeja('enviados')">
       <span class="cs-icon">📤</span> Enviados
@@ -367,55 +366,10 @@
     </div>
 
     <div class="email-items" id="emailItems">
-
-      <div class="email-item unread active" onclick="verCorreo(0)">
-        <div class="ei-unread-dot"></div>
-        <div class="ei-top">
-          <span class="ei-remitente">María González</span>
-          <span class="ei-hora">10:42 am</span>
-        </div>
-        <div class="ei-asunto">Consulta sobre tratamiento de ortodoncia</div>
-        <div class="ei-preview">Buenas tardes, quisiera saber más información sobre los precios y...</div>
+      <div class="empty-state" style="padding:48px 20px;text-align:center;color:#9c8c72">
+        <span style="font-size:34px">📭</span>
+        <p style="margin-top:8px">No hay correos en la bandeja</p>
       </div>
-
-      <div class="email-item unread" onclick="verCorreo(1)">
-        <div class="ei-unread-dot"></div>
-        <div class="ei-top">
-          <span class="ei-remitente">Carlos Mejía</span>
-          <span class="ei-hora">9:15 am</span>
-        </div>
-        <div class="ei-asunto">Confirmación cita blanqueamiento dental</div>
-        <div class="ei-preview">Doctor, le escribo para confirmar mi cita del próximo martes a las...</div>
-      </div>
-
-      <div class="email-item unread" onclick="verCorreo(2)">
-        <div class="ei-unread-dot"></div>
-        <div class="ei-top">
-          <span class="ei-remitente">Ana Rodríguez</span>
-          <span class="ei-hora">Ayer</span>
-        </div>
-        <div class="ei-asunto">Solicitud de historia clínica</div>
-        <div class="ei-preview">Estimados, requiero copia de mi historia clínica para trámite de...</div>
-      </div>
-
-      <div class="email-item" onclick="verCorreo(3)">
-        <div class="ei-top">
-          <span class="ei-remitente">Seguros Sura</span>
-          <span class="ei-hora">Lun</span>
-        </div>
-        <div class="ei-asunto">Actualización tarifas convenio 2026</div>
-        <div class="ei-preview">Estimados aliados, les informamos sobre las actualizaciones en el...</div>
-      </div>
-
-      <div class="email-item" onclick="verCorreo(4)">
-        <div class="ei-top">
-          <span class="ei-remitente">Pedro Vargas</span>
-          <span class="ei-hora">Vie</span>
-        </div>
-        <div class="ei-asunto">Pregunta sobre implantes dentales</div>
-        <div class="ei-preview">Buen día, me recomendaron su clínica para implantes. Quisiera...</div>
-      </div>
-
     </div>
   </div>
 
@@ -462,43 +416,8 @@
   </div>
 
   <script>
-    const correos = [
-      {
-        remitente: 'María González', inicial: 'MG',
-        email: 'mariagonzalez@gmail.com',
-        asunto: 'Consulta sobre tratamiento de ortodoncia',
-        fecha: '14 de mayo, 2026 — 10:42 am',
-        cuerpo: `<p>Buenas tardes,</p><p>Quisiera saber más información sobre los precios y tiempos estimados del tratamiento de ortodoncia. Tengo 28 años y me han dicho que aún podría realizarlo.</p><p>¿Tienen disponibilidad para una valoración esta semana? Quedo atenta a su respuesta.</p><p>Muchas gracias,<br/>María González</p>`
-      },
-      {
-        remitente: 'Carlos Mejía', inicial: 'CM',
-        email: 'carlosmejia@hotmail.com',
-        asunto: 'Confirmación cita blanqueamiento dental',
-        fecha: '14 de mayo, 2026 — 9:15 am',
-        cuerpo: `<p>Doctor, le escribo para confirmar mi cita del próximo martes a las 3:00 pm para el blanqueamiento dental.</p><p>¿Debo tener alguna preparación especial antes del procedimiento? ¿Puedo comer normalmente ese día?</p><p>Gracias de antemano.</p><p>Atentamente,<br/>Carlos Mejía</p>`
-      },
-      {
-        remitente: 'Ana Rodríguez', inicial: 'AR',
-        email: 'anarodriguez@outlook.com',
-        asunto: 'Solicitud de historia clínica',
-        fecha: '13 de mayo, 2026 — 4:30 pm',
-        cuerpo: `<p>Estimados,</p><p>Por medio de la presente requiero copia de mi historia clínica para un trámite de seguro médico. Fui atendida en su clínica en marzo de 2025.</p><p>¿Cuál es el procedimiento para solicitarla? ¿Tiene algún costo?</p><p>Quedo a la espera de su respuesta.</p><p>Cordialmente,<br/>Ana Rodríguez<br/>CC: 1.023.456.789</p>`
-      },
-      {
-        remitente: 'Seguros Sura', inicial: 'SS',
-        email: 'aliados@sura.com.co',
-        asunto: 'Actualización tarifas convenio 2026',
-        fecha: '12 de mayo, 2026 — 11:00 am',
-        cuerpo: `<p>Estimados aliados,</p><p>Les informamos sobre las actualizaciones en el manual tarifario del convenio para el segundo semestre de 2026. Los nuevos valores entran en vigencia a partir del 1 de julio.</p><p>Adjuntamos el documento con el detalle de los cambios. Para dudas, comuníquese con su ejecutivo de cuenta.</p><p>Atentamente,<br/>Equipo de Aliados — Seguros Sura</p>`
-      },
-      {
-        remitente: 'Pedro Vargas', inicial: 'PV',
-        email: 'pedrovargas@gmail.com',
-        asunto: 'Pregunta sobre implantes dentales',
-        fecha: '9 de mayo, 2026 — 2:15 pm',
-        cuerpo: `<p>Buen día,</p><p>Me recomendaron su clínica para implantes dentales. Perdí un molar hace 6 meses y quisiera saber si soy candidato para un implante.</p><p>¿Qué exámenes necesito traer para la valoración? ¿Manejan planes de pago?</p><p>Gracias,<br/>Pedro Vargas</p>`
-      },
-    ];
+    // Bandeja vacía — lista para integración real de correo.
+    const correos = [];
 
     let correoActivo = null;
 

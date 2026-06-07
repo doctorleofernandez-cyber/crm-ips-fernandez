@@ -448,12 +448,8 @@
       }
     });
 
-    // Si no hay datos reales, mostrar datos de demostración
-    const hayFacturas = facturas.length > 0;
-    const datosIngresos = hayFacturas ? ingresosPorMes : [
-      1200000, 1850000, 2100000, 1750000, 2400000, 2800000,
-      2200000, 3100000, 2700000, 3400000, 2900000, 3800000
-    ];
+    // Datos reales de facturación (arranca en cero hasta que haya facturas)
+    const datosIngresos = ingresosPorMes;
 
     new Chart(document.getElementById('chartIngresos'), {
       type: 'bar',
@@ -483,10 +479,7 @@
     // ── CHART 2: Citas por estado (donut) ──
     const estadosCitas = { confirmada: 0, pendiente: 0, completada: 0, cancelada: 0 };
     citas.forEach(c => { if (estadosCitas[c.estado] !== undefined) estadosCitas[c.estado]++; });
-    const hayCitas = citas.length > 0;
-    const datosCitas = hayCitas
-      ? Object.values(estadosCitas)
-      : [45, 30, 18, 7];
+    const datosCitas = Object.values(estadosCitas);
     const totalC = datosCitas.reduce((a,b)=>a+b,0);
 
     document.getElementById('donutTotal').textContent = totalC;
@@ -507,7 +500,7 @@
         responsive: true, maintainAspectRatio: false,
         cutout: '72%',
         plugins: { legend: { display: false }, tooltip: {
-          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/totalC*100)}%)` }
+          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/(totalC||1)*100)}%)` }
         }}
       }
     });
@@ -522,10 +515,10 @@
       </div>
     `).join('');
 
-    // ── CHART 3: Contactos nuevos vs recurrentes (donut) ──
-    const nuevos      = hayFacturas ? Math.floor(pacientes.length * 0.4) : 62;
-    const recurrentes = hayFacturas ? pacientes.length - nuevos : 38;
-    const datosPac = [nuevos || 62, recurrentes || 38];
+    // ── CHART 3: Contactos nuevos (leads) vs recurrentes (ya pacientes) ──
+    const recurrentes = pacientes.filter(p => p.etapa === 'tratamiento' || p.etapa === 'finalizado').length;
+    const nuevos      = pacientes.length - recurrentes;
+    const datosPac = [nuevos, recurrentes];
 
     new Chart(document.getElementById('chartPacientes'), {
       type: 'doughnut',
@@ -568,33 +561,30 @@
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
     if (topTrat.length === 0) {
-      // Sin leads aún → datos de ejemplo para que la tarjeta no quede vacía
-      topTrat = [
-        { emoji:'😁', nombre:'Diseño de sonrisa', count: 24 },
-        { emoji:'⚙️', nombre:'Ortodoncia', count: 18 },
-        { emoji:'🦿', nombre:'Implantes', count: 12 },
-        { emoji:'✨', nombre:'Blanqueamiento Zoom', count: 9 },
-        { emoji:'🪥', nombre:'Limpieza', count: 7 },
-      ];
+      document.getElementById('topServicios').innerHTML =
+        `<div class="empty-state" style="text-align:center;color:#9c8c72;padding:28px 12px">Sin datos de servicios aún</div>`;
+    } else {
+      const maxCount = Math.max(...topTrat.map(t => t.count));
+      document.getElementById('topServicios').innerHTML = topTrat.map((t, i) => `
+        <div class="top-item">
+          <div class="top-rank">${i + 1}</div>
+          <div class="top-emoji">${t.emoji}</div>
+          <div class="top-body">
+            <div class="top-name">${t.nombre}</div>
+            <div class="top-bar-wrap">
+              <div class="top-bar" style="width:${Math.round(t.count/maxCount*100)}%"></div>
+            </div>
+          </div>
+          <div class="top-count">${t.count}</div>
+        </div>
+      `).join('');
     }
 
-    const maxCount = Math.max(...topTrat.map(t => t.count));
-    document.getElementById('topServicios').innerHTML = topTrat.map((t, i) => `
-      <div class="top-item">
-        <div class="top-rank">${i + 1}</div>
-        <div class="top-emoji">${t.emoji}</div>
-        <div class="top-body">
-          <div class="top-name">${t.nombre}</div>
-          <div class="top-bar-wrap">
-            <div class="top-bar" style="width:${Math.round(t.count/maxCount*100)}%"></div>
-          </div>
-        </div>
-        <div class="top-count">${t.count}</div>
-      </div>
-    `).join('');
-
-    // ── CHART 4: Canal de origen ──
-    const datosCanales = [55, 25, 12, 8];
+    // ── CHART 4: Canal de origen (conteo real de leads por origen) ──
+    const canalLabels = ['WhatsApp','Instagram','Referido','TikTok'];
+    const datosCanales = canalLabels.map(canal =>
+      pacientes.filter(p => (p.origen || '') === canal).length
+    );
     new Chart(document.getElementById('chartCanales'), {
       type: 'doughnut',
       data: {
@@ -615,10 +605,10 @@
     });
 
     document.getElementById('legendCanales').innerHTML = [
-      { color:'#a8893f', label:'WhatsApp', val: datosCanales[0] + '%' },
-      { color:'#C13584', label:'Instagram', val: datosCanales[1] + '%' },
-      { color: C.dorado, label:'Referido',  val: datosCanales[2] + '%' },
-      { color:'#fff',    label:'TikTok',    val: datosCanales[3] + '%' },
+      { color:'#a8893f', label:'WhatsApp', val: datosCanales[0] },
+      { color:'#C13584', label:'Instagram', val: datosCanales[1] },
+      { color: C.dorado, label:'Referido',  val: datosCanales[2] },
+      { color:'#fff',    label:'TikTok',    val: datosCanales[3] },
     ].map(l => `
       <div class="legend-item">
         <div class="legend-dot" style="background:${l.color}"></div>
