@@ -1398,8 +1398,9 @@
       guardarPacientes(pacientes);
       renderPipeline();
 
-      // 🎉 Celebrar solo si el contacto AVANZÓ
-      if (avanza) celebrarAvance(nuevaEtapa, premio);
+      // 🎉 Celebrar solo si ganó puntos (las etapas sin premio, como
+      //    Profesional/proveedor, se mueven sin celebración).
+      if (premio) celebrarAvance(nuevaEtapa, premio);
     }
 
     /* ════════ GAMIFICACIÓN: celebración al avanzar de etapa ════════ */
@@ -1408,7 +1409,6 @@
       interesado:  { emoji: '💪', titulo: '¡Sigue adelante!', sub: 'Vas muy bien 🙌', grande: false },
       agendada:    { emoji: '🎉', titulo: '¡Lo lograste!',    sub: '¡Cita agendada! Te ganaste un bono ⭐', grande: true  },
       paciente:    { emoji: '🏆', titulo: '¡Increíble!',      sub: 'Convertiste un lead en paciente 🙌', grande: true  },
-      profesional: { emoji: '🤝', titulo: '¡Nuevo aliado!',   sub: 'Sumaste un profesional/proveedor a tu red', grande: false },
     };
     const MENSAJE_DEFAULT = { emoji: '✨', titulo: '¡Sigue adelante!', sub: 'Vas muy bien 🙌', grande: false };
 
@@ -1464,7 +1464,8 @@
     const USUARIO_ACTUAL = 'Dr. Leo';
 
     // Puntos que da llegar a cada etapa (por id).
-    const PUNTOS_ETAPA = { interesado: 10, agendada: 30, paciente: 50, profesional: 20 };
+    // Profesional/proveedor NO da premio: no es una venta, es un vínculo con la clínica.
+    const PUNTOS_ETAPA = { interesado: 10, agendada: 30, paciente: 50 };
 
     // Niveles / medallas según puntos acumulados.
     const NIVELES = [
@@ -1491,10 +1492,12 @@
 
     // Marca que un contacto ya alcanzó una etapa (para no premiar dos veces).
     function premiarAvance(contacto, nuevaEtapaId) {
+      const pts = PUNTOS_ETAPA[nuevaEtapaId] || 0;   // etapas sin premio devuelven 0
+      if (pts === 0) return 0;
       if (!Array.isArray(contacto._etapasGanadas)) contacto._etapasGanadas = [];
       if (contacto._etapasGanadas.includes(nuevaEtapaId)) return 0;
       contacto._etapasGanadas.push(nuevaEtapaId);
-      return PUNTOS_ETAPA[nuevaEtapaId] || 10;
+      return pts;
     }
 
     function sumarPuntos(pts) {
@@ -1564,8 +1567,9 @@
       }).join('');
 
       // Guía de cómo se ganan puntos
-      const guia = ETAPAS.slice(1)
-        .map(e => `Llegar a <b>${escapeHtml(e.label)}</b>: +${PUNTOS_ETAPA[e.id] || 10} pts`)
+      const guia = ETAPAS
+        .filter(e => PUNTOS_ETAPA[e.id])
+        .map(e => `Llegar a <b>${escapeHtml(e.label)}</b>: +${PUNTOS_ETAPA[e.id]} pts`)
         .join('<br>');
 
       document.getElementById('logrosBody').innerHTML = `
