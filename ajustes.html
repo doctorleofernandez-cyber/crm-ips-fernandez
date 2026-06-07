@@ -90,6 +90,9 @@
     .s-tab.active { background: rgba(201,168,76,0.18); color: #7a5c1e; }
     .s-tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 
+    /* Tarjetas de Roles y permisos */
+    .roles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
     /* Selector de sección: solo aparece en celular */
     .settings-mobile-nav { display: none; }
 
@@ -622,6 +625,9 @@
       /* Apariencia: 3 temas no caben → 1 columna, cada uno más alto */
       .tema-grid { grid-template-columns: 1fr !important; gap: 12px; }
 
+      /* Roles y permisos: 4 tarjetas no caben → 2 columnas (2x2) con aire */
+      .roles-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+
       /* Equipo: tarjeta de cada miembro vertical (avatar+info arriba, badge y botones abajo) */
       .user-row {
         flex-wrap: wrap;
@@ -973,7 +979,7 @@
 
         <div class="config-card">
           <div class="config-card-title">🔑 Roles y permisos</div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          <div class="roles-grid">
             <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">👑</div>
               <div style="font-size:12px;font-weight:600;color:var(--dorado)">Administrador</div>
@@ -982,7 +988,7 @@
             <div style="background:rgba(76,143,202,0.06);border:1px solid rgba(76,143,202,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🩺</div>
               <div style="font-size:12px;font-weight:600;color:var(--azul)">Doctor</div>
-              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Historia, citas, contactos</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Citas, contactos y reportes</div>
             </div>
             <div style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
