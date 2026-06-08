@@ -573,35 +573,35 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Contactos activos</div>
+          <div class="stat-label">Prospectos</div>
           <div class="stat-icon">◇</div>
         </div>
-        <div class="stat-value" id="statPacientes">—</div>
-        <div class="stat-sub" id="subPacientes">Cargando…</div>
+        <div class="stat-value" id="statProspectos">—</div>
+        <div class="stat-sub" id="subProspectos">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Citas hoy</div>
-          <div class="stat-icon">📅</div>
+          <div class="stat-label">Nuevos esta semana</div>
+          <div class="stat-icon">✨</div>
         </div>
-        <div class="stat-value" id="statCitasHoy">—</div>
-        <div class="stat-sub" id="subCitasHoy">Cargando…</div>
+        <div class="stat-value" id="statNuevos">—</div>
+        <div class="stat-sub" id="subNuevos">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Facturación del mes</div>
-          <div class="stat-icon">💰</div>
+          <div class="stat-label">Leads calientes</div>
+          <div class="stat-icon">🔥</div>
         </div>
-        <div class="stat-value" id="statFacturacion">—</div>
-        <div class="stat-sub" id="subFacturacion">Cargando…</div>
+        <div class="stat-value" id="statCalientes">—</div>
+        <div class="stat-sub" id="subCalientes">Cargando…</div>
       </div>
       <div class="stat-card">
         <div class="stat-head">
-          <div class="stat-label">Pacientes</div>
-          <div class="stat-icon">👤</div>
+          <div class="stat-label">Conversión</div>
+          <div class="stat-icon">🎯</div>
         </div>
-        <div class="stat-value" id="statTratamiento">—</div>
-        <div class="stat-sub" id="subTratamiento">Cargando…</div>
+        <div class="stat-value" id="statConversion">—</div>
+        <div class="stat-sub" id="subConversion">Cargando…</div>
       </div>
     </div>
 
@@ -611,7 +611,7 @@
         <div class="panel-title">Pipeline de contactos</div>
         <a href="pipeline.html" class="panel-tag" style="text-decoration:none; cursor:pointer;">Ver pipeline →</a>
       </div>
-      <div id="pipelineMini" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;">
+      <div id="pipelineMini" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:14px;">
         <!-- llenado por JS -->
       </div>
     </div>
@@ -773,47 +773,30 @@
       document.getElementById('dateBadge').textContent =
         `${hoy.getDate()} de ${MESES[mesActual].charAt(0).toUpperCase() + MESES[mesActual].slice(1)}, ${anioActual}`;
 
-      // ── Stat 1: Contactos activos
+      // ── Indicador 1: Prospectos (total de contactos activos)
       const activos = pacientes.filter(p => p.estado !== 'inactivo').length;
-      document.getElementById('statPacientes').textContent = activos;
+      document.getElementById('statProspectos').textContent = activos;
+      document.getElementById('subProspectos').textContent =
+        activos === 1 ? '1 prospecto en total' : 'Prospectos en total';
+
+      // ── Indicador 2: Nuevos esta semana
       const semanaAtras = new Date(hoy); semanaAtras.setDate(hoy.getDate() - 7);
-      const nuevosSemana = pacientes.filter(p => {
-        if (!p.fechaRegistro) return false;
-        return new Date(p.fechaRegistro) >= semanaAtras;
-      }).length;
-      document.getElementById('subPacientes').textContent =
-        nuevosSemana > 0 ? `+${nuevosSemana} esta semana` : 'Total registrados';
+      const nuevos = pacientes.filter(p => p.fechaRegistro && new Date(p.fechaRegistro) >= semanaAtras).length;
+      document.getElementById('statNuevos').textContent = nuevos;
+      document.getElementById('subNuevos').textContent =
+        nuevos === 0 ? 'Sin nuevos aún' : 'Últimos 7 días';
 
-      // ── Stat 2: Citas hoy
-      const citasHoy = citas.filter(c => c.fecha === hoyISO);
-      document.getElementById('statCitasHoy').textContent = citasHoy.length;
-      const pendHoy = citasHoy.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada').length;
-      document.getElementById('subCitasHoy').textContent =
-        citasHoy.length === 0 ? 'Sin citas hoy' :
-        pendHoy > 0 ? `${pendHoy} por atender` : 'Todas atendidas';
+      // ── Indicador 3: Leads calientes (intención de compra alta)
+      const calientes = pacientes.filter(p => (p.intencion || '').toLowerCase() === 'caliente').length;
+      document.getElementById('statCalientes').textContent = calientes;
+      document.getElementById('subCalientes').textContent =
+        calientes === 0 ? 'Sin leads calientes' : 'Prioriza estos 🔥';
 
-      // ── Stat 3: Facturación del mes
-      const factsMes = facturas.filter(f => {
-        if (!f.fecha) return false;
-        const d = new Date(f.fecha);
-        return d.getMonth() === mesActual && d.getFullYear() === anioActual;
-      });
-      const cobrado = factsMes
-        .filter(f => f.estado === 'cobrado')
-        .reduce((s,f) => s + Number(f.valor || 0), 0);
-      const pendiente = factsMes
-        .filter(f => f.estado === 'pendiente' || f.estado === 'vencido')
-        .reduce((s,f) => s + Number(f.valor || 0), 0);
-      document.getElementById('statFacturacion').textContent = '$' + cobrado.toLocaleString('es-CO');
-      document.getElementById('subFacturacion').textContent =
-        pendiente > 0 ? `$${pendiente.toLocaleString('es-CO')} pendiente` : 'Sin saldo pendiente';
-
-      // ── Stat 4: Pacientes
-      const enTrat = pacientes.filter(p => p.etapa === 'paciente').length;
-      document.getElementById('statTratamiento').textContent = enTrat;
-      document.getElementById('subTratamiento').textContent =
-        enTrat === 0 ? 'Ningún paciente aún' :
-        enTrat === 1 ? '1 paciente' : `${enTrat} pacientes`;
+      // ── Indicador 4: Conversión (% de prospectos que llegan a agendar o más)
+      const convertidos = pacientes.filter(p => p.etapa === 'agendada' || p.etapa === 'paciente').length;
+      const tasa = activos > 0 ? Math.round(convertidos / activos * 100) : 0;
+      document.getElementById('statConversion').textContent = tasa + '%';
+      document.getElementById('subConversion').textContent = 'Prospectos que agendan';
 
       // ── Pipeline mini
       const pipelineMini = document.getElementById('pipelineMini');
