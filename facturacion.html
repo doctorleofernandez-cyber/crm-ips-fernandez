@@ -343,6 +343,20 @@
     .td-actions { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
     tbody tr:hover .td-actions { opacity: 1; }
 
+    /* ── Casilla "Revisado" ── */
+    .rev-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .rev-check input { display: none; }
+    .rev-box {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 1.5px solid rgba(0,0,0,0.18); background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: transparent; flex-shrink: 0; transition: all 0.15s;
+    }
+    .rev-check input:checked + .rev-box { background: var(--verde); border-color: var(--verde); color: #fff; }
+    .rev-text { font-size: 11px; color: #9c8c72; }
+    .rev-check input:checked ~ .rev-text { color: var(--verde); font-weight: 600; }
+    tbody tr.revisada { background: rgba(168,137,63,0.07); }
+
     .btn-action {
       font-size: 11px;
       padding: 5px 10px;
@@ -727,6 +741,7 @@
               <th>Concepto</th>
               <th>Valor</th>
               <th>Estado</th>
+              <th>Revisado</th>
               <th></th>
             </tr>
           </thead>
@@ -880,7 +895,7 @@
       } else {
         empty.style.display = 'none';
         tbody.innerHTML = pagina.map(f => `
-          <tr onclick="editarFactura('${f.id}')">
+          <tr onclick="editarFactura('${f.id}')" class="${f.revisado ? 'revisada' : ''}">
             <td class="td-num" data-label="N° Factura">${f.numero}</td>
             <td data-label="Contacto">
               <div class="td-paciente">
@@ -900,6 +915,13 @@
                 <span class="badge-dot"></span>
                 ${f.estado.charAt(0).toUpperCase() + f.estado.slice(1)}
               </span>
+            </td>
+            <td data-label="Revisado" onclick="event.stopPropagation()">
+              <label class="rev-check" title="Marcar como revisado">
+                <input type="checkbox" ${f.revisado ? 'checked' : ''} onchange="toggleRevisado('${f.id}')">
+                <span class="rev-box">✓</span>
+                <span class="rev-text">${f.revisado ? 'Revisado' : 'Pendiente'}</span>
+              </label>
             </td>
             <td data-label="Acciones" class="td-actions-cell">
               <div class="td-actions" onclick="event.stopPropagation()">
@@ -1020,6 +1042,15 @@
       document.getElementById('fEstado').value    = f.estado;
       document.querySelector('.modal-title').innerHTML = 'Editar <span>Factura</span>';
       document.getElementById('overlay').classList.add('open');
+    }
+
+    // ── MARCAR COMO REVISADO ──
+    function toggleRevisado(id) {
+      const f = facturas.find(x => x.id === id);
+      if (!f) return;
+      f.revisado = !f.revisado;
+      localStorage.setItem('facturas_ips', JSON.stringify(facturas));
+      renderTabla();
     }
 
     // ── ELIMINAR ──
