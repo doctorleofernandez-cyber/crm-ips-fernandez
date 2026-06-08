@@ -114,6 +114,14 @@
 
 /* ── BOTÓN "CERRAR SESIÓN" (pie del menú lateral) ── */
 /* Estilo unificado: igual en móvil, iPad y PC */
+/* Bloque del usuario centrado (avatar arriba, nombre y correo centrados) */
+.user-info {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
 .logout-btn {
   display: block;
   margin-top: 14px;
