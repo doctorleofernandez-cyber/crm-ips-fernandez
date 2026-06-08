@@ -72,7 +72,7 @@
     .btn-export:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
 
     /* ── KPI CARDS ── */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
 
     .kpi-card { background: rgba(255,255,255,0.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 20px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); position: relative; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { border-color: rgba(201,168,76,0.35); box-shadow: 0 10px 28px rgba(120,98,40,0.13); }
@@ -244,14 +244,6 @@
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
-      <div class="kpi-card k1">
-        <div class="kpi-top">
-          <span class="kpi-icon">💰</span>
-          <span class="kpi-trend up" id="trendIngresos">↑ 0%</span>
-        </div>
-        <div class="kpi-value" id="kpiIngresos">$0</div>
-        <div class="kpi-label">Ingresos del período</div>
-      </div>
       <div class="kpi-card k2">
         <div class="kpi-top">
           <span class="kpi-icon">👥</span>
@@ -278,21 +270,8 @@
       </div>
     </div>
 
-    <!-- Fila 1: Ingresos por mes + Citas por estado -->
-    <div class="charts-row cols-2">
-      <div class="chart-card">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Ingresos mensuales</div>
-            <div class="chart-sub">Facturación total por mes — COP</div>
-          </div>
-          <span class="chart-badge" id="badgeIngresos">2026</span>
-        </div>
-        <div class="chart-wrap" style="height:220px">
-          <canvas id="chartIngresos"></canvas>
-        </div>
-      </div>
-
+    <!-- Fila 1: Citas por estado + Contactos nuevos -->
+    <div class="charts-row cols-2b">
       <div class="chart-card">
         <div class="chart-header">
           <div>
@@ -309,10 +288,6 @@
         </div>
         <div class="legend" id="legendCitas"></div>
       </div>
-    </div>
-
-    <!-- Fila 2: Contactos nuevos + Servicios más solicitados + Canales -->
-    <div class="charts-row cols-3">
 
       <div class="chart-card">
         <div class="chart-header">
@@ -326,7 +301,10 @@
         </div>
         <div class="legend" id="legendPacientes" style="margin-top:12px"></div>
       </div>
+    </div>
 
+    <!-- Fila 2: Servicios más solicitados + Canal de origen -->
+    <div class="charts-row cols-2b">
       <div class="chart-card">
         <div class="chart-header">
           <div>
@@ -349,11 +327,10 @@
         </div>
         <div class="legend" id="legendCanales" style="margin-top:12px"></div>
       </div>
-
     </div>
 
     <!-- Fila 3: Citas recientes -->
-    <div class="charts-row cols-2b">
+    <div class="charts-row">
       <div class="chart-card">
         <div class="chart-header">
           <div>
@@ -372,27 +349,6 @@
             </tr>
           </thead>
           <tbody id="recentCitas"></tbody>
-        </table>
-      </div>
-
-      <div class="chart-card">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Facturas recientes</div>
-            <div class="chart-sub">Últimas del período</div>
-          </div>
-          <a href="facturacion.html" style="font-size:11px;color:var(--dorado);text-decoration:none;opacity:0.7">Ver todas →</a>
-        </div>
-        <table class="recent-table">
-          <thead>
-            <tr>
-              <th>Contacto</th>
-              <th>Concepto</th>
-              <th>Valor</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="recentFacturas"></tbody>
         </table>
       </div>
     </div>
@@ -428,54 +384,11 @@
     Chart.defaults.font.family = 'Inter';
 
     // ── KPI ──
-    const totalFacturado = facturas.reduce((s,f) => s + Number(f.valor||0), 0);
-    const citasCompletadas = citas.filter(c => c.estado === 'completada').length;
     const leadsCalientes = pacientes.filter(p => (p.intencion || '').toLowerCase() === 'caliente').length;
 
-    document.getElementById('kpiIngresos').textContent    = '$' + totalFacturado.toLocaleString('es-CO');
     document.getElementById('kpiPacientes').textContent   = pacientes.length;
     document.getElementById('kpiCitas').textContent       = citas.length;
     document.getElementById('kpiCalientes').textContent   = leadsCalientes;
-
-    // ── CHART 1: Ingresos por mes (barras) ──
-    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-
-    // Agrupar facturas por mes
-    const ingresosPorMes = new Array(12).fill(0);
-    facturas.forEach(f => {
-      if (f.fecha) {
-        const m = parseInt(f.fecha.split('-')[1]) - 1;
-        ingresosPorMes[m] += Number(f.valor || 0);
-      }
-    });
-
-    // Datos reales de facturación (arranca en cero hasta que haya facturas)
-    const datosIngresos = ingresosPorMes;
-
-    new Chart(document.getElementById('chartIngresos'), {
-      type: 'bar',
-      data: {
-        labels: meses,
-        datasets: [{
-          label: 'Ingresos (COP)',
-          data: datosIngresos,
-          backgroundColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : C.doradoT),
-          borderColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : 'rgba(201,168,76,0.3)'),
-          borderWidth: 1,
-          borderRadius: 5,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-          callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString('es-CO') }
-        }},
-        scales: {
-          x: { grid: { color: C.grid } },
-          y: { grid: { color: C.grid }, ticks: { callback: v => '$' + (v/1000000).toFixed(1)+'M' } }
-        }
-      }
-    });
 
     // ── CHART 2: Citas por estado (donut) ──
     const estadosCitas = { confirmada: 0, pendiente: 0, completada: 0, cancelada: 0 };
@@ -637,19 +550,6 @@
           </tr>
         `).join('')
       : `<tr><td colspan="4" style="text-align:center;padding:24px;color:#9c8c72">Sin citas registradas</td></tr>`;
-
-    // ── FACTURAS RECIENTES ──
-    const facturasRecientes = [...facturas].slice(0, 6);
-    document.getElementById('recentFacturas').innerHTML = facturasRecientes.length
-      ? facturasRecientes.map(f => `
-          <tr>
-            <td><div class="rt-name">${f.paciente || '—'}</div></td>
-            <td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.concepto || '—'}</td>
-            <td style="font-family:'Playfair Display',serif;color:var(--dorado-claro)">$${Number(f.valor||0).toLocaleString('es-CO')}</td>
-            <td><span class="rt-badge ${f.estado}">${f.estado}</span></td>
-          </tr>
-        `).join('')
-      : `<tr><td colspan="4" style="text-align:center;padding:24px;color:#9c8c72">Sin facturas registradas</td></tr>`;
 
     // ── PERÍODO ──
     function setPeriod(btn, period) {
