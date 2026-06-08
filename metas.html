@@ -67,6 +67,7 @@
     .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
     .page-title span { color: var(--dorado); }
     .page-sub { font-size: 12px; color: #9c8c72; margin-top: 3px; }
+    .mes-chip { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12.5px; font-weight: 600; color: #7a5c1e; background: rgba(201,168,76,0.14); border: 1px solid rgba(201,168,76,0.35); padding: 5px 12px; border-radius: 20px; }
     .topbar-actions { display: flex; gap: 10px; align-items: center; }
 
     .year-select {
@@ -246,6 +247,7 @@
       <div>
         <h1 class="page-title">Módulo de <span>Metas</span></h1>
         <div class="page-sub">Define tus objetivos y carga el avance mes a mes</div>
+        <div class="mes-chip" id="mesChip">📅 —</div>
       </div>
       <div class="topbar-actions">
         <select class="year-select" id="yearSelect" onchange="cambiarAnio(this.value)"></select>
@@ -346,6 +348,7 @@
 
   const METAS_KEY = 'metas_ips';
   const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const MESES_LARGO = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   const COLORES = ['#C9A84C','#4c8fca','#7ab648','#e0a435','#e05555','#9b59b6','#16a085','#e67e22'];
 
   let metas = [];
@@ -372,6 +375,13 @@
     if (!Array.isArray(metas)) { metas = metasEjemplo(); guardarMetas(); }
   }
   function guardarMetas() { localStorage.setItem(METAS_KEY, JSON.stringify(metas)); }
+
+  /* Convierte un color hex a rgba con transparencia (para atenuar barras). */
+  function hexAlpha(hex, a) {
+    hex = (hex || '#C9A84C').replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16), g = parseInt(hex.substr(2, 2), 16), b = parseInt(hex.substr(4, 2), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
 
   /* Devuelve (creando si hace falta) los datos de una meta para el año dado. */
   function datosAnio(meta, anio) {
@@ -512,14 +522,19 @@
     document.getElementById('dashMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
     document.getElementById('tablaMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
 
-    // Gráfico: barras = logrado, línea = meta mensual
+    // Gráfico: barras = logrado, línea = meta mensual.
+    // El mes actual (si vemos el año en curso) se resalta y los demás se atenúan.
     const logrados = d.meses.map(v => (v === null || v === undefined || v === '') ? null : Number(v));
+    const mesActualIdx = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
+    const colores = logrados.map((_, i) => (mesActualIdx < 0 || i === mesActualIdx) ? meta.color : hexAlpha(meta.color, 0.4));
+    const bordes = logrados.map((_, i) => i === mesActualIdx ? '#1a1208' : 'transparent');
+    const grosores = logrados.map((_, i) => i === mesActualIdx ? 2 : 0);
     if (chartMeta) chartMeta.destroy();
     chartMeta = new Chart(document.getElementById('chartMeta'), {
       data: {
         labels: MESES,
         datasets: [
-          { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: meta.color, borderRadius: 6, maxBarThickness: 34, order: 2 },
+          { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: colores, borderColor: bordes, borderWidth: grosores, borderRadius: 6, maxBarThickness: 34, order: 2 },
           { type: 'line', label: 'Meta del mes', data: Array(12).fill(metaMes), borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 0, tension: 0, order: 1 }
         ]
       },
@@ -573,6 +588,8 @@
 
   /* ── Render general ── */
   function render() {
+    const hoy = new Date();
+    document.getElementById('mesChip').textContent = '📅 ' + MESES_LARGO[hoy.getMonth()] + ' ' + hoy.getFullYear();
     document.getElementById('anioTit').textContent = anioActual;
     pintarYearSelect();
     renderKPIs();
