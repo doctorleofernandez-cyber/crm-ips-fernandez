@@ -1090,7 +1090,7 @@
               <div class="int-desc">Recibe y envía mensajes de WhatsApp Business directamente desde el CRM.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Conectar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Conectar</button>
           </div>
 
           <div class="integration-row">
@@ -1100,7 +1100,7 @@
               <div class="int-desc">Centraliza los mensajes de Instagram en el inbox del CRM.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Conectar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Conectar</button>
           </div>
 
           <div class="integration-row">
@@ -1110,7 +1110,7 @@
               <div class="int-desc">Recibe leads y mensajes desde tus anuncios de TikTok.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Conectar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Conectar</button>
           </div>
 
           <div class="integration-row">
@@ -1120,7 +1120,7 @@
               <div class="int-desc">Sincroniza tu correo de Google para gestionar desde el CRM.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Conectar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Conectar</button>
           </div>
         </div>
 
@@ -1134,7 +1134,7 @@
               <div class="int-desc">Sincroniza las citas del CRM con tu calendario de Google.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Conectar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Conectar</button>
           </div>
 
           <div class="integration-row">
@@ -1144,7 +1144,7 @@
               <div class="int-desc">Emite facturas electrónicas validadas por la DIAN automáticamente.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Sin conectar</span>
-            <button class="btn-conectar">Configurar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Configurar</button>
           </div>
 
           <div class="integration-row" style="border-bottom:none">
@@ -1154,7 +1154,7 @@
               <div class="int-desc">Responde automáticamente mensajes frecuentes por WhatsApp e Instagram.</div>
             </div>
             <span class="int-status desconectado"><span class="int-dot"></span> Inactivo</span>
-            <button class="btn-conectar">Activar</button>
+            <button class="btn-conectar" onclick="conectarIntegracion(this)">Activar</button>
           </div>
         </div>
       </div>
@@ -1382,6 +1382,22 @@
     </div>
   </div>
 
+  <!-- Modal aviso de integración -->
+  <div class="umodal-overlay" id="intModalOverlay" onclick="cerrarInt(event)">
+    <div class="umodal">
+      <h3>Conectar <span id="intModalNombre">…</span></h3>
+      <p style="font-size:13px;color:#5a4e3a;line-height:1.6;margin-bottom:8px">Para conectar esta herramienta de verdad necesitamos:</p>
+      <ul style="font-size:13px;color:#5a4e3a;line-height:1.7;margin:0 0 4px 18px">
+        <li>Activar el <b>servidor (backend)</b> del CRM con Supabase.</li>
+        <li>Vincular tu cuenta real del servicio, con su autorización segura.</li>
+      </ul>
+      <p style="font-size:12px;color:#9c8c72;margin-top:12px">Lo dejaremos funcionando en la etapa de conexión real. Por ahora es una vista previa de cómo se verá.</p>
+      <div class="umodal-actions">
+        <button type="button" class="umodal-btn save" onclick="cerrarInt()">Entendido</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal permisos de un rol -->
   <div class="umodal-overlay" id="rmodalOverlay" onclick="cerrarRol(event)">
     <div class="umodal">
@@ -1597,6 +1613,18 @@
     function rolCambioUsuario() {
       // Al cambiar el rol, repuebla los toggles con los permisos por defecto de ese rol
       renderPermisosToggles('uPermisos', permisosDeRol(document.getElementById('uRol').value), false);
+    }
+
+    /* ── INTEGRACIONES (aviso: requieren backend real) ── */
+    function conectarIntegracion(btn) {
+      const row = btn.closest('.integration-row');
+      const nombre = row ? row.querySelector('.int-name').textContent.trim() : 'esta herramienta';
+      document.getElementById('intModalNombre').textContent = nombre;
+      document.getElementById('intModalOverlay').classList.add('open');
+    }
+    function cerrarInt(e) {
+      if (e && e.target !== document.getElementById('intModalOverlay')) return;
+      document.getElementById('intModalOverlay').classList.remove('open');
     }
 
     /* ── PERMISOS POR ROL (desde las tarjetas de "Roles y permisos") ── */
