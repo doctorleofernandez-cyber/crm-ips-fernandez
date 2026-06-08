@@ -15,12 +15,33 @@ window.cerrarSesion = function () {
    Como respaldo, si no hay usuario, se usan los permisos por rol.
    (Seguridad "blanda": organiza el acceso; el blindaje real llega con Supabase.) */
 var PERMISOS = {
-  admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
+  admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'],
   marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
   asistente:     ['dashboard','contactos','calendario','comunicacion'],
   recepcionista: ['dashboard','contactos','calendario','comunicacion'],
   auxiliar:      ['facturacion']
 };
+/* Lista maestra de módulos (para migrar permisos al agregar funciones nuevas). */
+var TODOS_MODULOS = ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'];
+
+/* Migración: si un usuario guardado no tiene una clave de permiso nueva
+   (p. ej. 'metas' recién creado), se la agregamos según su rol. Así no
+   queda invisible un módulo nuevo para quien ya existía. */
+(function migrarPermisos() {
+  try {
+    var users = JSON.parse(localStorage.getItem('usuarios_sistema') || '[]');
+    if (!Array.isArray(users) || !users.length) return;
+    var cambio = false;
+    users.forEach(function (u) {
+      if (!u.permisos) return; // si no tiene, Ajustes lo crea completo
+      var def = u.owner ? PERMISOS.admin : (PERMISOS[u.rol] || []);
+      TODOS_MODULOS.forEach(function (k) {
+        if (!(k in u.permisos)) { u.permisos[k] = def.indexOf(k) !== -1; cambio = true; }
+      });
+    });
+    if (cambio) localStorage.setItem('usuarios_sistema', JSON.stringify(users));
+  } catch (e) {}
+})();
 /* Lista de módulos permitidos para el usuario que inició sesión.
    Usa los permisos individuales del usuario; si no, cae al rol. */
 function permisosActuales() {
@@ -43,6 +64,7 @@ var PAGINA_MODULO = {
   'citas.html':'calendario',
   'chat.html':'comunicacion', 'correo.html':'comunicacion', 'chats-equipo.html':'comunicacion', 'plantillas.html':'comunicacion',
   'facturacion.html':'facturacion', 'reportes-facturacion.html':'facturacion',
+  'metas.html':'metas',
   'reportes.html':'reportes', 'insights.html':'reportes',
   'difusiones.html':'marketing', 'bots.html':'marketing', 'agente-ia.html':'marketing',
   'ajustes.html':'ajustes'

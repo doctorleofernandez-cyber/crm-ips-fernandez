@@ -1541,12 +1541,13 @@
       { id: 'calendario',   label: 'Calendario (citas)' },
       { id: 'comunicacion', label: 'Chat, Correo y Equipo' },
       { id: 'facturacion',  label: 'Facturación' },
+      { id: 'metas',        label: 'Metas (objetivos)' },
       { id: 'reportes',     label: 'Reportes e Insights' },
       { id: 'marketing',    label: 'Difusiones, Bots y Agente IA' },
       { id: 'ajustes',      label: 'Ajustes (configuración)' },
     ];
     const PERMISOS_ROL = {
-      admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
+      admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'],
       marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
       auxiliar:      ['facturacion'],
       asistente:     ['dashboard','contactos','calendario','comunicacion'],
@@ -1750,7 +1751,7 @@
         'difusiones_ips', 'bots_ips', 'plantillas_ips', 'tareas_ips',
         'etapas_pipeline_ips', 'vista_pipeline_ips', 'horarios_ips',
         'agente_ia_config', 'agente_ia_activo', 'config_clinica',
-        'gamificacion_ips'
+        'gamificacion_ips', 'metas_ips'
       ];
       datosOperacionales.forEach(k => localStorage.removeItem(k));
 
@@ -1878,6 +1879,6 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
   </script>
-  <script src="sidebar.js?v=11"></script>
+  <script src="sidebar.js?v=12"></script>
 </body>
 </html>

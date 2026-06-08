@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Metas | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-panel: rgba(14,14,22,0.82);
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #4f9d4f;
+      --rojo: #e05555;
+      --amarillo: #e0a435;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%);
+      font-family: 'Inter', sans-serif;
+      color: #1a1208;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0; min-height: 100vh;
+      background: var(--negro-panel);
+      border-right: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; height: 100vh;
+    }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; gap: 14px; flex-wrap: wrap; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
+    .page-title span { color: var(--dorado); }
+    .page-sub { font-size: 12px; color: #9c8c72; margin-top: 3px; }
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    .year-select {
+      font-size: 13px; font-weight: 600; color: #5a4e3a;
+      background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.12);
+      padding: 9px 14px; border-radius: 8px; cursor: pointer; outline: none;
+    }
+    .year-select:focus { border-color: rgba(201,168,76,0.45); }
+
+    .btn-primary { font-size: 12px; font-weight: 600; background: var(--dorado); color: var(--negro); border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* ── KPIs ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 26px; }
+    .stat-card { background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); }
+    .stat-label { font-size: 11px; color: #9c8c72; font-weight: 500; letter-spacing: 0.4px; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #1a1208; margin-top: 6px; }
+    .stat-value.ok { color: #4f9d4f; }
+    .stat-value.warn { color: #cc8a2b; }
+
+    /* ── TARJETAS DE METAS ── */
+    .section-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #1a1208; margin: 6px 0 14px; }
+    .metas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 30px; }
+
+    .meta-card {
+      background: rgba(255,255,255,0.66); border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px; padding: 18px; box-shadow: 0 4px 18px rgba(120,98,40,0.07);
+      display: flex; align-items: center; gap: 16px; cursor: pointer; position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .meta-card:hover { border-color: rgba(201,168,76,0.4); box-shadow: 0 10px 28px rgba(120,98,40,0.13); transform: translateY(-2px); }
+    .meta-card.selected { border-color: var(--dorado); box-shadow: 0 0 0 2px rgba(201,168,76,0.25), 0 10px 28px rgba(120,98,40,0.13); }
+
+    .ring { width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+    .ring::before { content: ''; width: 64px; height: 64px; border-radius: 50%; background: #fdf8f0; grid-area: 1/1; }
+    .ring .ring-pct { grid-area: 1/1; z-index: 1; font-size: 16px; font-weight: 700; color: #1a1208; }
+
+    .meta-info { min-width: 0; flex: 1; }
+    .meta-nombre { font-size: 14px; font-weight: 600; color: #1a1208; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meta-logrado { font-size: 12.5px; color: #5a4e3a; margin-top: 5px; }
+    .meta-logrado b { color: #1a1208; }
+    .meta-obj { font-size: 11px; color: #9c8c72; margin-top: 2px; }
+    .meta-estado { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 8px; }
+    .meta-estado.aldia { background: rgba(79,157,79,0.14); color: #3f8a3f; }
+    .meta-estado.atras { background: rgba(224,85,85,0.14); color: #c0392b; }
+
+    .meta-acciones { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+    .meta-card:hover .meta-acciones { opacity: 1; }
+    .btn-mini { background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; width: 26px; height: 26px; cursor: pointer; font-size: 12px; color: #7a5c1e; display: grid; place-items: center; }
+    .btn-mini:hover { background: rgba(201,168,76,0.15); }
+
+    .meta-card.add { justify-content: center; border-style: dashed; color: #9c8c72; font-weight: 600; font-size: 13px; gap: 8px; }
+    .meta-card.add:hover { color: #7a5c1e; }
+    .meta-card.add .plus { font-size: 22px; }
+
+    /* ── DASHBOARD INTERACTIVO ── */
+    .panel { background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 22px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); margin-bottom: 22px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .panel-head .ph-title { font-size: 14px; font-weight: 600; color: #1a1208; }
+    .panel-head .ph-title span { color: var(--dorado); }
+    .meta-pick { font-size: 12.5px; font-weight: 600; color: #5a4e3a; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.12); padding: 8px 12px; border-radius: 8px; cursor: pointer; outline: none; }
+    .chart-box { position: relative; height: 320px; }
+
+    /* ── TABLA MES A MES ── */
+    .month-table { width: 100%; border-collapse: collapse; }
+    .month-table th { text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9c8c72; padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .month-table th.num, .month-table td.num { text-align: right; }
+    .month-table td { padding: 7px 10px; font-size: 13px; color: #3a3228; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .month-table tr:last-child td { border-bottom: none; }
+    .month-table .mes-nombre { font-weight: 600; color: #1a1208; }
+    .month-table tr.es-actual { background: rgba(201,168,76,0.07); }
+    .inp-logrado { width: 110px; text-align: right; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.12); border-radius: 7px; padding: 7px 10px; font-size: 13px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; }
+    .inp-logrado:focus { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.06); }
+    .cump { font-weight: 600; }
+    .cump.ok { color: #4f9d4f; }
+    .cump.warn { color: #cc8a2b; }
+    .cump.bad { color: #c0392b; }
+    .tabla-hint { font-size: 11.5px; color: #9c8c72; margin-top: 12px; }
+
+    .empty { text-align: center; padding: 50px 20px; color: #9c8c72; }
+    .empty .big { font-size: 40px; margin-bottom: 10px; }
+
+    /* ── MODAL ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(40,30,12,0.45); z-index: 200; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+    .modal { background: #fdf8f0; border: 1px solid rgba(201,168,76,0.35); border-radius: 14px; width: 100%; max-width: 480px; padding: 32px; position: relative; animation: fadeUp 0.25s ease; box-shadow: 0 24px 60px rgba(120,98,40,0.22); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #9c8c72; font-size: 18px; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: #7a5c1e; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; color: #1a1208; }
+    .modal-title span { color: #7a5c1e; }
+    .form-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .form-group.full { grid-column: span 2; }
+    .form-group label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #7a5c1e; }
+    .form-group input, .form-group select { background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.06); }
+    .form-group input::placeholder { color: #b0a090; }
+    .form-group select option { background: #fdf8f0; color: #1a1208; }
+    .colores { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s; }
+    .color-swatch:hover { transform: scale(1.12); }
+    .color-swatch.sel { border-color: #1a1208; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.07); }
+    .btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.62); color: #5a4e3a; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-cancel:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
+    .btn-guardar { padding: 10px 24px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); color: #1a1208; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-guardar:hover { opacity: 0.85; }
+
+    .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; max-width: 100vw; overflow-x: hidden; }
+      .main > * { max-width: 100%; min-width: 0; }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 18px; }
+      .page-title { font-size: 20px; }
+      .topbar-actions { width: 100%; }
+      .year-select { flex: 1; }
+      .btn-primary { flex: 1; padding: 12px 14px; min-height: 44px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+      .stat-value { font-size: 21px; }
+      .metas-grid { grid-template-columns: 1fr; }
+      .chart-box { height: 260px; }
+      .inp-logrado { width: 92px; }
+      .month-table th, .month-table td { padding: 6px; font-size: 12px; }
+      .modal { padding: 22px 18px; max-width: 95vw; max-height: 92vh; overflow-y: auto; border-radius: 14px; }
+      .form-grid { grid-template-columns: 1fr; gap: 10px; }
+      .form-group.full { grid-column: span 1; }
+      .form-group input, .form-group select { font-size: 14px; padding: 11px 12px; }
+      .modal-footer { flex-direction: column-reverse; gap: 8px; }
+      .btn-cancel, .btn-guardar { width: 100%; min-height: 44px; padding: 12px; }
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css?v=6" />
+<link rel="stylesheet" href="crm.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Metas</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="inicio.html" class="nav-item"><span class="nav-icon">🏠</span> Menú principal</a>
+
+      <div class="nav-divider"></div>
+      <div class="nav-section">Metas</div>
+      <a href="metas.html" class="nav-item active"><span class="nav-icon">🎯</span> Panel de metas</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="cerrarSesion()">→ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <h1 class="page-title">Módulo de <span>Metas</span></h1>
+        <div class="page-sub">Define tus objetivos y carga el avance mes a mes</div>
+      </div>
+      <div class="topbar-actions">
+        <select class="year-select" id="yearSelect" onchange="cambiarAnio(this.value)"></select>
+        <button class="btn-primary" onclick="abrirModalMeta()">＋ Nueva meta</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Metas activas</div><div class="stat-value" id="kMetas">0</div></div>
+      <div class="stat-card"><div class="stat-label">Cumplimiento promedio</div><div class="stat-value" id="kCump">0%</div></div>
+      <div class="stat-card"><div class="stat-label">Metas al día</div><div class="stat-value ok" id="kAldia">0</div></div>
+      <div class="stat-card"><div class="stat-label">Metas atrasadas</div><div class="stat-value warn" id="kAtras">0</div></div>
+    </div>
+
+    <!-- Tarjetas de metas -->
+    <div class="section-title">Tus metas del <span id="anioTit">2026</span></div>
+    <div class="metas-grid" id="metasGrid"></div>
+
+    <!-- Dashboard interactivo -->
+    <div id="dashWrap">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-title">📈 Avance mensual — <span id="dashMetaNom">—</span></div>
+          <select class="meta-pick" id="metaPick" onchange="seleccionarMeta(this.value)"></select>
+        </div>
+        <div class="chart-box"><canvas id="chartMeta"></canvas></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-title">✏️ Cargar avance mes a mes — <span id="tablaMetaNom">—</span></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="month-table">
+            <thead>
+              <tr>
+                <th>Mes</th>
+                <th class="num">Meta del mes</th>
+                <th class="num">Logrado</th>
+                <th class="num">Cumplimiento</th>
+              </tr>
+            </thead>
+            <tbody id="monthBody"></tbody>
+          </table>
+        </div>
+        <div class="tabla-hint">💡 Escribe el valor logrado en cada mes y se guarda solo. El gráfico y el progreso se actualizan al instante.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── MODAL NUEVA / EDITAR META ── -->
+  <div class="overlay" id="overlay" onclick="cerrarOverlay(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrarModalMeta()">✕</button>
+      <div class="modal-title" id="modalTitulo">Nueva <span>meta</span></div>
+
+      <form id="metaForm" onsubmit="guardarMeta(event)">
+        <input type="hidden" id="mId" />
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Nombre de la meta</label>
+            <input type="text" id="mNombre" placeholder="Ej: Pacientes nuevos, Ingresos, Citas…" required />
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="mTipo" onchange="onTipoChange()">
+              <option value="numero">Número (cantidad)</option>
+              <option value="dinero">Dinero ($)</option>
+            </select>
+          </div>
+          <div class="form-group" id="grpUnidad">
+            <label>Unidad</label>
+            <input type="text" id="mUnidad" placeholder="pacientes, citas, llamadas…" />
+          </div>
+          <div class="form-group full">
+            <label>Objetivo anual (<span id="lblAnio">2026</span>)</label>
+            <input type="number" id="mObjetivo" placeholder="0" min="0" step="any" required />
+          </div>
+          <div class="form-group full">
+            <label>Color</label>
+            <div class="colores" id="colores"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrarModalMeta()">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="sidebar.js?v=12"></script>
+  <script>
+  /* ════════ MÓDULO DE METAS ════════
+     Metas personalizables (las crea el usuario) con carga manual mes a mes.
+     Todo se guarda en localStorage bajo la clave 'metas_ips'. */
+
+  const METAS_KEY = 'metas_ips';
+  const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const COLORES = ['#C9A84C','#4c8fca','#7ab648','#e0a435','#e05555','#9b59b6','#16a085','#e67e22'];
+
+  let metas = [];
+  let anioActual = new Date().getFullYear();
+  let metaSelId = null;
+  let colorSel = COLORES[0];
+  let chartMeta = null;
+
+  /* ── Datos de ejemplo (solo la primera vez, para que se vea funcionando) ── */
+  function metasEjemplo() {
+    const y = String(new Date().getFullYear());
+    return [
+      { id:'meta_pac', nombre:'Pacientes nuevos', tipo:'numero', unidad:'pacientes', color:'#C9A84C',
+        anios:{ [y]:{ objetivo:240, meses:[18,22,19,25,21,17,null,null,null,null,null,null] } } },
+      { id:'meta_ing', nombre:'Ingresos', tipo:'dinero', unidad:'$', color:'#4c8fca',
+        anios:{ [y]:{ objetivo:120000000, meses:[8500000,9200000,7800000,11000000,9500000,8000000,null,null,null,null,null,null] } } },
+      { id:'meta_cit', nombre:'Citas agendadas', tipo:'numero', unidad:'citas', color:'#7ab648',
+        anios:{ [y]:{ objetivo:600, meses:[42,55,48,60,52,45,null,null,null,null,null,null] } } },
+    ];
+  }
+
+  function cargarMetas() {
+    try { metas = JSON.parse(localStorage.getItem(METAS_KEY)); } catch (e) { metas = null; }
+    if (!Array.isArray(metas)) { metas = metasEjemplo(); guardarMetas(); }
+  }
+  function guardarMetas() { localStorage.setItem(METAS_KEY, JSON.stringify(metas)); }
+
+  /* Devuelve (creando si hace falta) los datos de una meta para el año dado. */
+  function datosAnio(meta, anio) {
+    if (!meta.anios) meta.anios = {};
+    if (!meta.anios[anio]) meta.anios[anio] = { objetivo: 0, meses: Array(12).fill(null) };
+    if (!Array.isArray(meta.anios[anio].meses) || meta.anios[anio].meses.length !== 12) {
+      meta.anios[anio].meses = Array(12).fill(null);
+    }
+    return meta.anios[anio];
+  }
+
+  /* ── Formato de valores ── */
+  function fmt(meta, v) {
+    if (v === null || v === undefined || v === '') return '—';
+    v = Number(v);
+    if (meta.tipo === 'dinero') return '$' + v.toLocaleString('es-CO', { maximumFractionDigits: 0 });
+    return v.toLocaleString('es-CO') + (meta.unidad ? ' ' + meta.unidad : '');
+  }
+  function fmtCorto(meta, v) {
+    v = Number(v) || 0;
+    if (meta.tipo === 'dinero') {
+      if (v >= 1000000) return '$' + (v/1000000).toLocaleString('es-CO',{maximumFractionDigits:1}) + 'M';
+      if (v >= 1000) return '$' + Math.round(v/1000) + 'k';
+      return '$' + v;
+    }
+    return v.toLocaleString('es-CO');
+  }
+
+  /* Cuántos meses ya "deberían" tener datos según el año (para juzgar atraso). */
+  function mesesTranscurridos(anio) {
+    const hoy = new Date();
+    if (anio < hoy.getFullYear()) return 12;
+    if (anio > hoy.getFullYear()) return 0;
+    return hoy.getMonth() + 1; // mes actual (1-12)
+  }
+
+  function sumaLograda(meta, anio) {
+    const d = datosAnio(meta, anio);
+    return d.meses.reduce((a, b) => a + (Number(b) || 0), 0);
+  }
+
+  /* ── Selector de año ── */
+  function pintarYearSelect() {
+    const actual = new Date().getFullYear();
+    const anios = new Set([actual - 1, actual, actual + 1]);
+    metas.forEach(m => Object.keys(m.anios || {}).forEach(a => anios.add(Number(a))));
+    const lista = Array.from(anios).sort((a, b) => b - a);
+    const sel = document.getElementById('yearSelect');
+    sel.innerHTML = lista.map(a => `<option value="${a}" ${a === anioActual ? 'selected' : ''}>${a}</option>`).join('');
+  }
+  function cambiarAnio(v) { anioActual = Number(v); render(); }
+
+  /* ── KPIs ── */
+  function renderKPIs() {
+    const transc = mesesTranscurridos(anioActual);
+    let sumaPct = 0, conObj = 0, alDia = 0, atras = 0;
+    metas.forEach(m => {
+      const d = datosAnio(m, anioActual);
+      const obj = Number(d.objetivo) || 0;
+      const logr = sumaLograda(m, anioActual);
+      if (obj > 0) {
+        const pct = (logr / obj) * 100;
+        sumaPct += pct; conObj++;
+        const esperado = obj * (transc / 12);
+        if (logr >= esperado) alDia++; else atras++;
+      }
+    });
+    document.getElementById('kMetas').textContent = metas.length;
+    document.getElementById('kCump').textContent = (conObj ? Math.round(sumaPct / conObj) : 0) + '%';
+    document.getElementById('kAldia').textContent = alDia;
+    document.getElementById('kAtras').textContent = atras;
+  }
+
+  /* ── Tarjetas de metas ── */
+  function renderTarjetas() {
+    const cont = document.getElementById('metasGrid');
+    let html = '';
+    const transc = mesesTranscurridos(anioActual);
+    metas.forEach(m => {
+      const d = datosAnio(m, anioActual);
+      const obj = Number(d.objetivo) || 0;
+      const logr = sumaLograda(m, anioActual);
+      const pct = obj > 0 ? Math.min(100, Math.round((logr / obj) * 100)) : 0;
+      const pctReal = obj > 0 ? Math.round((logr / obj) * 100) : 0;
+      const esperado = obj * (transc / 12);
+      const alDia = obj > 0 && logr >= esperado;
+      const estadoHtml = obj > 0
+        ? `<span class="meta-estado ${alDia ? 'aldia' : 'atras'}">${alDia ? '● Al día' : '● Atrasada'}</span>`
+        : '';
+      html += `
+        <div class="meta-card ${m.id === metaSelId ? 'selected' : ''}" onclick="seleccionarMeta('${m.id}')">
+          <div class="meta-acciones">
+            <button class="btn-mini" title="Editar" onclick="event.stopPropagation();editarMeta('${m.id}')">✎</button>
+            <button class="btn-mini" title="Eliminar" onclick="event.stopPropagation();eliminarMeta('${m.id}')">🗑</button>
+          </div>
+          <div class="ring" style="background: conic-gradient(${m.color} ${pct * 3.6}deg, rgba(0,0,0,0.08) 0);">
+            <span class="ring-pct">${pctReal}%</span>
+          </div>
+          <div class="meta-info">
+            <div class="meta-nombre">${m.nombre}</div>
+            <div class="meta-logrado"><b>${fmt(m, logr)}</b></div>
+            <div class="meta-obj">de ${fmt(m, obj)} en el año</div>
+            ${estadoHtml}
+          </div>
+        </div>`;
+    });
+    html += `
+      <div class="meta-card add" onclick="abrirModalMeta()">
+        <span class="plus">＋</span> Crear nueva meta
+      </div>`;
+    cont.innerHTML = html;
+  }
+
+  /* ── Selección de meta para el dashboard ── */
+  function pintarMetaPick() {
+    const sel = document.getElementById('metaPick');
+    if (!metas.length) { sel.innerHTML = ''; return; }
+    sel.innerHTML = metas.map(m => `<option value="${m.id}" ${m.id === metaSelId ? 'selected' : ''}>${m.nombre}</option>`).join('');
+  }
+  function seleccionarMeta(id) {
+    metaSelId = id;
+    renderTarjetas();
+    pintarMetaPick();
+    renderDashboard();
+  }
+
+  /* ── Dashboard: gráfico + tabla mes a mes ── */
+  function renderDashboard() {
+    const wrap = document.getElementById('dashWrap');
+    if (!metas.length) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    if (!metaSelId || !metas.find(m => m.id === metaSelId)) metaSelId = metas[0].id;
+    const meta = metas.find(m => m.id === metaSelId);
+    const d = datosAnio(meta, anioActual);
+    const obj = Number(d.objetivo) || 0;
+    const metaMes = obj / 12;
+
+    document.getElementById('dashMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
+    document.getElementById('tablaMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
+
+    // Gráfico: barras = logrado, línea = meta mensual
+    const logrados = d.meses.map(v => (v === null || v === undefined || v === '') ? null : Number(v));
+    if (chartMeta) chartMeta.destroy();
+    chartMeta = new Chart(document.getElementById('chartMeta'), {
+      data: {
+        labels: MESES,
+        datasets: [
+          { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: meta.color, borderRadius: 6, maxBarThickness: 34, order: 2 },
+          { type: 'line', label: 'Meta del mes', data: Array(12).fill(metaMes), borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 0, tension: 0, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#5a4e3a', font: { size: 12 }, usePointStyle: true } },
+          tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(meta, c.parsed.y) } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9c8c72' } },
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#9c8c72', callback: (v) => fmtCorto(meta, v) } }
+        }
+      }
+    });
+
+    // Tabla editable
+    const mesActual = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
+    let rows = '';
+    for (let i = 0; i < 12; i++) {
+      const v = d.meses[i];
+      const cump = (metaMes > 0 && v !== null && v !== undefined && v !== '') ? (Number(v) / metaMes) * 100 : null;
+      let cumpCls = 'warn', cumpTxt = '—';
+      if (cump !== null) {
+        cumpTxt = Math.round(cump) + '%';
+        cumpCls = cump >= 100 ? 'ok' : (cump >= 70 ? 'warn' : 'bad');
+      }
+      rows += `
+        <tr class="${i === mesActual ? 'es-actual' : ''}">
+          <td class="mes-nombre">${MESES[i]}</td>
+          <td class="num">${obj > 0 ? fmt(meta, Math.round(metaMes)) : '—'}</td>
+          <td class="num"><input class="inp-logrado" type="number" step="any" min="0"
+                value="${v === null || v === undefined ? '' : v}"
+                onchange="setMes('${meta.id}', ${i}, this.value)" placeholder="—" /></td>
+          <td class="num"><span class="cump ${cumpCls}">${cumpTxt}</span></td>
+        </tr>`;
+    }
+    document.getElementById('monthBody').innerHTML = rows;
+  }
+
+  function setMes(metaId, i, valor) {
+    const meta = metas.find(m => m.id === metaId);
+    if (!meta) return;
+    const d = datosAnio(meta, anioActual);
+    d.meses[i] = (valor === '' || valor === null) ? null : Number(valor);
+    guardarMetas();
+    renderKPIs();
+    renderTarjetas();
+    renderDashboard();
+  }
+
+  /* ── Render general ── */
+  function render() {
+    document.getElementById('anioTit').textContent = anioActual;
+    pintarYearSelect();
+    renderKPIs();
+    renderTarjetas();
+    pintarMetaPick();
+    renderDashboard();
+  }
+
+  /* ── Modal nueva / editar meta ── */
+  function pintarColores() {
+    document.getElementById('colores').innerHTML = COLORES.map(c =>
+      `<div class="color-swatch ${c === colorSel ? 'sel' : ''}" style="background:${c}" onclick="elegirColor('${c}')"></div>`
+    ).join('');
+  }
+  function elegirColor(c) { colorSel = c; pintarColores(); }
+  function onTipoChange() {
+    const tipo = document.getElementById('mTipo').value;
+    document.getElementById('grpUnidad').style.display = (tipo === 'dinero') ? 'none' : 'flex';
+  }
+
+  function abrirModalMeta() {
+    document.getElementById('metaForm').reset();
+    document.getElementById('mId').value = '';
+    document.getElementById('modalTitulo').innerHTML = 'Nueva <span>meta</span>';
+    document.getElementById('lblAnio').textContent = anioActual;
+    colorSel = COLORES[0];
+    pintarColores();
+    onTipoChange();
+    document.getElementById('overlay').classList.add('open');
+  }
+  function editarMeta(id) {
+    const m = metas.find(x => x.id === id);
+    if (!m) return;
+    const d = datosAnio(m, anioActual);
+    document.getElementById('mId').value = m.id;
+    document.getElementById('modalTitulo').innerHTML = 'Editar <span>meta</span>';
+    document.getElementById('mNombre').value = m.nombre;
+    document.getElementById('mTipo').value = m.tipo || 'numero';
+    document.getElementById('mUnidad').value = m.unidad || '';
+    document.getElementById('mObjetivo').value = d.objetivo || '';
+    document.getElementById('lblAnio').textContent = anioActual;
+    colorSel = m.color || COLORES[0];
+    pintarColores();
+    onTipoChange();
+    document.getElementById('overlay').classList.add('open');
+  }
+  function cerrarModalMeta() { document.getElementById('overlay').classList.remove('open'); }
+  function cerrarOverlay(e) { if (e.target === document.getElementById('overlay')) cerrarModalMeta(); }
+
+  function guardarMeta(e) {
+    e.preventDefault();
+    const id = document.getElementById('mId').value;
+    const nombre = document.getElementById('mNombre').value.trim();
+    const tipo = document.getElementById('mTipo').value;
+    const unidad = tipo === 'dinero' ? '$' : document.getElementById('mUnidad').value.trim();
+    const objetivo = Number(document.getElementById('mObjetivo').value) || 0;
+    if (!nombre) return;
+
+    if (id) {
+      const m = metas.find(x => x.id === id);
+      m.nombre = nombre; m.tipo = tipo; m.unidad = unidad; m.color = colorSel;
+      datosAnio(m, anioActual).objetivo = objetivo;
+    } else {
+      const nueva = { id: 'meta_' + Date.now(), nombre, tipo, unidad, color: colorSel, anios: {} };
+      nueva.anios[anioActual] = { objetivo, meses: Array(12).fill(null) };
+      metas.push(nueva);
+      metaSelId = nueva.id;
+    }
+    guardarMetas();
+    cerrarModalMeta();
+    render();
+  }
+
+  function eliminarMeta(id) {
+    const m = metas.find(x => x.id === id);
+    if (!m) return;
+    if (!confirm('¿Eliminar la meta "' + m.nombre + '"? Se borrará su historial de todos los años.')) return;
+    metas = metas.filter(x => x.id !== id);
+    if (metaSelId === id) metaSelId = metas.length ? metas[0].id : null;
+    guardarMetas();
+    render();
+  }
+
+  /* ── Arranque ── */
+  cargarMetas();
+  if (metas.length) metaSelId = metas[0].id;
+  render();
+  </script>
+</body>
+</html>
