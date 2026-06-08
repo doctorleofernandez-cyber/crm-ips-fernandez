@@ -88,6 +88,23 @@
     .stat-value.ok { color: #4f9d4f; }
     .stat-value.warn { color: #cc8a2b; }
 
+    /* ── PANEL EJECUTIVO DE INGRESOS ── */
+    .ingresos-banner {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+      background: linear-gradient(135deg, #1a1208 0%, #2a2012 60%, #1f180d 100%);
+      color: #fff; border: 1px solid rgba(201,168,76,0.4); border-radius: 16px;
+      padding: 22px 26px; margin-bottom: 26px; box-shadow: 0 8px 30px rgba(120,98,40,0.18);
+    }
+    .ib-left { flex: 1; min-width: 240px; }
+    .ib-label { font-size: 11px; letter-spacing: 1.5px; color: var(--dorado-claro); font-weight: 600; text-transform: uppercase; }
+    .ib-cifra { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; margin: 6px 0 12px; }
+    .ib-cifra .ib-de { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #b8ad95; }
+    .ib-bar { height: 10px; background: rgba(255,255,255,0.12); border-radius: 6px; overflow: hidden; }
+    .ib-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--dorado), var(--dorado-claro)); border-radius: 6px; transition: width 0.4s ease; }
+    .ib-right { text-align: right; }
+    .ib-pct { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 700; color: var(--dorado-claro); line-height: 1; }
+    .ib-falta { font-size: 12px; color: #b8ad95; margin-top: 4px; }
+
     /* ── TARJETAS DE METAS ── */
     .section-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #1a1208; margin: 6px 0 14px; }
     .metas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 30px; }
@@ -192,6 +209,10 @@
       .btn-primary { flex: 1; padding: 12px 14px; min-height: 44px; }
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
       .stat-value { font-size: 21px; }
+      .ingresos-banner { padding: 18px; gap: 12px; }
+      .ib-right { text-align: left; }
+      .ib-cifra { font-size: 24px; }
+      .ib-pct { font-size: 28px; }
       .metas-grid { grid-template-columns: 1fr; }
       .chart-box { height: 260px; }
       .inp-logrado { width: 92px; }
@@ -270,6 +291,19 @@
       <div class="stat-card"><div class="stat-label" id="lblKCump">Cumplimiento del año</div><div class="stat-value" id="kCump">0%</div></div>
       <div class="stat-card"><div class="stat-label">Metas al día</div><div class="stat-value ok" id="kAldia">0</div></div>
       <div class="stat-card"><div class="stat-label">Metas atrasadas</div><div class="stat-value warn" id="kAtras">0</div></div>
+    </div>
+
+    <!-- Panel ejecutivo de INGRESOS (resume todas las metas de dinero) -->
+    <div class="ingresos-banner" id="ingresosBanner" style="display:none">
+      <div class="ib-left">
+        <div class="ib-label">💰 Ingresos — <span id="ibPeriodo">2026</span></div>
+        <div class="ib-cifra"><span id="ibLogrado">$0</span> <span class="ib-de">de <span id="ibMeta">$0</span></span></div>
+        <div class="ib-bar"><div class="ib-bar-fill" id="ibBar"></div></div>
+      </div>
+      <div class="ib-right">
+        <div class="ib-pct" id="ibPct">0%</div>
+        <div class="ib-falta" id="ibFalta">Faltan $0</div>
+      </div>
     </div>
 
     <!-- Tarjetas de metas -->
@@ -761,9 +795,42 @@
     pintarYearSelect();
     pintarMesSelect();
     renderKPIs();
+    renderIngresos();
     renderTarjetas();
     pintarMetaPick();
     renderDashboard();
+  }
+
+  /* ── Panel ejecutivo de ingresos: suma todas las metas de dinero ── */
+  function renderIngresos() {
+    const banner = document.getElementById('ingresosBanner');
+    const dineros = metas.filter(m => m.tipo === 'dinero');
+    if (!dineros.length) { banner.style.display = 'none'; return; }
+    banner.style.display = 'flex';
+
+    let meta = 0, logr = 0, periodo = '';
+    if (vista === 'anual') {
+      periodo = String(anioActual);
+      dineros.forEach(m => { meta += objetivoAnual(m, anioActual); logr += sumaLograda(m, anioActual); });
+    } else if (vista === 'mensual') {
+      periodo = MESES_LARGO[mesSel] + ' ' + anioActual;
+      dineros.forEach(m => { const d = datosAnio(m, anioActual); meta += Number(d.objetivos[mesSel]) || 0; logr += Number(d.meses[mesSel]) || 0; });
+    } else { // semanal: promedio por semana del mes
+      const sem = semanasDelMes(anioActual, mesSel);
+      periodo = 'semana de ' + MESES_LARGO[mesSel];
+      dineros.forEach(m => { const d = datosAnio(m, anioActual); meta += (Number(d.objetivos[mesSel]) || 0) / sem; logr += (Number(d.meses[mesSel]) || 0) / sem; });
+      meta = Math.round(meta); logr = Math.round(logr);
+    }
+    const pct = meta > 0 ? Math.round((logr / meta) * 100) : 0;
+    const falta = Math.max(0, meta - logr);
+    const money = (v) => '$' + (Number(v) || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 });
+
+    document.getElementById('ibPeriodo').textContent = periodo;
+    document.getElementById('ibLogrado').textContent = money(logr);
+    document.getElementById('ibMeta').textContent = money(meta);
+    document.getElementById('ibBar').style.width = Math.min(100, pct) + '%';
+    document.getElementById('ibPct').textContent = pct + '%';
+    document.getElementById('ibFalta').textContent = falta > 0 ? ('Faltan ' + money(falta)) : '¡Meta alcanzada! 🎉';
   }
 
   /* ── Modal nueva / editar meta ── */
