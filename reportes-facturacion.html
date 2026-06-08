@@ -286,7 +286,7 @@
         <table class="recent-table">
           <thead>
             <tr>
-              <th>Paciente</th>
+              <th>Proveedor</th>
               <th>Concepto</th>
               <th>Valor</th>
               <th>Estado</th>
@@ -355,7 +355,7 @@
     document.getElementById('recentFacturas').innerHTML = recientes.length
       ? recientes.map(f => `
           <tr>
-            <td><div class="rt-name">${f.paciente || '—'}</div></td>
+            <td><div class="rt-name">${f.proveedor || f.paciente || '—'}</div></td>
             <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.concepto || '—'}</td>
             <td style="font-family:'Playfair Display',serif;color:var(--dorado-claro)">${fmt(f.valor)}</td>
             <td><span class="rt-badge ${f.estado}">${f.estado}</span></td>
