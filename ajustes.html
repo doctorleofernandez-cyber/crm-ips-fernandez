@@ -353,6 +353,8 @@
     .perm-row:last-child { border-bottom: none; }
     .perm-label { font-size: 13px; color: #1a1208; }
     .perm-row input:disabled + .toggle-slider { opacity: 0.5; }
+    .role-card { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+    .role-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(120,98,40,0.12); }
 
     /* ── INTEGRACIONES ── */
     .integration-row {
@@ -957,23 +959,24 @@
 
         <div class="config-card">
           <div class="config-card-title">🔑 Roles y permisos</div>
+          <p style="font-size:12px;color:#9c8c72;margin-bottom:14px">Toca un rol para configurar qué puede ver y usar. Se aplica a todos los usuarios con ese rol.</p>
           <div class="roles-grid">
-            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:14px;text-align:center">
+            <div class="role-card" onclick="abrirRolPermisos('admin')" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">👑</div>
               <div style="font-size:12px;font-weight:600;color:var(--dorado)">Administrador</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Acceso total</div>
             </div>
-            <div style="background:rgba(230,126,34,0.06);border:1px solid rgba(230,126,34,0.18);border-radius:8px;padding:14px;text-align:center">
+            <div class="role-card" onclick="abrirRolPermisos('marketing')" style="background:rgba(230,126,34,0.06);border:1px solid rgba(230,126,34,0.18);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">📣</div>
               <div style="font-size:12px;font-weight:600;color:#c46a1c">Marketing</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Campañas, pipeline y reportes</div>
             </div>
-            <div style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
+            <div class="role-card" onclick="abrirRolPermisos('asistente')" style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
               <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Citas y contactos</div>
             </div>
-            <div style="background:rgba(155,89,182,0.06);border:1px solid rgba(155,89,182,0.15);border-radius:8px;padding:14px;text-align:center">
+            <div class="role-card" onclick="abrirRolPermisos('recepcionista')" style="background:rgba(155,89,182,0.06);border:1px solid rgba(155,89,182,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">📋</div>
               <div style="font-size:12px;font-weight:600;color:#9B59B6">Recepcionista</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Agenda y chat</div>
@@ -1371,6 +1374,22 @@
     </div>
   </div>
 
+  <!-- Modal permisos de un rol -->
+  <div class="umodal-overlay" id="rmodalOverlay" onclick="cerrarRol(event)">
+    <div class="umodal">
+      <h3 id="rmodalTitulo">Permisos del <span>rol</span></h3>
+      <div class="form-group">
+        <label>Qué puede ver y usar este rol</label>
+        <div id="rPermisos" class="perm-list"></div>
+      </div>
+      <div style="font-size:11px;color:#9c8c72;margin-bottom:4px">Se aplicará a todos los usuarios con este rol.</div>
+      <div class="umodal-actions">
+        <button type="button" class="umodal-btn" onclick="cerrarRol()">Cancelar</button>
+        <button type="button" class="umodal-btn save" onclick="guardarRol()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast">✓ &nbsp;Cambios guardados</div>
 
@@ -1526,9 +1545,17 @@
       asistente:     ['dashboard','contactos','calendario','comunicacion'],
       recepcionista: ['dashboard','contactos','calendario','comunicacion'],
     };
+    function permisosRolesGuardados() {
+      try { return JSON.parse(localStorage.getItem('permisos_roles')) || {}; } catch (e) { return {}; }
+    }
     function permisosDeRol(rol) {
-      const lista = PERMISOS_ROL[rol] || PERMISOS_ROL.recepcionista;
+      const guardados = permisosRolesGuardados();
       const o = {};
+      if (guardados[rol]) {
+        MODULOS.forEach(m => o[m.id] = !!guardados[rol][m.id]);
+        return o;
+      }
+      const lista = PERMISOS_ROL[rol] || PERMISOS_ROL.recepcionista;
       MODULOS.forEach(m => o[m.id] = lista.indexOf(m.id) !== -1);
       return o;
     }
@@ -1549,8 +1576,8 @@
     }
     function guardarUsuarios(u) { localStorage.setItem('usuarios_sistema', JSON.stringify(u)); }
 
-    function renderPermisosToggles(permisos, disabled) {
-      document.getElementById('uPermisos').innerHTML = MODULOS.map(m => `
+    function renderPermisosToggles(contId, permisos, disabled) {
+      document.getElementById(contId).innerHTML = MODULOS.map(m => `
         <label class="perm-row">
           <span class="perm-label">${m.label}</span>
           <span class="toggle">
@@ -1561,7 +1588,38 @@
     }
     function rolCambioUsuario() {
       // Al cambiar el rol, repuebla los toggles con los permisos por defecto de ese rol
-      renderPermisosToggles(permisosDeRol(document.getElementById('uRol').value), false);
+      renderPermisosToggles('uPermisos', permisosDeRol(document.getElementById('uRol').value), false);
+    }
+
+    /* ── PERMISOS POR ROL (desde las tarjetas de "Roles y permisos") ── */
+    let rolEditando = null;
+    function abrirRolPermisos(rol) {
+      rolEditando = rol;
+      const info = ROLES_INFO[rol] || { label: rol };
+      document.getElementById('rmodalTitulo').innerHTML = 'Permisos: <span>' + info.label + '</span>';
+      const esAdmin = rol === 'admin';   // el administrador siempre tiene acceso total
+      renderPermisosToggles('rPermisos', esAdmin ? permisosDeRol('admin') : permisosDeRol(rol), esAdmin);
+      document.getElementById('rmodalOverlay').classList.add('open');
+    }
+    function cerrarRol(e) {
+      if (e && e.target !== document.getElementById('rmodalOverlay')) return;
+      document.getElementById('rmodalOverlay').classList.remove('open');
+    }
+    function guardarRol() {
+      if (rolEditando === 'admin') { cerrarRol(); return; }
+      const permisos = {};
+      document.querySelectorAll('#rPermisos input[data-mod]').forEach(c => permisos[c.dataset.mod] = c.checked);
+      // Guardar override del rol
+      const guardados = permisosRolesGuardados();
+      guardados[rolEditando] = permisos;
+      localStorage.setItem('permisos_roles', JSON.stringify(guardados));
+      // Aplicar a todos los usuarios con ese rol (excepto el admin principal)
+      const u = cargarUsuarios();
+      u.forEach(x => { if (x.rol === rolEditando && !x.owner) x.permisos = Object.assign({}, permisos); });
+      guardarUsuarios(u);
+      renderUsuarios();
+      cerrarRol();
+      showToast('Permisos del rol actualizados');
     }
     function escapeHtmlU(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function inicialesDe(nombre) { return (nombre || '?').split(' ').filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase(); }
@@ -1596,7 +1654,7 @@
       document.getElementById('uRol').value    = x ? x.rol    : 'recepcionista';
       document.getElementById('uRol').disabled = !!(x && x.owner);   // el admin principal no cambia de rol
       const permisos = x ? (x.permisos || permisosDeRol(x.rol)) : permisosDeRol('recepcionista');
-      renderPermisosToggles(permisos, !!(x && x.owner));   // el admin principal tiene acceso total fijo
+      renderPermisosToggles('uPermisos', permisos, !!(x && x.owner));   // el admin principal tiene acceso total fijo
       document.getElementById('umodalOverlay').classList.add('open');
       setTimeout(() => document.getElementById('uNombre').focus(), 60);
     }
