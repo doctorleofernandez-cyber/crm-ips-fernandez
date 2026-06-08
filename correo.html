@@ -241,8 +241,21 @@
         height: auto;
         flex-direction: row;
         flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px;
         border-right: none;
         border-bottom: 1px solid rgba(0,0,0,0.1);
+      }
+      .correo-sidebar .cs-title { flex: 0 0 100%; margin-bottom: 0; }
+      .correo-sidebar .btn-redactar { flex: 0 0 100%; justify-content: center; margin-bottom: 4px; min-height: 44px; font-size: 13px; }
+      .correo-sidebar .cs-item {
+        flex: 1 1 calc(50% - 4px);
+        justify-content: flex-start;
+        background: rgba(255,255,255,0.6);
+        border: 1px solid rgba(0,0,0,0.07);
+        border-radius: 8px;
+        min-height: 42px;
+        font-size: 12.5px;
       }
       .email-list {
         width: 100%;
