@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marketing | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --negro: #000000; --negro-panel: rgba(14,14,22,0.82);
+      --dorado: #C9A84C; --dorado-claro: #e2c47a; --blanco: #ffffff; --gris: #888888;
+      --verde: #4f9d4f; --rojo: #e05555; --amarillo: #e0a435;
+    }
+    body { background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%); font-family: 'Inter', sans-serif; color: #1a1208; min-height: 100vh; display: flex; }
+
+    /* Sidebar */
+    .sidebar { width: 220px; flex-shrink: 0; min-height: 100vh; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-avatar { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* Main */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 14px; flex-wrap: wrap; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
+    .page-title span { color: var(--dorado); }
+    .page-sub { font-size: 12px; color: #9c8c72; margin-top: 3px; }
+    .topbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .sel { font-size: 13px; font-weight: 600; color: #5a4e3a; background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.12); padding: 9px 12px; border-radius: 8px; cursor: pointer; outline: none; }
+    .sel:focus { border-color: rgba(201,168,76,0.45); }
+    .btn-primary { font-size: 12px; font-weight: 600; background: var(--dorado); color: var(--negro); border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-sec { font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.12); color: #5a4e3a; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
+    .btn-sec:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
+
+    .mes-chip { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12.5px; font-weight: 600; color: #7a5c1e; background: rgba(201,168,76,0.14); border: 1px solid rgba(201,168,76,0.35); padding: 5px 12px; border-radius: 20px; }
+
+    /* KPIs */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 26px; }
+    .stat-card { background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); }
+    .stat-label { font-size: 11px; color: #9c8c72; font-weight: 500; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #1a1208; margin-top: 6px; }
+    .stat-value.ok { color: #4f9d4f; } .stat-value.warn { color: #cc8a2b; }
+
+    .section-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #1a1208; margin: 6px 0 14px; }
+
+    /* Tarjetas por canal */
+    .canales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-bottom: 30px; }
+    .canal-card { background: rgba(255,255,255,0.66); border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; padding: 16px 18px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); }
+    .canal-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .canal-ic { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-size: 17px; flex-shrink: 0; }
+    .canal-nom { font-size: 13.5px; font-weight: 600; color: #1a1208; }
+    .canal-num { font-size: 12px; color: #5a4e3a; margin-left: auto; font-weight: 600; }
+    .canal-bar { height: 8px; background: rgba(0,0,0,0.07); border-radius: 5px; overflow: hidden; }
+    .canal-bar-fill { height: 100%; border-radius: 5px; transition: width 0.4s; }
+    .canal-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px; color: #9c8c72; }
+    .canal-estado { font-weight: 600; }
+    .canal-estado.ok { color: #4f9d4f; } .canal-estado.bad { color: #c0392b; }
+
+    /* Paneles */
+    .panel { background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 22px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); margin-bottom: 22px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .ph-title { font-size: 14px; font-weight: 600; color: #1a1208; }
+    .chart-box { position: relative; height: 300px; }
+
+    /* Tablas */
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th { text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9c8c72; padding: 9px 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .tbl th.num, .tbl td.num { text-align: right; }
+    .tbl td { padding: 9px 10px; font-size: 13px; color: #3a3228; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 11px; }
+    .resp-nom { font-weight: 600; color: #1a1208; }
+
+    .estado-sel { font-size: 11.5px; font-weight: 600; border: 1px solid rgba(0,0,0,0.12); border-radius: 7px; padding: 5px 8px; cursor: pointer; outline: none; background: rgba(255,255,255,0.8); }
+    .e-planeado { color: #8a7a52; } .e-proceso { color: #2f6fb0; } .e-publicado { color: #3f8a3f; }
+
+    .canal-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+    .canal-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .btn-mini { background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-size: 12px; color: #7a5c1e; }
+    .btn-mini:hover { background: rgba(201,168,76,0.15); }
+    .empty { text-align: center; padding: 36px 20px; color: #9c8c72; font-size: 13px; }
+
+    /* Modal */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(40,30,12,0.45); z-index: 200; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+    .modal { background: #fdf8f0; border: 1px solid rgba(201,168,76,0.35); border-radius: 14px; width: 100%; max-width: 520px; padding: 32px; position: relative; box-shadow: 0 24px 60px rgba(120,98,40,0.22); max-height: 92vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #9c8c72; font-size: 18px; cursor: pointer; }
+    .modal-close:hover { color: #7a5c1e; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 22px; color: #1a1208; }
+    .modal-title span { color: #7a5c1e; }
+    .form-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .form-group.full { grid-column: span 2; }
+    .form-group label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #7a5c1e; }
+    .form-group input, .form-group select { background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: rgba(201,168,76,0.45); }
+    .form-group select option { background: #fdf8f0; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.07); }
+    .btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.62); color: #5a4e3a; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-guardar { padding: 10px 24px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--dorado), var(--dorado-claro)); color: #1a1208; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .metas-canal-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .metas-canal-row:last-child { border: none; }
+    .metas-canal-row .mc-nom { flex: 1; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .metas-canal-row input { width: 90px; text-align: right; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.12); border-radius: 7px; padding: 8px 10px; font-size: 13px; outline: none; }
+
+    .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; max-width: 100vw; overflow-x: hidden; }
+      .main > * { max-width: 100%; min-width: 0; }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .topbar-actions { width: 100%; }
+      .topbar-actions .sel, .topbar-actions .btn-primary, .topbar-actions .btn-sec { flex: 1; min-height: 44px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-value { font-size: 20px; }
+      .canales-grid { grid-template-columns: 1fr; }
+      .chart-box { height: 260px; }
+      .tbl-wrap { overflow-x: auto; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+      .form-group input, .form-group select { font-size: 14px; padding: 11px 12px; }
+      .modal-footer { flex-direction: column-reverse; }
+      .btn-cancel, .btn-guardar { width: 100%; min-height: 44px; }
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css?v=6" />
+<link rel="stylesheet" href="crm.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div><div class="logo-text">IPS Fernández <span>O&M</span></div><div class="logo-sub">Marketing</div></div>
+    </div>
+    <nav class="nav">
+      <a href="inicio.html" class="nav-item"><span class="nav-icon">🏠</span> Menú principal</a>
+      <div class="nav-divider"></div>
+      <div class="nav-section">Marketing</div>
+      <a href="marketing.html" class="nav-item active"><span class="nav-icon">📣</span> Panel de contenido</a>
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">LF</div>
+        <div><div class="user-name">IPS Fernández O & M</div><div class="user-role">doctorleofernandez</div></div>
+      </div>
+      <button class="logout-btn" onclick="cerrarSesion()">→ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 class="page-title">Módulo de <span>Marketing</span></h1>
+        <div class="page-sub">Parrilla de contenido y cumplimiento por canal</div>
+        <div class="mes-chip" id="mesChip">📅 —</div>
+      </div>
+      <div class="topbar-actions">
+        <select class="sel" id="vistaSelect" onchange="cambiarVista(this.value)">
+          <option value="semanal">📆 Semanal</option>
+          <option value="mensual" selected>🗓️ Mensual</option>
+          <option value="anual">📅 Anual</option>
+        </select>
+        <select class="sel" id="yearSelect" onchange="cambiarAnio(this.value)"></select>
+        <select class="sel" id="mesSelect" onchange="cambiarMes(this.value)"></select>
+        <select class="sel" id="semSelect" onchange="cambiarSem(this.value)" style="display:none"></select>
+        <button class="btn-sec" onclick="abrirModalMetas()">🎯 Metas por canal</button>
+        <button class="btn-primary" onclick="abrirModalPieza()">＋ Nueva publicación</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Publicado <span id="lblPer1">este mes</span></div><div class="stat-value" id="kPub">0</div></div>
+      <div class="stat-card"><div class="stat-label">Cumplimiento</div><div class="stat-value" id="kCump">0%</div></div>
+      <div class="stat-card"><div class="stat-label">Canales al día</div><div class="stat-value ok" id="kCanales">0</div></div>
+      <div class="stat-card"><div class="stat-label">Pendientes (planeadas)</div><div class="stat-value warn" id="kPend">0</div></div>
+    </div>
+
+    <!-- Cumplimiento por canal -->
+    <div class="section-title" id="canalesTitle">Cumplimiento por canal</div>
+    <div class="canales-grid" id="canalesGrid"></div>
+
+    <!-- Gráfico -->
+    <div class="panel">
+      <div class="panel-head"><div class="ph-title" id="chartTitulo">📊 Publicaciones por canal</div></div>
+      <div class="chart-box"><canvas id="chartCanal"></canvas></div>
+    </div>
+
+    <!-- Seguimiento por responsable -->
+    <div class="panel">
+      <div class="panel-head"><div class="ph-title">👥 Seguimiento por responsable</div></div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Responsable</th><th class="num">Publicadas</th><th class="num">En proceso</th><th class="num">Planeadas</th><th class="num">Total</th><th class="num">Cumplimiento</th></tr></thead>
+          <tbody id="respBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Parrilla de contenido -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="ph-title">📋 Parrilla de contenido — <span id="parrillaPer">—</span></div>
+        <select class="sel" id="filtroCanal" onchange="render()"><option value="">Todos los canales</option></select>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Fecha</th><th>Título</th><th>Canal</th><th>Tipo</th><th>Responsable</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="parrillaBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal pieza -->
+  <div class="overlay" id="ovPieza" onclick="cerrarOverlay(event,'ovPieza')">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrar('ovPieza')">✕</button>
+      <div class="modal-title" id="tituloPieza">Nueva <span>publicación</span></div>
+      <form id="piezaForm" onsubmit="guardarPieza(event)">
+        <input type="hidden" id="pId" />
+        <div class="form-grid">
+          <div class="form-group full"><label>Título</label><input type="text" id="pTitulo" placeholder="Ej: Reel sobre ortodoncia invisible" required /></div>
+          <div class="form-group"><label>Canal</label><select id="pCanal"></select></div>
+          <div class="form-group"><label>Tipo</label><select id="pTipo">
+            <option value="video">Video</option><option value="anuncio">Anuncio</option>
+            <option value="post">Post</option><option value="blog">Blog</option><option value="noticia">Noticia</option>
+          </select></div>
+          <div class="form-group"><label>Fecha</label><input type="date" id="pFecha" required /></div>
+          <div class="form-group"><label>Responsable</label><select id="pResp"></select></div>
+          <div class="form-group full"><label>Estado</label><select id="pEstado">
+            <option value="planeado">Planeado</option><option value="proceso">En proceso</option><option value="publicado">Publicado</option>
+          </select></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="cerrar('ovPieza')">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal metas por canal -->
+  <div class="overlay" id="ovMetas" onclick="cerrarOverlay(event,'ovMetas')">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrar('ovMetas')">✕</button>
+      <div class="modal-title">Metas <span>por canal</span></div>
+      <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">Cuántas piezas quieres publicar <b>al mes</b> en cada canal. La meta de la semana y del año se calculan solas.</p>
+      <div id="metasCanalCont"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="cerrar('ovMetas')">Cancelar</button>
+        <button type="button" class="btn-guardar" onclick="guardarMetasCanal()">Guardar metas</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidebar.js?v=13"></script>
+  <script>
+  /* ════════ MÓDULO DE MARKETING ════════
+     Parrilla de contenido (pieza por pieza) + cumplimiento por canal,
+     con metas por canal y vistas semanal/mensual/anual. */
+
+  const C_KEY = 'mkt_contenido';   // piezas de contenido
+  const M_KEY = 'mkt_metas';       // meta MENSUAL de piezas por canal
+  const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const MESES_LARGO = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const CANALES = [
+    { id:'instagram',  label:'Instagram',  icon:'📸', color:'#E1306C' },
+    { id:'youtube',    label:'YouTube',    icon:'▶️', color:'#FF0000' },
+    { id:'google_ads', label:'Google Ads', icon:'🔎', color:'#4285F4' },
+    { id:'tiktok',     label:'TikTok',     icon:'🎵', color:'#111111' },
+    { id:'blogs',      label:'Blogs',      icon:'✍️', color:'#16a085' },
+    { id:'noticias',   label:'Noticias',   icon:'📰', color:'#e0a435' },
+  ];
+  const TIPO_LBL = { video:'Video', anuncio:'Anuncio', post:'Post', blog:'Blog', noticia:'Noticia' };
+  const EST_LBL = { planeado:'Planeado', proceso:'En proceso', publicado:'Publicado' };
+
+  let contenido = [];
+  let metasCanal = {};
+  let anioActual = new Date().getFullYear();
+  let mesSel = new Date().getMonth();
+  let semSel = Math.floor((new Date().getDate() - 1) / 7);
+  let vista = 'mensual';
+  let chartCanal = null;
+
+  function canalInfo(id) { return CANALES.find(c => c.id === id) || { label: id, icon: '•', color: '#999' }; }
+  function semanasDelMes(anio, mesIdx) { return Math.ceil(new Date(anio, mesIdx + 1, 0).getDate() / 7); }
+
+  /* ── Usuarios del sistema (responsables) ── */
+  function getUsuarios() {
+    try {
+      const u = JSON.parse(localStorage.getItem('usuarios_sistema') || '[]');
+      if (Array.isArray(u) && u.length) return u.map(x => ({ id: x.id, nombre: x.nombre }));
+    } catch (e) {}
+    return [{ id: 'u_owner', nombre: 'Dr. Leo Fernández' }, { id: 'u_mkt', nombre: 'Equipo de Marketing' }];
+  }
+  function nombreResp(id) { const u = getUsuarios().find(x => x.id === id); return u ? u.nombre : 'Sin asignar'; }
+
+  /* ── Datos de ejemplo (no en blanco) ── */
+  function seedEjemplo() {
+    const hoy = new Date(), y = hoy.getFullYear(), mo = hoy.getMonth();
+    const iso = (d) => new Date(y, mo, d).toISOString().slice(0, 10);
+    const r = () => Math.random().toString(36).slice(2, 6);
+    contenido = [
+      { id:'c'+r(), titulo:'Reel: ortodoncia invisible',     canal:'instagram',  tipo:'video',   fecha:iso(2),  responsableId:'u_mkt',   estado:'publicado' },
+      { id:'c'+r(), titulo:'Historia: antes y después',      canal:'instagram',  tipo:'post',    fecha:iso(9),  responsableId:'u_mkt',   estado:'publicado' },
+      { id:'c'+r(), titulo:'Video: ¿duele el implante?',     canal:'youtube',    tipo:'video',   fecha:iso(5),  responsableId:'u_mkt',   estado:'publicado' },
+      { id:'c'+r(), titulo:'Campaña: blanqueamiento',        canal:'google_ads', tipo:'anuncio', fecha:iso(3),  responsableId:'u_owner', estado:'publicado' },
+      { id:'c'+r(), titulo:'TikTok: tips de cuidado dental', canal:'tiktok',     tipo:'video',   fecha:iso(8),  responsableId:'u_mkt',   estado:'publicado' },
+      { id:'c'+r(), titulo:'TikTok: mitos de la ortodoncia', canal:'tiktok',     tipo:'video',   fecha:iso(15), responsableId:'u_mkt',   estado:'proceso'   },
+      { id:'c'+r(), titulo:'Blog: cómo elegir ortodoncista', canal:'blogs',      tipo:'blog',    fecha:iso(12), responsableId:'u_owner', estado:'publicado' },
+      { id:'c'+r(), titulo:'Noticia: nueva sede',            canal:'noticias',   tipo:'noticia', fecha:iso(18), responsableId:'u_owner', estado:'planeado'  },
+      { id:'c'+r(), titulo:'Reel: testimonio paciente',      canal:'instagram',  tipo:'video',   fecha:iso(20), responsableId:'u_mkt',   estado:'planeado'  },
+      { id:'c'+r(), titulo:'Anuncio: promo limpieza',        canal:'google_ads', tipo:'anuncio', fecha:iso(22), responsableId:'u_owner', estado:'planeado'  },
+    ];
+    metasCanal = { instagram:8, youtube:4, google_ads:6, tiktok:12, blogs:2, noticias:2 };
+    guardar();
+  }
+  function cargar() {
+    try { contenido = JSON.parse(localStorage.getItem(C_KEY)); } catch (e) { contenido = null; }
+    try { metasCanal = JSON.parse(localStorage.getItem(M_KEY)); } catch (e) { metasCanal = null; }
+    if (!Array.isArray(contenido) || !metasCanal) seedEjemplo();
+  }
+  function guardar() { localStorage.setItem(C_KEY, JSON.stringify(contenido)); localStorage.setItem(M_KEY, JSON.stringify(metasCanal)); }
+
+  /* ── Período ── */
+  function enPeriodo(p) {
+    const f = new Date(p.fecha + 'T00:00:00');
+    if (f.getFullYear() !== anioActual) return false;
+    if (vista === 'anual') return true;
+    if (f.getMonth() !== mesSel) return false;
+    if (vista === 'mensual') return true;
+    return Math.floor((f.getDate() - 1) / 7) === semSel;
+  }
+  function metaPeriodo(canalId) {
+    const mm = Number(metasCanal[canalId]) || 0;
+    if (vista === 'anual') return mm * 12;
+    if (vista === 'mensual') return mm;
+    return Math.max(1, Math.round(mm / semanasDelMes(anioActual, mesSel)));
+  }
+  function etiquetaPeriodo() {
+    if (vista === 'anual') return String(anioActual);
+    if (vista === 'mensual') return MESES_LARGO[mesSel] + ' ' + anioActual;
+    return 'Semana ' + (semSel + 1) + ' de ' + MESES_LARGO[mesSel] + ' ' + anioActual;
+  }
+
+  /* ── Selectores ── */
+  function pintarYear() {
+    const a = new Date().getFullYear();
+    const set = new Set([a - 1, a, a + 1]);
+    contenido.forEach(p => { const y = new Date(p.fecha + 'T00:00:00').getFullYear(); if (y) set.add(y); });
+    const lista = Array.from(set).sort((x, y) => y - x);
+    document.getElementById('yearSelect').innerHTML = lista.map(x => `<option value="${x}" ${x === anioActual ? 'selected' : ''}>${x}</option>`).join('');
+  }
+  function pintarMes() {
+    const s = document.getElementById('mesSelect');
+    s.innerHTML = MESES_LARGO.map((m, i) => `<option value="${i}" ${i === mesSel ? 'selected' : ''}>${m}</option>`).join('');
+    s.style.display = (vista === 'anual') ? 'none' : '';
+  }
+  function pintarSem() {
+    const s = document.getElementById('semSelect');
+    const n = semanasDelMes(anioActual, mesSel);
+    if (semSel >= n) semSel = n - 1;
+    s.innerHTML = Array.from({ length: n }, (_, i) => `<option value="${i}" ${i === semSel ? 'selected' : ''}>Semana ${i + 1}</option>`).join('');
+    s.style.display = (vista === 'semanal') ? '' : 'none';
+  }
+  function pintarFiltroCanal() {
+    const s = document.getElementById('filtroCanal');
+    const val = s.value;
+    s.innerHTML = '<option value="">Todos los canales</option>' + CANALES.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+    s.value = val;
+  }
+  function cambiarVista(v) { vista = v; render(); }
+  function cambiarAnio(v) { anioActual = Number(v); render(); }
+  function cambiarMes(v) { mesSel = Number(v); render(); }
+  function cambiarSem(v) { semSel = Number(v); render(); }
+
+  /* ── KPIs ── */
+  function renderKPIs() {
+    const piezas = contenido.filter(enPeriodo);
+    const pub = piezas.filter(p => p.estado === 'publicado').length;
+    const pend = piezas.filter(p => p.estado !== 'publicado').length;
+    let metaTot = 0, alDia = 0;
+    CANALES.forEach(c => {
+      const mp = metaPeriodo(c.id);
+      const pc = piezas.filter(p => p.canal === c.id && p.estado === 'publicado').length;
+      metaTot += mp;
+      if (mp > 0 && pc >= mp) alDia++;
+    });
+    const cump = metaTot > 0 ? Math.round((pub / metaTot) * 100) : 0;
+    document.getElementById('lblPer1').textContent = vista === 'anual' ? 'este año' : (vista === 'mensual' ? 'este mes' : 'esta semana');
+    document.getElementById('kPub').textContent = pub;
+    document.getElementById('kCump').textContent = cump + '%';
+    document.getElementById('kCanales').textContent = alDia + '/' + CANALES.length;
+    document.getElementById('kPend').textContent = pend;
+  }
+
+  /* ── Tarjetas por canal ── */
+  function renderCanales() {
+    const piezas = contenido.filter(enPeriodo);
+    let html = '';
+    CANALES.forEach(c => {
+      const mp = metaPeriodo(c.id);
+      const pub = piezas.filter(p => p.canal === c.id && p.estado === 'publicado').length;
+      const pct = mp > 0 ? Math.round((pub / mp) * 100) : 0;
+      const ok = mp > 0 && pub >= mp;
+      html += `
+        <div class="canal-card">
+          <div class="canal-top">
+            <div class="canal-ic" style="background:${hexA(c.color,0.15)};color:${c.color}">${c.icon}</div>
+            <div class="canal-nom">${c.label}</div>
+            <div class="canal-num">${pub} / ${mp}</div>
+          </div>
+          <div class="canal-bar"><div class="canal-bar-fill" style="width:${Math.min(100,pct)}%;background:${c.color}"></div></div>
+          <div class="canal-meta">
+            <span>${pct}% de la meta</span>
+            <span class="canal-estado ${ok?'ok':'bad'}">${ok?'● Al día':'● Faltan '+Math.max(0,mp-pub)}</span>
+          </div>
+        </div>`;
+    });
+    document.getElementById('canalesGrid').innerHTML = html;
+    document.getElementById('canalesTitle').textContent = 'Cumplimiento por canal — ' + etiquetaPeriodo();
+  }
+  function hexA(hex, a) { hex = hex.replace('#',''); const r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return `rgba(${r},${g},${b},${a})`; }
+
+  /* ── Gráfico por canal ── */
+  function renderChart() {
+    const piezas = contenido.filter(enPeriodo);
+    const pub = CANALES.map(c => piezas.filter(p => p.canal === c.id && p.estado === 'publicado').length);
+    const metaArr = CANALES.map(c => metaPeriodo(c.id));
+    document.getElementById('chartTitulo').textContent = '📊 Publicaciones por canal — ' + etiquetaPeriodo();
+    if (chartCanal) chartCanal.destroy();
+    chartCanal = new Chart(document.getElementById('chartCanal'), {
+      data: {
+        labels: CANALES.map(c => c.label),
+        datasets: [
+          { type:'bar', label:'Publicado', data: pub, backgroundColor: CANALES.map(c => c.color), borderRadius: 6, maxBarThickness: 40, order: 2 },
+          { type:'line', label:'Meta', data: metaArr, borderColor:'#c0392b', borderWidth:2, borderDash:[6,5], pointRadius:3, pointBackgroundColor:'#c0392b', tension:0, order:1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color:'#5a4e3a', usePointStyle:true } } },
+        scales: { x:{ grid:{display:false}, ticks:{color:'#9c8c72'} }, y:{ beginAtZero:true, grid:{color:'rgba(0,0,0,0.06)'}, ticks:{color:'#9c8c72', precision:0} } }
+      }
+    });
+  }
+
+  /* ── Seguimiento por responsable ── */
+  function renderResp() {
+    const piezas = contenido.filter(enPeriodo);
+    const mapa = {};
+    piezas.forEach(p => {
+      const k = p.responsableId || 'sin';
+      if (!mapa[k]) mapa[k] = { pub:0, proc:0, plan:0 };
+      if (p.estado === 'publicado') mapa[k].pub++;
+      else if (p.estado === 'proceso') mapa[k].proc++;
+      else mapa[k].plan++;
+    });
+    const filas = Object.keys(mapa);
+    if (!filas.length) { document.getElementById('respBody').innerHTML = '<tr><td colspan="6" class="empty">Sin publicaciones en este período</td></tr>'; return; }
+    let html = '';
+    filas.forEach(k => {
+      const m = mapa[k], tot = m.pub + m.proc + m.plan;
+      const pct = tot > 0 ? Math.round((m.pub / tot) * 100) : 0;
+      const col = pct >= 70 ? '#4f9d4f' : (pct >= 40 ? '#cc8a2b' : '#c0392b');
+      html += `<tr>
+        <td class="resp-nom">${nombreResp(k)}</td>
+        <td class="num">${m.pub}</td><td class="num">${m.proc}</td><td class="num">${m.plan}</td>
+        <td class="num">${tot}</td>
+        <td class="num"><b style="color:${col}">${pct}%</b></td>
+      </tr>`;
+    });
+    document.getElementById('respBody').innerHTML = html;
+  }
+
+  /* ── Parrilla de contenido ── */
+  function renderParrilla() {
+    document.getElementById('parrillaPer').textContent = etiquetaPeriodo();
+    const filtro = document.getElementById('filtroCanal').value;
+    let piezas = contenido.filter(enPeriodo);
+    if (filtro) piezas = piezas.filter(p => p.canal === filtro);
+    piezas.sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+    if (!piezas.length) { document.getElementById('parrillaBody').innerHTML = '<tr><td colspan="7" class="empty">No hay publicaciones en este período. Usa “＋ Nueva publicación”.</td></tr>'; return; }
+    let html = '';
+    piezas.forEach(p => {
+      const c = canalInfo(p.canal);
+      const f = new Date(p.fecha + 'T00:00:00');
+      const fStr = f.getDate() + ' ' + MESES[f.getMonth()].toLowerCase();
+      html += `<tr>
+        <td>${fStr}</td>
+        <td style="font-weight:500;color:#1a1208">${p.titulo}</td>
+        <td><span class="canal-tag"><span class="canal-dot" style="background:${c.color}"></span>${c.label}</span></td>
+        <td>${TIPO_LBL[p.tipo] || p.tipo}</td>
+        <td>${nombreResp(p.responsableId)}</td>
+        <td><select class="estado-sel e-${p.estado}" onchange="setEstado('${p.id}', this.value)">
+          ${Object.keys(EST_LBL).map(e => `<option value="${e}" ${e === p.estado ? 'selected' : ''}>${EST_LBL[e]}</option>`).join('')}
+        </select></td>
+        <td class="num" style="white-space:nowrap">
+          <button class="btn-mini" title="Editar" onclick="editarPieza('${p.id}')">✎</button>
+          <button class="btn-mini" title="Eliminar" onclick="eliminarPieza('${p.id}')">🗑</button>
+        </td>
+      </tr>`;
+    });
+    document.getElementById('parrillaBody').innerHTML = html;
+  }
+
+  function setEstado(id, v) { const p = contenido.find(x => x.id === id); if (!p) return; p.estado = v; guardar(); render(); }
+
+  /* ── Render general ── */
+  function render() {
+    const hoy = new Date();
+    document.getElementById('mesChip').textContent = '📅 ' + MESES_LARGO[hoy.getMonth()] + ' ' + hoy.getFullYear();
+    pintarYear(); pintarMes(); pintarSem(); pintarFiltroCanal();
+    renderKPIs(); renderCanales(); renderChart(); renderResp(); renderParrilla();
+  }
+
+  /* ── Modal pieza ── */
+  function llenarSelectsPieza() {
+    document.getElementById('pCanal').innerHTML = CANALES.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+    document.getElementById('pResp').innerHTML = getUsuarios().map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+  }
+  function abrirModalPieza() {
+    llenarSelectsPieza();
+    document.getElementById('piezaForm').reset();
+    document.getElementById('pId').value = '';
+    document.getElementById('tituloPieza').innerHTML = 'Nueva <span>publicación</span>';
+    // fecha por defecto: hoy
+    document.getElementById('pFecha').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('ovPieza').classList.add('open');
+  }
+  function editarPieza(id) {
+    const p = contenido.find(x => x.id === id); if (!p) return;
+    llenarSelectsPieza();
+    document.getElementById('pId').value = p.id;
+    document.getElementById('tituloPieza').innerHTML = 'Editar <span>publicación</span>';
+    document.getElementById('pTitulo').value = p.titulo;
+    document.getElementById('pCanal').value = p.canal;
+    document.getElementById('pTipo').value = p.tipo;
+    document.getElementById('pFecha').value = p.fecha;
+    document.getElementById('pResp').value = p.responsableId;
+    document.getElementById('pEstado').value = p.estado;
+    document.getElementById('ovPieza').classList.add('open');
+  }
+  function guardarPieza(e) {
+    e.preventDefault();
+    const id = document.getElementById('pId').value;
+    const datos = {
+      titulo: document.getElementById('pTitulo').value.trim(),
+      canal: document.getElementById('pCanal').value,
+      tipo: document.getElementById('pTipo').value,
+      fecha: document.getElementById('pFecha').value,
+      responsableId: document.getElementById('pResp').value,
+      estado: document.getElementById('pEstado').value,
+    };
+    if (!datos.titulo || !datos.fecha) return;
+    if (id) { Object.assign(contenido.find(x => x.id === id), datos); }
+    else { contenido.push(Object.assign({ id: 'c' + Date.now() }, datos)); }
+    guardar(); cerrar('ovPieza'); render();
+  }
+  function eliminarPieza(id) {
+    const p = contenido.find(x => x.id === id); if (!p) return;
+    if (!confirm('¿Eliminar la publicación "' + p.titulo + '"?')) return;
+    contenido = contenido.filter(x => x.id !== id); guardar(); render();
+  }
+
+  /* ── Modal metas por canal ── */
+  function abrirModalMetas() {
+    document.getElementById('metasCanalCont').innerHTML = CANALES.map(c => `
+      <div class="metas-canal-row">
+        <div class="mc-nom"><span>${c.icon}</span> ${c.label}</div>
+        <input type="number" min="0" id="mc_${c.id}" value="${Number(metasCanal[c.id]) || 0}" /> <span style="font-size:11px;color:#9c8c72">/ mes</span>
+      </div>`).join('');
+    document.getElementById('ovMetas').classList.add('open');
+  }
+  function guardarMetasCanal() {
+    CANALES.forEach(c => { metasCanal[c.id] = Number(document.getElementById('mc_' + c.id).value) || 0; });
+    guardar(); cerrar('ovMetas'); render();
+  }
+
+  function cerrar(id) { document.getElementById(id).classList.remove('open'); }
+  function cerrarOverlay(e, id) { if (e.target === document.getElementById(id)) cerrar(id); }
+
+  /* ── Arranque ── */
+  cargar();
+  render();
+  </script>
+</body>
+</html>

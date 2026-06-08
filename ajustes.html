@@ -1344,6 +1344,17 @@
         </div>
 
         <div class="config-card">
+          <div class="config-card-title">📣 Marketing</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Carga 10 publicaciones de ejemplo en distintos canales (Instagram, YouTube, Google Ads, TikTok, Blogs, Noticias) y estados, con metas por canal, para explorar la parrilla y el dashboard de cumplimiento.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+            <button class="btn-save" style="margin-top:0" onclick="cargarDemoMarketing()">📥 &nbsp;Cargar contenido</button>
+            <button class="btn-danger" onclick="limpiarMarketing()">🧹 &nbsp;Limpiar marketing</button>
+          </div>
+        </div>
+
+        <div class="config-card">
           <div class="config-card-title">🧹 Limpiar todo</div>
           <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
             Borra de una vez los datos de los tres módulos (CRM, Facturación y Metas) y la configuración operativa, para empezar una prueba desde cero. Conserva el tema y las preferencias visuales.
@@ -1568,13 +1579,14 @@
       { id: 'comunicacion', label: 'Chat, Correo y Equipo' },
       { id: 'facturacion',  label: 'Facturación' },
       { id: 'metas',        label: 'Metas (objetivos)' },
+      { id: 'contenido',    label: 'Marketing (parrilla de contenido)' },
       { id: 'reportes',     label: 'Reportes e Insights' },
       { id: 'marketing',    label: 'Difusiones, Bots y Agente IA' },
       { id: 'ajustes',      label: 'Ajustes (configuración)' },
     ];
     const PERMISOS_ROL = {
-      admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'],
-      marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
+      admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','contenido','reportes','marketing','ajustes'],
+      marketing:     ['dashboard','contactos','calendario','comunicacion','contenido','reportes','marketing'],
       auxiliar:      ['facturacion'],
       asistente:     ['dashboard','contactos','calendario','comunicacion'],
       recepcionista: ['dashboard','contactos','calendario','comunicacion'],
@@ -1777,7 +1789,7 @@
         'difusiones_ips', 'bots_ips', 'plantillas_ips', 'tareas_ips',
         'etapas_pipeline_ips', 'vista_pipeline_ips', 'horarios_ips',
         'agente_ia_config', 'agente_ia_activo', 'config_clinica',
-        'gamificacion_ips', 'metas_ips'
+        'gamificacion_ips', 'metas_ips', 'mkt_contenido', 'mkt_metas'
       ];
       datosOperacionales.forEach(k => localStorage.removeItem(k));
 
@@ -1885,6 +1897,41 @@
       showToast('Metas: 3 metas de ejemplo cargadas');
     }
 
+    // ── Marketing: parrilla de contenido + metas por canal ──
+    function cargarDemoMarketing() {
+      const existen = JSON.parse(localStorage.getItem('mkt_contenido') || '[]');
+      if (Array.isArray(existen) && existen.length > 0 &&
+          !confirm(`Ya tiene ${existen.length} publicación(es). ¿Agregar las 10 de prueba de todas formas?`)) return;
+
+      const hoy = new Date(), y = hoy.getFullYear(), mo = hoy.getMonth();
+      const iso = (dia) => new Date(y, mo, dia).toISOString().slice(0, 10);
+      const r = () => Math.random().toString(36).slice(2, 6);
+      const nuevas = [
+        { id:'c'+r(), titulo:'Reel: ortodoncia invisible',     canal:'instagram',  tipo:'video',   fecha:iso(2),  responsableId:'u_mkt',   estado:'publicado' },
+        { id:'c'+r(), titulo:'Historia: antes y después',      canal:'instagram',  tipo:'post',    fecha:iso(9),  responsableId:'u_mkt',   estado:'publicado' },
+        { id:'c'+r(), titulo:'Video: ¿duele el implante?',     canal:'youtube',    tipo:'video',   fecha:iso(5),  responsableId:'u_mkt',   estado:'publicado' },
+        { id:'c'+r(), titulo:'Campaña: blanqueamiento',        canal:'google_ads', tipo:'anuncio', fecha:iso(3),  responsableId:'u_owner', estado:'publicado' },
+        { id:'c'+r(), titulo:'TikTok: tips de cuidado dental', canal:'tiktok',     tipo:'video',   fecha:iso(8),  responsableId:'u_mkt',   estado:'publicado' },
+        { id:'c'+r(), titulo:'TikTok: mitos de la ortodoncia', canal:'tiktok',     tipo:'video',   fecha:iso(15), responsableId:'u_mkt',   estado:'proceso'   },
+        { id:'c'+r(), titulo:'Blog: cómo elegir ortodoncista', canal:'blogs',      tipo:'blog',    fecha:iso(12), responsableId:'u_owner', estado:'publicado' },
+        { id:'c'+r(), titulo:'Noticia: nueva sede',            canal:'noticias',   tipo:'noticia', fecha:iso(18), responsableId:'u_owner', estado:'planeado'  },
+        { id:'c'+r(), titulo:'Reel: testimonio paciente',      canal:'instagram',  tipo:'video',   fecha:iso(20), responsableId:'u_mkt',   estado:'planeado'  },
+        { id:'c'+r(), titulo:'Anuncio: promo limpieza',        canal:'google_ads', tipo:'anuncio', fecha:iso(22), responsableId:'u_owner', estado:'planeado'  },
+      ];
+      const base = Array.isArray(existen) ? existen : [];
+      localStorage.setItem('mkt_contenido', JSON.stringify([...base, ...nuevas]));
+      if (!localStorage.getItem('mkt_metas')) {
+        localStorage.setItem('mkt_metas', JSON.stringify({ instagram:8, youtube:4, google_ads:6, tiktok:12, blogs:2, noticias:2 }));
+      }
+      showToast('Marketing: 10 publicaciones de ejemplo cargadas');
+    }
+    function limpiarMarketing() {
+      if (!confirm('¿Borrar la parrilla de contenido y las metas por canal?\n\nNo afecta los otros módulos.')) return;
+      localStorage.removeItem('mkt_contenido');
+      localStorage.removeItem('mkt_metas');
+      showToast('Marketing limpio');
+    }
+
     // ── Limpiezas por módulo ──
     function limpiarCRM() {
       if (!confirm('¿Borrar todos los datos del CRM (contactos, citas, pipeline, difusiones, plantillas, bots, tareas, notas y puntos)?\n\nNo afecta Facturación ni Metas.')) return;
@@ -1959,6 +2006,6 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
   </script>
-  <script src="sidebar.js?v=12"></script>
+  <script src="sidebar.js?v=13"></script>
 </body>
 </html>

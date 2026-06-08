@@ -15,14 +15,14 @@ window.cerrarSesion = function () {
    Como respaldo, si no hay usuario, se usan los permisos por rol.
    (Seguridad "blanda": organiza el acceso; el blindaje real llega con Supabase.) */
 var PERMISOS = {
-  admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'],
-  marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
+  admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','metas','contenido','reportes','marketing','ajustes'],
+  marketing:     ['dashboard','contactos','calendario','comunicacion','contenido','reportes','marketing'],
   asistente:     ['dashboard','contactos','calendario','comunicacion'],
   recepcionista: ['dashboard','contactos','calendario','comunicacion'],
   auxiliar:      ['facturacion']
 };
 /* Lista maestra de módulos (para migrar permisos al agregar funciones nuevas). */
-var TODOS_MODULOS = ['dashboard','contactos','calendario','comunicacion','facturacion','metas','reportes','marketing','ajustes'];
+var TODOS_MODULOS = ['dashboard','contactos','calendario','comunicacion','facturacion','metas','contenido','reportes','marketing','ajustes'];
 
 /* Migración: si un usuario guardado no tiene una clave de permiso nueva
    (p. ej. 'metas' recién creado), se la agregamos según su rol. Así no
@@ -65,6 +65,7 @@ var PAGINA_MODULO = {
   'chat.html':'comunicacion', 'correo.html':'comunicacion', 'chats-equipo.html':'comunicacion', 'plantillas.html':'comunicacion',
   'facturacion.html':'facturacion', 'reportes-facturacion.html':'facturacion',
   'metas.html':'metas',
+  'marketing.html':'contenido',
   'reportes.html':'reportes', 'insights.html':'reportes',
   'difusiones.html':'marketing', 'bots.html':'marketing', 'agente-ia.html':'marketing',
   'ajustes.html':'ajustes'

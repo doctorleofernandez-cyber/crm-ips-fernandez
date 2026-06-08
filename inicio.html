@@ -18,7 +18,7 @@
       background: radial-gradient(ellipse at center, #1a1400 0%, #000 60%);
       z-index: 0;
     }
-    .wrap { position: relative; z-index: 1; width: 100%; max-width: 1000px; text-align: center; }
+    .wrap { position: relative; z-index: 1; width: 100%; max-width: 1200px; text-align: center; }
 
     .header { margin-bottom: 38px; }
     .header img { width: 96px; height: auto; margin: 0 auto 14px; display: block; filter: drop-shadow(0 0 16px rgba(201,168,76,0.25)); }
@@ -27,7 +27,7 @@
     .header p { margin-top: 8px; font-size: 13px; color: var(--gris); letter-spacing: 1px; }
     .saludo { margin-top: 16px; font-size: 15px; color: var(--dorado-claro); }
 
-    .modulos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .modulos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 
     .modulo {
       background: #16140e; border: 1px solid rgba(201,168,76,0.25);
@@ -45,7 +45,7 @@
     .salir a { font-size: 12.5px; color: var(--gris); text-decoration: none; transition: color 0.2s; }
     .salir a:hover { color: var(--dorado); }
 
-    @media (max-width: 920px) {
+    @media (max-width: 980px) {
       .modulos { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 680px) {
@@ -81,6 +81,11 @@
         <div class="modulo-nombre">Metas</div>
         <div class="modulo-desc">Objetivos mes a mes y por año, con dashboard de avance.</div>
       </a>
+      <a class="modulo" id="moduloMkt" href="marketing.html">
+        <div class="modulo-icon">📣</div>
+        <div class="modulo-nombre">Marketing</div>
+        <div class="modulo-desc">Parrilla de contenido y cumplimiento por canal y responsable.</div>
+      </a>
     </div>
 
     <div class="salir">
@@ -88,7 +93,7 @@
     </div>
   </div>
 
-  <script src="sidebar.js?v=12"></script>
+  <script src="sidebar.js?v=13"></script>
   <script>
     // Exige sesión (si no hay, sidebar.js ya redirige; reforzamos por si acaso)
     (function () {
@@ -106,6 +111,7 @@
         if (u && u.permisos) {
           if (!u.permisos.facturacion) document.getElementById('moduloFact').style.display = 'none';
           if (!u.permisos.metas) document.getElementById('moduloMetas').style.display = 'none';
+          if (!u.permisos.contenido) document.getElementById('moduloMkt').style.display = 'none';
           if (!u.permisos.dashboard && !u.permisos.contactos) document.getElementById('moduloCRM').style.display = 'none';
         }
       } catch (e) {}
