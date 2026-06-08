@@ -1753,7 +1753,13 @@
     // pipeline, horarios, agente IA). Conserva solo las preferencias visuales
     // (tema, tamaño de fuente, estado del menú lateral).
     function limpiarDatos() {
-      if (!confirm('¿Borrar TODOS los datos del CRM?\n\nSe eliminarán: contactos, citas, facturas, tratamientos, difusiones, plantillas, bots, tareas, notas y configuración de la clínica.\n\nSe conservarán: tema y preferencias visuales.\n\nEsta acción no se puede deshacer.')) return;
+      // Protección doble: hay que ESCRIBIR la palabra BORRAR para evitar borrados por error.
+      const r = prompt('⚠️ Esto borra TODOS los datos del CRM (contactos, citas, facturas, difusiones, plantillas, bots, tareas, notas y configuración). No se puede deshacer.\n\nPara confirmar, escribe la palabra:  BORRAR');
+      if (r === null) return;                       // canceló
+      if (r.trim().toUpperCase() !== 'BORRAR') {
+        showToast('Cancelado — debes escribir BORRAR para limpiar');
+        return;
+      }
 
       const datosOperacionales = [
         'pacientes_ips', 'citas_ips', 'facturas_ips', 'tratamientos_ips',
