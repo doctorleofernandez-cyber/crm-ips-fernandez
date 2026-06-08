@@ -91,7 +91,7 @@
     .s-tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 
     /* Tarjetas de Roles y permisos */
-    .roles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 
     /* Selector de sección: solo aparece en celular */
     .settings-mobile-nav { display: none; }
@@ -309,6 +309,7 @@
 
     .u-role-badge.admin   { background: rgba(201,168,76,0.12); color: var(--dorado); }
     .u-role-badge.marketing { background: rgba(230,126,34,0.14); color: #c46a1c; }
+    .u-role-badge.auxiliar  { background: rgba(76,143,202,0.14); color: #3d6f9e; }
     .u-role-badge.asistente { background: rgba(168,137,63,0.12); color: var(--verde); }
     .u-role-badge.recep   { background: rgba(155,89,182,0.12); color: #9B59B6; }
 
@@ -946,6 +947,11 @@
               <div style="font-size:12px;font-weight:600;color:#c46a1c">Marketing</div>
               <div style="font-size:10px;color:#9c8c72;margin-top:4px">Campañas, pipeline y reportes</div>
             </div>
+            <div class="role-card" onclick="abrirRolPermisos('auxiliar')" style="background:rgba(76,143,202,0.06);border:1px solid rgba(76,143,202,0.18);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:18px;margin-bottom:6px">🧾</div>
+              <div style="font-size:12px;font-weight:600;color:#3d6f9e">Auxiliar administrativa</div>
+              <div style="font-size:10px;color:#9c8c72;margin-top:4px">Facturación</div>
+            </div>
             <div class="role-card" onclick="abrirRolPermisos('asistente')" style="background:rgba(168,137,63,0.06);border:1px solid rgba(168,137,63,0.15);border-radius:8px;padding:14px;text-align:center">
               <div style="font-size:18px;margin-bottom:6px">🦷</div>
               <div style="font-size:12px;font-weight:600;color:var(--verde)">Asistente</div>
@@ -1341,6 +1347,7 @@
         <select id="uRol" onchange="rolCambioUsuario()">
           <option value="admin">Administrador — acceso total</option>
           <option value="marketing">Marketing — campañas, pipeline y reportes</option>
+          <option value="auxiliar">Auxiliar administrativa — facturación</option>
           <option value="asistente">Asistente — citas y contactos</option>
           <option value="recepcionista">Recepcionista — agenda y chat</option>
         </select>
@@ -1524,6 +1531,7 @@
     const ROLES_INFO = {
       admin:         { label: 'Administrador', badge: 'admin',     color: '201,168,76' },
       marketing:     { label: 'Marketing',     badge: 'marketing', color: '230,126,34' },
+      auxiliar:      { label: 'Auxiliar administrativa', badge: 'auxiliar', color: '76,143,202' },
       asistente:     { label: 'Asistente',     badge: 'asistente', color: '168,137,63' },
       recepcionista: { label: 'Recepcionista', badge: 'recep',     color: '155,89,182' },
     };
@@ -1541,6 +1549,7 @@
     const PERMISOS_ROL = {
       admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
       marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
+      auxiliar:      ['facturacion'],
       asistente:     ['dashboard','contactos','calendario','comunicacion'],
       recepcionista: ['dashboard','contactos','calendario','comunicacion'],
     };
@@ -1561,6 +1570,7 @@
     const DEFAULT_USUARIOS = [
       { id: 'u_owner', nombre: 'Dr. Leo Fernández',   email: 'doctorleofernandez@gmail.com', rol: 'admin', owner: true },
       { id: 'u_mkt',   nombre: 'Equipo de Marketing', email: 'marketing@ipsfernandez.com',   rol: 'marketing' },
+      { id: 'u_aux',   nombre: 'Auxiliar Administrativa', email: 'auxiliar@ipsfernandez.com', rol: 'auxiliar' },
       { id: 'u_asis',  nombre: 'Asistente Clínica',   email: 'asistente@ipsfernandez.com',   rol: 'asistente' },
       { id: 'u_recep', nombre: 'Recepcionista',       email: 'recepcion@ipsfernandez.com',   rol: 'recepcionista' },
     ];
@@ -1869,6 +1879,6 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
   </script>
-  <script src="sidebar.js?v=9"></script>
+  <script src="sidebar.js?v=10"></script>
 </body>
 </html>

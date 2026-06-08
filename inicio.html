@@ -63,7 +63,7 @@
     </div>
 
     <div class="modulos">
-      <a class="modulo" href="dashboard.html">
+      <a class="modulo" id="moduloCRM" href="dashboard.html">
         <div class="modulo-icon">📊</div>
         <div class="modulo-nombre">CRM Comercial</div>
         <div class="modulo-desc">Leads, pipeline, citas, chat y reportes comerciales.</div>
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <script src="sidebar.js?v=9"></script>
+  <script src="sidebar.js?v=10"></script>
   <script>
     // Exige sesión (si no hay, sidebar.js ya redirige; reforzamos por si acaso)
     (function () {
@@ -94,9 +94,10 @@
         var u = users.filter(function (x) { return x.id === uid; })[0];
         if (u) document.getElementById('saludo').textContent = 'Hola, ' + u.nombre + ' 👋';
 
-        // Si el usuario no tiene permiso de Facturación, ocultar ese módulo
-        if (u && u.permisos && !u.permisos.facturacion) {
-          document.getElementById('moduloFact').style.display = 'none';
+        // Mostrar cada módulo solo si el usuario tiene permiso
+        if (u && u.permisos) {
+          if (!u.permisos.facturacion) document.getElementById('moduloFact').style.display = 'none';
+          if (!u.permisos.dashboard && !u.permisos.contactos) document.getElementById('moduloCRM').style.display = 'none';
         }
       } catch (e) {}
     })();

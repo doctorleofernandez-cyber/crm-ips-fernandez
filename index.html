@@ -309,7 +309,7 @@
           if (!Array.isArray(users) || !users.length) {
             users = [{ id: 'u_owner', nombre: 'Dr. Leo Fernández', rol: 'admin' }];
           }
-          var labels = { admin: 'Administrador', marketing: 'Marketing', asistente: 'Asistente', recepcionista: 'Recepcionista' };
+          var labels = { admin: 'Administrador', marketing: 'Marketing', auxiliar: 'Auxiliar administrativa', asistente: 'Asistente', recepcionista: 'Recepcionista' };
           var sel = document.getElementById('usuarioSelect');
           sel.innerHTML = users.map(function (u) {
             var rl = labels[u.rol] || u.rol || '';
@@ -340,6 +340,6 @@
     </div>
   </div>
 
-  <script src="sidebar.js?v=9"></script>
+  <script src="sidebar.js?v=10"></script>
 </body>
 </html>

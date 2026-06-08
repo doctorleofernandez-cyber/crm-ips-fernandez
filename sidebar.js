@@ -18,7 +18,8 @@ var PERMISOS = {
   admin:         ['dashboard','contactos','calendario','comunicacion','facturacion','reportes','marketing','ajustes'],
   marketing:     ['dashboard','contactos','calendario','comunicacion','reportes','marketing'],
   asistente:     ['dashboard','contactos','calendario','comunicacion'],
-  recepcionista: ['dashboard','contactos','calendario','comunicacion']
+  recepcionista: ['dashboard','contactos','calendario','comunicacion'],
+  auxiliar:      ['facturacion']
 };
 /* Lista de módulos permitidos para el usuario que inició sesión.
    Usa los permisos individuales del usuario; si no, cae al rol. */
@@ -69,7 +70,7 @@ function puedeAcceder(modulo) {
   if (!enLogin) {
     var pagina = location.pathname.split('/').pop().split('?')[0] || 'index.html';
     var modulo = PAGINA_MODULO[pagina];
-    if (modulo && !puedeAcceder(modulo)) { location.replace('dashboard.html'); return; }
+    if (modulo && !puedeAcceder(modulo)) { location.replace('inicio.html'); return; }
   }
 })();
 

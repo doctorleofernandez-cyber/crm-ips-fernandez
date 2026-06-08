@@ -777,13 +777,17 @@
             <label>Fecha</label>
             <input type="date" id="fFecha" required />
           </div>
-          <div class="form-group">
+          <div class="form-group full">
             <label>Proveedor</label>
             <input type="text" id="fProveedor" placeholder="Nombre del proveedor" required />
           </div>
           <div class="form-group">
             <label>NIT / Documento</label>
-            <input type="text" id="fDocumento" placeholder="NIT o documento del proveedor" />
+            <input type="text" id="fDocumento" placeholder="NIT o documento" />
+          </div>
+          <div class="form-group">
+            <label>Teléfono del proveedor</label>
+            <input type="tel" id="fTelefono" placeholder="+57 300 000 0000" />
           </div>
           <div class="form-group full">
             <label>Concepto</label>
@@ -905,8 +909,8 @@
               <div class="td-paciente">
                 <div class="pac-avatar">${iniciales(f.paciente)}</div>
                 <div>
-                  <div class="pac-name">${f.paciente}</div>
-                  <div class="pac-doc">${f.documento || '—'}</div>
+                  <div class="pac-name">${f.proveedor || f.paciente}</div>
+                  <div class="pac-doc">${[f.documento, f.telefono].filter(Boolean).join(' · ') || '—'}</div>
                 </div>
               </div>
             </td>
@@ -980,6 +984,7 @@
         proveedor:   proveedor,
         paciente:    proveedor,
         documento:   document.getElementById('fDocumento').value.trim(),
+        telefono:    document.getElementById('fTelefono').value.trim(),
         concepto:    document.getElementById('fConcepto').value.trim(),
         valor:       document.getElementById('fValor').value,
         estado:      document.getElementById('fEstado').value,
@@ -1008,6 +1013,7 @@
       document.getElementById('fVencimiento').value = f.vencimiento || '';
       document.getElementById('fProveedor').value = f.proveedor || f.paciente || '';
       document.getElementById('fDocumento').value = f.documento || '';
+      document.getElementById('fTelefono').value  = f.telefono || '';
       document.getElementById('fConcepto').value  = f.concepto;
       document.getElementById('fValor').value     = f.valor;
       document.getElementById('fEstado').value    = f.estado;
@@ -1058,6 +1064,6 @@
       return `${d} ${meses[+m-1]} ${y}`;
     }
   </script>
-  <script src="sidebar.js?v=9"></script>
+  <script src="sidebar.js?v=10"></script>
 </body>
 </html>
