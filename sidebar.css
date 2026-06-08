@@ -114,14 +114,6 @@
 
 /* ── BOTÓN "CERRAR SESIÓN" (pie del menú lateral) ── */
 /* Estilo unificado: igual en móvil, iPad y PC */
-/* Bloque del usuario centrado (avatar arriba, nombre y correo centrados) */
-.user-info {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 8px;
-}
-
 .logout-btn {
   display: block;
   margin-top: 14px;
@@ -285,6 +277,14 @@
   .sidebar.collapsed.mobile-open .sidebar-logo { justify-content: flex-start; padding: 22px 18px; }
   .sidebar.collapsed.mobile-open .user-name,
   .sidebar.collapsed.mobile-open .user-role { display: block; }
+  /* En celular el bloque de usuario va centrado (avatar arriba, nombre y correo centrados) */
+  .sidebar.mobile-open .user-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+
   .sidebar.collapsed.mobile-open .logout-btn,
   .sidebar.mobile-open .logout-btn {
     text-align: center;
