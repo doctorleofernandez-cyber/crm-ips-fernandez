@@ -147,6 +147,8 @@
     .cump.warn { color: #cc8a2b; }
     .cump.bad { color: #c0392b; }
     .tabla-hint { font-size: 11.5px; color: #9c8c72; margin-top: 12px; }
+    .campo-hint { font-size: 11px; color: #9c8c72; margin-top: 4px; }
+    .proj-note { display: inline-block; font-size: 11px; font-weight: 600; color: #7a5c1e; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); padding: 4px 10px; border-radius: 8px; margin-left: 8px; }
 
     .empty { text-align: center; padding: 50px 20px; color: #9c8c72; }
     .empty .big { font-size: 40px; margin-bottom: 10px; }
@@ -251,7 +253,13 @@
         <div class="mes-chip" id="mesChip">📅 —</div>
       </div>
       <div class="topbar-actions">
+        <select class="year-select" id="vistaSelect" onchange="cambiarVista(this.value)" title="Qué quieres ver">
+          <option value="anual">📅 Vista anual</option>
+          <option value="mensual">🗓️ Vista mensual</option>
+          <option value="semanal">📆 Vista semanal</option>
+        </select>
         <select class="year-select" id="yearSelect" onchange="cambiarAnio(this.value)"></select>
+        <select class="year-select" id="mesSelect" onchange="cambiarMes(this.value)" style="display:none"></select>
         <button class="btn-primary" onclick="abrirModalMeta()">＋ Nueva meta</button>
       </div>
     </div>
@@ -259,20 +267,20 @@
     <!-- KPIs -->
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Metas activas</div><div class="stat-value" id="kMetas">0</div></div>
-      <div class="stat-card"><div class="stat-label">Cumplimiento promedio</div><div class="stat-value" id="kCump">0%</div></div>
+      <div class="stat-card"><div class="stat-label" id="lblKCump">Cumplimiento del año</div><div class="stat-value" id="kCump">0%</div></div>
       <div class="stat-card"><div class="stat-label">Metas al día</div><div class="stat-value ok" id="kAldia">0</div></div>
       <div class="stat-card"><div class="stat-label">Metas atrasadas</div><div class="stat-value warn" id="kAtras">0</div></div>
     </div>
 
     <!-- Tarjetas de metas -->
-    <div class="section-title">Tus metas del <span id="anioTit">2026</span></div>
+    <div class="section-title" id="metasTitle">Tus metas del 2026</div>
     <div class="metas-grid" id="metasGrid"></div>
 
     <!-- Dashboard interactivo -->
     <div id="dashWrap">
       <div class="panel">
         <div class="panel-head">
-          <div class="ph-title">📈 Avance mensual — <span id="dashMetaNom">—</span></div>
+          <div class="ph-title" id="dashTitulo">📈 Avance — <span id="dashMetaNom">—</span></div>
           <select class="meta-pick" id="metaPick" onchange="seleccionarMeta(this.value)"></select>
         </div>
         <div class="chart-box"><canvas id="chartMeta"></canvas></div>
@@ -280,12 +288,12 @@
 
       <div class="panel">
         <div class="panel-head">
-          <div class="ph-title">✏️ Cargar avance mes a mes — <span id="tablaMetaNom">—</span></div>
+          <div class="ph-title" id="tablaTitulo">✏️ Cargar avance — <span id="tablaMetaNom">—</span></div>
         </div>
         <div style="overflow-x:auto">
           <table class="month-table">
             <thead>
-              <tr>
+              <tr id="monthHead">
                 <th>Mes</th>
                 <th class="num">Meta del mes</th>
                 <th class="num">Logrado</th>
@@ -295,7 +303,7 @@
             <tbody id="monthBody"></tbody>
           </table>
         </div>
-        <div class="tabla-hint">💡 Escribe el valor logrado en cada mes y se guarda solo. El gráfico y el progreso se actualizan al instante.</div>
+        <div class="tabla-hint" id="tablaHint">💡 Escribe el valor logrado en cada mes y se guarda solo. El gráfico y el progreso se actualizan al instante.</div>
       </div>
     </div>
   </main>
@@ -324,10 +332,27 @@
             <label>Unidad</label>
             <input type="text" id="mUnidad" placeholder="pacientes, citas, llamadas…" />
           </div>
+          <div class="form-group full">
+            <label>Cómo programas la meta de <span id="lblAnio">2026</span></label>
+            <select id="mModo" onchange="onModoChange()">
+              <option value="mensual">Una meta para cada mes (igual)</option>
+              <option value="anual">Un total del año (se reparte en los meses)</option>
+            </select>
+          </div>
           <div class="form-group full" id="grpObjetivo">
             <label>Meta de cada mes</label>
             <input type="number" id="mObjetivo" placeholder="0" min="0" step="any" />
-            <div style="font-size:11px;color:#9c8c72;margin-top:2px">Punto de partida para los 12 meses de <span id="lblAnio">2026</span>. Luego puedes ajustar mes a mes en la tabla.</div>
+            <div class="campo-hint" id="hintMensual">Se usa para los 12 meses. Luego puedes ajustar cada mes en la tabla.</div>
+          </div>
+          <div class="form-group full" id="grpAnual" style="display:none">
+            <label>Meta total del año</label>
+            <input type="number" id="mAnual" placeholder="0" min="0" step="any" />
+            <label style="margin-top:10px">Proyección (cómo repartirla)</label>
+            <select id="mReparto">
+              <option value="pareja">Pareja — igual en los 12 meses</option>
+              <option value="creciente">Creciente — cada mes un poco más</option>
+            </select>
+            <div class="campo-hint">El total se reparte entre los 12 meses. Luego puedes ajustar cada mes en la tabla.</div>
           </div>
           <div class="form-group full">
             <label>Color</label>
@@ -355,6 +380,8 @@
 
   let metas = [];
   let anioActual = new Date().getFullYear();
+  let mesSel = new Date().getMonth();        // mes enfocado (0-11) para vistas mensual/semanal
+  let vista = 'anual';                         // 'anual' | 'mensual' | 'semanal'
   let metaSelId = null;
   let colorSel = COLORES[0];
   let chartMeta = null;
@@ -408,6 +435,25 @@
     return datosAnio(meta, anio).objetivos.reduce((a, b) => a + (Number(b) || 0), 0);
   }
 
+  /* Reparte un total anual entre los 12 meses (proyección). */
+  function repartirAnual(total, modo) {
+    total = Number(total) || 0;
+    if (modo === 'creciente') {
+      // Pesos que crecen suave (dic ≈ 1.44× ene); se normalizan al total.
+      const pesos = Array.from({ length: 12 }, (_, i) => 1 + i * 0.04);
+      const suma = pesos.reduce((a, b) => a + b, 0);
+      return pesos.map(p => Math.round((total * p) / suma));
+    }
+    // Pareja: igual en los 12 meses
+    return Array(12).fill(Math.round(total / 12));
+  }
+
+  /* Nº de semanas de un mes (4 o 5). */
+  function semanasDelMes(anio, mesIdx) {
+    const dias = new Date(anio, mesIdx + 1, 0).getDate();
+    return Math.ceil(dias / 7);
+  }
+
   /* ── Formato de valores ── */
   function fmt(meta, v) {
     if (v === null || v === undefined || v === '') return '—';
@@ -449,46 +495,94 @@
   }
   function cambiarAnio(v) { anioActual = Number(v); render(); }
 
+  /* ── Selector de mes (visible en vista mensual/semanal) ── */
+  function pintarMesSelect() {
+    const sel = document.getElementById('mesSelect');
+    sel.innerHTML = MESES_LARGO.map((m, i) => `<option value="${i}" ${i === mesSel ? 'selected' : ''}>${m}</option>`).join('');
+    sel.style.display = (vista === 'anual') ? 'none' : '';
+  }
+  function cambiarMes(v) { mesSel = Number(v); render(); }
+  function cambiarVista(v) { vista = v; render(); }
+
   /* ── KPIs ── */
   function renderKPIs() {
-    const transc = mesesTranscurridos(anioActual);
+    const esAnual = (vista === 'anual');
     let sumaPct = 0, conObj = 0, alDia = 0, atras = 0;
-    metas.forEach(m => {
-      const d = datosAnio(m, anioActual);
-      const obj = objetivoAnual(m, anioActual);
-      const logr = sumaLograda(m, anioActual);
-      if (obj > 0) {
-        const pct = (logr / obj) * 100;
-        sumaPct += pct; conObj++;
-        // Esperado y logrado solo de los meses ya transcurridos
-        let espHasta = 0, logrHasta = 0;
-        for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
-        if (logrHasta >= espHasta) alDia++; else atras++;
-      }
-    });
+    if (esAnual) {
+      const transc = mesesTranscurridos(anioActual);
+      metas.forEach(m => {
+        const d = datosAnio(m, anioActual);
+        const obj = objetivoAnual(m, anioActual);
+        const logr = sumaLograda(m, anioActual);
+        if (obj > 0) {
+          sumaPct += (logr / obj) * 100; conObj++;
+          let espHasta = 0, logrHasta = 0;
+          for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
+          if (logrHasta >= espHasta) alDia++; else atras++;
+        }
+      });
+    } else {
+      // Mensual / semanal: enfocado al mes elegido
+      metas.forEach(m => {
+        const d = datosAnio(m, anioActual);
+        const objM = Number(d.objetivos[mesSel]) || 0;
+        const logrM = Number(d.meses[mesSel]) || 0;
+        if (objM > 0) {
+          sumaPct += (logrM / objM) * 100; conObj++;
+          if (logrM >= objM) alDia++; else atras++;
+        }
+      });
+    }
+    document.getElementById('lblKCump').textContent = esAnual ? 'Cumplimiento del año' : 'Cumplimiento del mes';
     document.getElementById('kMetas').textContent = metas.length;
     document.getElementById('kCump').textContent = (conObj ? Math.round(sumaPct / conObj) : 0) + '%';
     document.getElementById('kAldia').textContent = alDia;
     document.getElementById('kAtras').textContent = atras;
   }
 
-  /* ── Tarjetas de metas ── */
+  /* ── Tarjetas de metas (se adaptan a la vista) ── */
   function renderTarjetas() {
     const cont = document.getElementById('metasGrid');
-    let html = '';
     const transc = mesesTranscurridos(anioActual);
+    let html = '';
     metas.forEach(m => {
       const d = datosAnio(m, anioActual);
-      const obj = objetivoAnual(m, anioActual);
-      const logr = sumaLograda(m, anioActual);
-      const pct = obj > 0 ? Math.min(100, Math.round((logr / obj) * 100)) : 0;
-      const pctReal = obj > 0 ? Math.round((logr / obj) * 100) : 0;
-      let espHasta = 0, logrHasta = 0;
-      for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
-      const alDia = obj > 0 && logrHasta >= espHasta;
-      const estadoHtml = obj > 0
+      let logr, obj, sub, alDia;
+
+      if (vista === 'anual') {
+        obj = objetivoAnual(m, anioActual);
+        logr = sumaLograda(m, anioActual);
+        let espHasta = 0, logrHasta = 0;
+        for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
+        alDia = obj > 0 && logrHasta >= espHasta;
+        sub = 'de ' + fmt(m, obj) + ' en el año';
+      } else if (vista === 'mensual') {
+        obj = Number(d.objetivos[mesSel]) || 0;
+        logr = Number(d.meses[mesSel]) || 0;
+        alDia = obj > 0 && logr >= obj;
+        sub = 'de ' + fmt(m, obj) + ' en ' + MESES_LARGO[mesSel].toLowerCase();
+      } else { // semanal: meta del mes repartida por semanas
+        const semanas = semanasDelMes(anioActual, mesSel);
+        const objMes = Number(d.objetivos[mesSel]) || 0;
+        const logrMes = Number(d.meses[mesSel]) || 0;
+        obj = objMes / semanas;                 // meta por semana
+        logr = logrMes / semanas;               // ritmo logrado por semana (promedio)
+        alDia = objMes > 0 && logrMes >= (objMes * (Math.min(transc > mesSel ? semanas : 0, semanas) / semanas));
+        // Para el anillo usamos el avance del mes (logrado mes vs meta mes)
+        sub = '~' + fmt(m, Math.round(obj)) + ' por semana (' + semanas + ' sem.)';
+      }
+
+      const base = (vista === 'semanal') ? (Number(d.objetivos[mesSel]) || 0) : obj;
+      const hecho = (vista === 'semanal') ? (Number(d.meses[mesSel]) || 0) : logr;
+      const pctReal = base > 0 ? Math.round((hecho / base) * 100) : 0;
+      const pct = Math.max(0, Math.min(100, pctReal));
+      const estadoHtml = base > 0
         ? `<span class="meta-estado ${alDia ? 'aldia' : 'atras'}">${alDia ? '● Al día' : '● Atrasada'}</span>`
         : '';
+      const lineaLogrado = (vista === 'semanal')
+        ? `<div class="meta-logrado">Meta semanal: <b>${fmt(m, Math.round(obj))}</b></div>`
+        : `<div class="meta-logrado"><b>${fmt(m, logr)}</b></div>`;
+
       html += `
         <div class="meta-card ${m.id === metaSelId ? 'selected' : ''}" onclick="seleccionarMeta('${m.id}')">
           <div class="meta-acciones">
@@ -500,8 +594,8 @@
           </div>
           <div class="meta-info">
             <div class="meta-nombre">${m.nombre}</div>
-            <div class="meta-logrado"><b>${fmt(m, logr)}</b></div>
-            <div class="meta-obj">de ${fmt(m, obj)} en el año</div>
+            ${lineaLogrado}
+            <div class="meta-obj">${sub}</div>
             ${estadoHtml}
           </div>
         </div>`;
@@ -534,55 +628,42 @@
     if (!metaSelId || !metas.find(m => m.id === metaSelId)) metaSelId = metas[0].id;
     const meta = metas.find(m => m.id === metaSelId);
     const d = datosAnio(meta, anioActual);
-    const objAnual = objetivoAnual(meta, anioActual);
 
-    document.getElementById('dashMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
-    document.getElementById('tablaMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
+    if (vista === 'semanal') renderDashboardSemanal(meta, d);
+    else renderDashboardMensual(meta, d);
+  }
 
-    // Gráfico: barras = logrado, línea = meta de cada mes (puede variar mes a mes).
-    // El mes actual (si vemos el año en curso) se resalta y los demás se atenúan.
+  /* Vista anual y mensual: gráfico de 12 meses + tabla editable mes a mes. */
+  function renderDashboardMensual(meta, d) {
+    const focoMes = (vista === 'mensual') ? mesSel
+                  : (anioActual === new Date().getFullYear() ? new Date().getMonth() : -1);
+    document.getElementById('dashTitulo').innerHTML = '📈 Avance ' + (vista === 'mensual' ? 'del año (resaltado ' + MESES_LARGO[mesSel] + ')' : 'mensual') + ' — <b>' + meta.nombre + '</b> (' + anioActual + ')';
+    document.getElementById('tablaTitulo').innerHTML = '✏️ Programar y cargar avance — <b>' + meta.nombre + '</b> (' + anioActual + ')';
+    document.getElementById('monthHead').innerHTML = '<th>Mes</th><th class="num">Meta del mes</th><th class="num">Logrado</th><th class="num">Cumplimiento</th>';
+    document.getElementById('tablaHint').textContent = '💡 La columna punteada es la META de cada mes; la otra es lo LOGRADO. Todo se guarda solo.';
+
     const logrados = d.meses.map(v => (v === null || v === undefined || v === '') ? null : Number(v));
     const metasMes = d.objetivos.map(v => Number(v) || 0);
-    const mesActualIdx = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
-    const colores = logrados.map((_, i) => (mesActualIdx < 0 || i === mesActualIdx) ? meta.color : hexAlpha(meta.color, 0.4));
-    const bordes = logrados.map((_, i) => i === mesActualIdx ? '#1a1208' : 'transparent');
-    const grosores = logrados.map((_, i) => i === mesActualIdx ? 2 : 0);
+    const colores = logrados.map((_, i) => (focoMes < 0 || i === focoMes) ? meta.color : hexAlpha(meta.color, 0.4));
+    const bordes = logrados.map((_, i) => i === focoMes ? '#1a1208' : 'transparent');
+    const grosores = logrados.map((_, i) => i === focoMes ? 2 : 0);
     if (chartMeta) chartMeta.destroy();
     chartMeta = new Chart(document.getElementById('chartMeta'), {
-      data: {
-        labels: MESES,
-        datasets: [
-          { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: colores, borderColor: bordes, borderWidth: grosores, borderRadius: 6, maxBarThickness: 34, order: 2 },
-          { type: 'line', label: 'Meta del mes', data: metasMes, borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 3, pointBackgroundColor: '#c0392b', tension: 0, order: 1 }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color: '#5a4e3a', font: { size: 12 }, usePointStyle: true } },
-          tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(meta, c.parsed.y) } }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { color: '#9c8c72' } },
-          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#9c8c72', callback: (v) => fmtCorto(meta, v) } }
-        }
-      }
+      data: { labels: MESES, datasets: [
+        { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: colores, borderColor: bordes, borderWidth: grosores, borderRadius: 6, maxBarThickness: 34, order: 2 },
+        { type: 'line', label: 'Meta del mes', data: metasMes, borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 3, pointBackgroundColor: '#c0392b', tension: 0, order: 1 }
+      ]},
+      options: chartOpts(meta)
     });
 
-    // Tabla editable: cada mes tiene su META y su LOGRADO (ambos editables)
-    const mesActual = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
     let rows = '';
     for (let i = 0; i < 12; i++) {
-      const v = d.meses[i];
-      const om = Number(d.objetivos[i]) || 0;
+      const v = d.meses[i], om = Number(d.objetivos[i]) || 0;
       const cump = (om > 0 && v !== null && v !== undefined && v !== '') ? (Number(v) / om) * 100 : null;
       let cumpCls = 'warn', cumpTxt = '—';
-      if (cump !== null) {
-        cumpTxt = Math.round(cump) + '%';
-        cumpCls = cump >= 100 ? 'ok' : (cump >= 70 ? 'warn' : 'bad');
-      }
+      if (cump !== null) { cumpTxt = Math.round(cump) + '%'; cumpCls = cump >= 100 ? 'ok' : (cump >= 70 ? 'warn' : 'bad'); }
       rows += `
-        <tr class="${i === mesActual ? 'es-actual' : ''}">
+        <tr class="${i === focoMes ? 'es-actual' : ''}">
           <td class="mes-nombre">${MESES[i]}</td>
           <td class="num"><input class="inp-logrado inp-meta" type="number" step="any" min="0"
                 value="${d.objetivos[i] === null || d.objetivos[i] === undefined ? '' : d.objetivos[i]}"
@@ -594,6 +675,56 @@
         </tr>`;
     }
     document.getElementById('monthBody').innerHTML = rows;
+  }
+
+  /* Vista semanal: reparte la meta del mes elegido entre sus semanas (proyección). */
+  function renderDashboardSemanal(meta, d) {
+    const semanas = semanasDelMes(anioActual, mesSel);
+    const objMes = Number(d.objetivos[mesSel]) || 0;
+    const logrMes = Number(d.meses[mesSel]) || 0;
+    const metaSem = objMes / semanas;
+    const logrSemProm = logrMes / semanas; // promedio (el seguimiento real es mensual)
+    const labels = Array.from({ length: semanas }, (_, i) => 'Sem ' + (i + 1));
+
+    document.getElementById('dashTitulo').innerHTML = '📆 Ritmo semanal de <b>' + MESES_LARGO[mesSel] + '</b> — ' + meta.nombre;
+    document.getElementById('tablaTitulo').innerHTML = '📆 Meta por semana — <b>' + meta.nombre + '</b> (' + MESES_LARGO[mesSel] + ')';
+    document.getElementById('monthHead').innerHTML = '<th>Semana</th><th class="num">Meta de la semana</th><th class="num">Acumulado esperado</th>';
+    document.getElementById('tablaHint').textContent = '💡 La meta del mes (' + fmt(meta, objMes) + ') se reparte en ' + semanas + ' semanas. El registro de lo logrado se hace mes a mes en la vista mensual o anual.';
+
+    if (chartMeta) chartMeta.destroy();
+    chartMeta = new Chart(document.getElementById('chartMeta'), {
+      data: { labels, datasets: [
+        { type: 'bar', label: 'Meta de la semana', data: Array(semanas).fill(Math.round(metaSem)), backgroundColor: hexAlpha(meta.color, 0.85), borderRadius: 6, maxBarThickness: 46, order: 2 },
+        { type: 'line', label: 'Ritmo logrado (prom.)', data: Array(semanas).fill(Math.round(logrSemProm)), borderColor: '#4f9d4f', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#4f9d4f', tension: 0, order: 1 }
+      ]},
+      options: chartOpts(meta)
+    });
+
+    let rows = '';
+    for (let i = 0; i < semanas; i++) {
+      rows += `
+        <tr class="${(anioActual === new Date().getFullYear() && mesSel === new Date().getMonth() && Math.floor((new Date().getDate()-1)/7) === i) ? 'es-actual' : ''}">
+          <td class="mes-nombre">Semana ${i + 1}</td>
+          <td class="num">${fmt(meta, Math.round(metaSem))}</td>
+          <td class="num">${fmt(meta, Math.round(metaSem * (i + 1)))}</td>
+        </tr>`;
+    }
+    document.getElementById('monthBody').innerHTML = rows;
+  }
+
+  /* Opciones comunes del gráfico. */
+  function chartOpts(meta) {
+    return {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#5a4e3a', font: { size: 12 }, usePointStyle: true } },
+        tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(meta, c.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#9c8c72' } },
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#9c8c72', callback: (v) => fmtCorto(meta, v) } }
+      }
+    };
   }
 
   function setObjetivoMes(metaId, i, valor) {
@@ -622,8 +753,13 @@
   function render() {
     const hoy = new Date();
     document.getElementById('mesChip').textContent = '📅 ' + MESES_LARGO[hoy.getMonth()] + ' ' + hoy.getFullYear();
-    document.getElementById('anioTit').textContent = anioActual;
+    // Título de la sección según la vista
+    let titulo = 'Tus metas del ' + anioActual;
+    if (vista === 'mensual') titulo = 'Tus metas — ' + MESES_LARGO[mesSel] + ' ' + anioActual;
+    if (vista === 'semanal') titulo = 'Tus metas — ritmo semanal de ' + MESES_LARGO[mesSel] + ' ' + anioActual;
+    document.getElementById('metasTitle').textContent = titulo;
     pintarYearSelect();
+    pintarMesSelect();
     renderKPIs();
     renderTarjetas();
     pintarMetaPick();
@@ -641,30 +777,41 @@
     const tipo = document.getElementById('mTipo').value;
     document.getElementById('grpUnidad').style.display = (tipo === 'dinero') ? 'none' : 'flex';
   }
+  function onModoChange() {
+    const modo = document.getElementById('mModo').value;
+    document.getElementById('grpObjetivo').style.display = (modo === 'mensual') ? 'flex' : 'none';
+    document.getElementById('grpAnual').style.display    = (modo === 'anual')   ? 'flex' : 'none';
+  }
 
   function abrirModalMeta() {
     document.getElementById('metaForm').reset();
     document.getElementById('mId').value = '';
     document.getElementById('modalTitulo').innerHTML = 'Nueva <span>meta</span>';
     document.getElementById('lblAnio').textContent = anioActual;
-    document.getElementById('grpObjetivo').style.display = 'flex';  // al crear sí se pide meta mensual base
+    document.getElementById('mModo').value = 'mensual';
+    document.getElementById('hintMensual').textContent = 'Se usa para los 12 meses de ' + anioActual + '. Luego puedes ajustar cada mes en la tabla.';
     colorSel = COLORES[0];
     pintarColores();
     onTipoChange();
+    onModoChange();
     document.getElementById('overlay').classList.add('open');
   }
   function editarMeta(id) {
     const m = metas.find(x => x.id === id);
     if (!m) return;
+    document.getElementById('metaForm').reset();
     document.getElementById('mId').value = m.id;
     document.getElementById('modalTitulo').innerHTML = 'Editar <span>meta</span>';
     document.getElementById('mNombre').value = m.nombre;
     document.getElementById('mTipo').value = m.tipo || 'numero';
     document.getElementById('mUnidad').value = m.unidad || '';
-    document.getElementById('grpObjetivo').style.display = 'none';  // las metas por mes se editan en la tabla
+    document.getElementById('lblAnio').textContent = anioActual;
+    document.getElementById('mModo').value = 'mensual';
+    document.getElementById('hintMensual').textContent = 'Déjalo vacío para conservar las metas que ya cargaste en ' + anioActual + '. Si lo llenas, se reescriben los 12 meses.';
     colorSel = m.color || COLORES[0];
     pintarColores();
     onTipoChange();
+    onModoChange();
     document.getElementById('overlay').classList.add('open');
   }
   function cerrarModalMeta() { document.getElementById('overlay').classList.remove('open'); }
@@ -676,17 +823,27 @@
     const nombre = document.getElementById('mNombre').value.trim();
     const tipo = document.getElementById('mTipo').value;
     const unidad = tipo === 'dinero' ? '$' : document.getElementById('mUnidad').value.trim();
-    const metaMensual = Number(document.getElementById('mObjetivo').value) || 0;
+    const modo = document.getElementById('mModo').value;
+    const valMensual = document.getElementById('mObjetivo').value;
+    const valAnual = document.getElementById('mAnual').value;
+    const reparto = document.getElementById('mReparto').value;
     if (!nombre) return;
 
+    // Calcula los 12 objetivos según el modo (o null si no se debe tocar)
+    let nuevosObjetivos = null;
+    if (modo === 'mensual' && valMensual !== '') {
+      nuevosObjetivos = Array(12).fill(Number(valMensual) || 0);
+    } else if (modo === 'anual' && valAnual !== '') {
+      nuevosObjetivos = repartirAnual(Number(valAnual) || 0, reparto);
+    }
+
     if (id) {
-      // Editar: solo identidad. Las metas de cada mes se ajustan en la tabla.
       const m = metas.find(x => x.id === id);
       m.nombre = nombre; m.tipo = tipo; m.unidad = unidad; m.color = colorSel;
+      if (nuevosObjetivos) datosAnio(m, anioActual).objetivos = nuevosObjetivos;  // reprogramar si se indicó
     } else {
-      // Crear: la meta mensual base llena los 12 meses (luego se ajusta en la tabla).
       const nueva = { id: 'meta_' + Date.now(), nombre, tipo, unidad, color: colorSel, anios: {} };
-      nueva.anios[anioActual] = { objetivos: Array(12).fill(metaMensual), meses: Array(12).fill(null) };
+      nueva.anios[anioActual] = { objetivos: nuevosObjetivos || Array(12).fill(0), meses: Array(12).fill(null) };
       metas.push(nueva);
       metaSelId = nueva.id;
     }
