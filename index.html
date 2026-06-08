@@ -299,7 +299,7 @@
       <script>
         // Si ya hay una sesión guardada, entrar directo (sin volver a pedir login)
         if (localStorage.getItem('crm_sesion') || sessionStorage.getItem('crm_sesion')) {
-          window.location.replace('dashboard.html');
+          window.location.replace('inicio.html');
         }
 
         // Llenar el selector con los usuarios del sistema (guardados en Ajustes → Usuarios)
@@ -329,7 +329,7 @@
           store.setItem('crm_sesion', 'activa');
           store.setItem('crm_usuario', uid);
           store.setItem('crm_rol', rol);
-          window.location.href = 'dashboard.html';
+          window.location.href = 'inicio.html';
         });
       </script>
 
