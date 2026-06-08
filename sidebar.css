@@ -118,7 +118,7 @@
   display: block;
   margin-top: 14px;
   width: 100%;
-  text-align: left;
+  text-align: center;
   font-size: 13px;
   letter-spacing: 0.3px;
   color: #C9A84C;
@@ -279,7 +279,7 @@
   .sidebar.collapsed.mobile-open .user-role { display: block; }
   .sidebar.collapsed.mobile-open .logout-btn,
   .sidebar.mobile-open .logout-btn {
-    text-align: left;
+    text-align: center;
     font-size: 14px;
     padding: 12px 14px;
     min-height: 44px;
