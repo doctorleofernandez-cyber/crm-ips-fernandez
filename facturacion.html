@@ -169,7 +169,7 @@
     }
 
     .stat-card.total::before  { background: var(--dorado); }
-    .stat-card.cobrado::before { background: var(--verde); }
+    .stat-card.pagado::before { background: var(--verde); }
     .stat-card.pendiente::before { background: var(--amarillo); }
     .stat-card.vencido::before  { background: var(--rojo); }
 
@@ -190,7 +190,7 @@
     }
 
     .stat-card.total   .stat-value { color: var(--dorado); }
-    .stat-card.cobrado .stat-value { color: var(--verde); }
+    .stat-card.pagado .stat-value { color: var(--verde); }
     .stat-card.pendiente .stat-value { color: var(--amarillo); }
     .stat-card.vencido .stat-value { color: var(--rojo); }
 
@@ -242,7 +242,7 @@
 
     .chip:hover { color: #1a1208; border-color: rgba(201,168,76,0.30); }
     .chip.active { background: rgba(201,168,76,0.14); color: #7a5c1e; border-color: rgba(201,168,76,0.35); }
-    .chip.cobrado.active   { background: rgba(168,137,63,0.12); color: var(--verde); border-color: rgba(168,137,63,0.3); }
+    .chip.pagado.active   { background: rgba(168,137,63,0.12); color: var(--verde); border-color: rgba(168,137,63,0.3); }
     .chip.pendiente.active { background: rgba(224,164,53,0.12); color: var(--amarillo); border-color: rgba(224,164,53,0.3); }
     .chip.vencido.active   { background: rgba(224,85,85,0.12); color: var(--rojo); border-color: rgba(224,85,85,0.3); }
 
@@ -332,8 +332,8 @@
 
     .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-    .badge.cobrado   { background: rgba(168,137,63,0.12); color: var(--verde); }
-    .badge.cobrado .badge-dot   { background: var(--verde); }
+    .badge.pagado   { background: rgba(168,137,63,0.12); color: var(--verde); }
+    .badge.pagado .badge-dot   { background: var(--verde); }
     .badge.pendiente { background: rgba(224,164,53,0.12); color: var(--amarillo); }
     .badge.pendiente .badge-dot { background: var(--amarillo); }
     .badge.vencido   { background: rgba(224,85,85,0.12); color: var(--rojo); }
@@ -697,10 +697,10 @@
         <div class="stat-value" id="statTotal">$0</div>
         <div class="stat-count" id="statTotalCnt">0 facturas</div>
       </div>
-      <div class="stat-card cobrado">
-        <div class="stat-label">Cobrado</div>
-        <div class="stat-value" id="statCobrado">$0</div>
-        <div class="stat-count" id="statCobradoCnt">0 facturas</div>
+      <div class="stat-card pagado">
+        <div class="stat-label">Pagado</div>
+        <div class="stat-value" id="statPagado">$0</div>
+        <div class="stat-count" id="statPagadoCnt">0 facturas</div>
       </div>
       <div class="stat-card pendiente">
         <div class="stat-label">Pendiente</div>
@@ -722,7 +722,7 @@
       </div>
       <div class="filter-chips">
         <button class="chip active"     data-estado="" onclick="setFiltro(this)">Todas</button>
-        <button class="chip cobrado"    data-estado="cobrado"   onclick="setFiltro(this)">Cobrado</button>
+        <button class="chip pagado"    data-estado="pagado"   onclick="setFiltro(this)">Pagado</button>
         <button class="chip pendiente"  data-estado="pendiente" onclick="setFiltro(this)">Pendiente</button>
         <button class="chip vencido"    data-estado="vencido"   onclick="setFiltro(this)">Vencido</button>
       </div>
@@ -803,7 +803,7 @@
             <label>Estado</label>
             <select id="fEstado">
               <option value="pendiente">Pendiente</option>
-              <option value="cobrado">Cobrado</option>
+              <option value="pagado">Pagado</option>
               <option value="vencido">Vencido</option>
             </select>
           </div>
@@ -819,6 +819,12 @@
   <script>
     // ── DATOS ──
     let facturas = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+    // Migración: facturas viejas con estado 'cobrado' pasan a 'pagado' (proveedores)
+    (function () {
+      let cambio = false;
+      facturas.forEach(f => { if (f.estado === 'cobrado') { f.estado = 'pagado'; cambio = true; } });
+      if (cambio) localStorage.setItem('facturas_ips', JSON.stringify(facturas));
+    })();
     let filtroEstado = '';
     let editandoId = null;
     const POR_PAGINA = 10;
@@ -843,7 +849,7 @@
     function actualizarStats() {
       const fmt = n => '$' + n.toLocaleString('es-CO');
 
-      const cobradas  = facturas.filter(f => f.estado === 'cobrado');
+      const pagadas  = facturas.filter(f => f.estado === 'pagado');
       const pendientes = facturas.filter(f => f.estado === 'pendiente');
       const vencidas  = facturas.filter(f => f.estado === 'vencido');
       const total = facturas.reduce((s, f) => s + Number(f.valor), 0);
@@ -851,8 +857,8 @@
       document.getElementById('statTotal').textContent    = fmt(total);
       document.getElementById('statTotalCnt').textContent = facturas.length + ' factura' + (facturas.length !== 1 ? 's' : '');
 
-      document.getElementById('statCobrado').textContent    = fmt(cobradas.reduce((s,f)=>s+Number(f.valor),0));
-      document.getElementById('statCobradoCnt').textContent = cobradas.length + ' factura' + (cobradas.length !== 1 ? 's' : '');
+      document.getElementById('statPagado').textContent    = fmt(pagadas.reduce((s,f)=>s+Number(f.valor),0));
+      document.getElementById('statPagadoCnt').textContent = pagadas.length + ' factura' + (pagadas.length !== 1 ? 's' : '');
 
       document.getElementById('statPendiente').textContent    = fmt(pendientes.reduce((s,f)=>s+Number(f.valor),0));
       document.getElementById('statPendienteCnt').textContent = pendientes.length + ' factura' + (pendientes.length !== 1 ? 's' : '');

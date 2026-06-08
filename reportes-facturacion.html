@@ -225,8 +225,8 @@
       </div>
       <div class="kpi-card k2">
         <div class="kpi-top"><span class="kpi-icon">✅</span></div>
-        <div class="kpi-value" id="kpiCobrado">$0</div>
-        <div class="kpi-label">Cobrado</div>
+        <div class="kpi-value" id="kpiPagado">$0</div>
+        <div class="kpi-label">Pagado</div>
       </div>
       <div class="kpi-card k3">
         <div class="kpi-top"><span class="kpi-icon">⏳</span></div>
@@ -259,7 +259,7 @@
         <div class="chart-header">
           <div>
             <div class="chart-title">Estado de facturas</div>
-            <div class="chart-sub">Cobrado · Pendiente · Vencido</div>
+            <div class="chart-sub">Pagado · Pendiente · Vencido</div>
           </div>
         </div>
         <div class="chart-wrap" style="height:160px">
@@ -302,6 +302,8 @@
   <script>
     // ── Reportes financieros: leen las facturas guardadas ──
     const facturas = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+    // Normaliza facturas viejas: 'cobrado' → 'pagado' (manejo de proveedores)
+    facturas.forEach(f => { if (f.estado === 'cobrado') f.estado = 'pagado'; });
     const C = { dorado:'#C9A84C', doradoT:'rgba(201,168,76,0.15)', verde:'#a8893f',
                 azul:'#4C8FCA', rojo:'#e05555', amarillo:'#e0a435',
                 grid:'rgba(0,0,0,0.07)', text:'#5a4e3a' };
@@ -309,13 +311,13 @@
     const fmt = n => '$' + Number(n || 0).toLocaleString('es-CO');
     const sum = arr => arr.reduce((s, f) => s + Number(f.valor || 0), 0);
 
-    const cobr = facturas.filter(f => f.estado === 'cobrado');
+    const cobr = facturas.filter(f => f.estado === 'pagado');
     const pend = facturas.filter(f => f.estado === 'pendiente');
     const venc = facturas.filter(f => f.estado === 'vencido');
 
     // KPIs
     document.getElementById('kpiTotal').textContent     = fmt(sum(facturas));
-    document.getElementById('kpiCobrado').textContent   = fmt(sum(cobr));
+    document.getElementById('kpiPagado').textContent   = fmt(sum(cobr));
     document.getElementById('kpiPendiente').textContent = fmt(sum(pend));
     document.getElementById('kpiVencido').textContent   = fmt(sum(venc));
 
@@ -339,12 +341,12 @@
     document.getElementById('donutTotal').textContent = facturas.length;
     new Chart(document.getElementById('chartEstado'), {
       type: 'doughnut',
-      data: { labels: ['Cobrado','Pendiente','Vencido'], datasets: [{ data: datosEstado,
+      data: { labels: ['Pagado','Pendiente','Vencido'], datasets: [{ data: datosEstado,
         backgroundColor: [C.verde, C.amarillo, C.rojo], borderColor: '#fff', borderWidth: 3, hoverOffset: 4 }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '72%',
         plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } } } }
     });
-    const labE = ['Cobrado','Pendiente','Vencido'], colE = [C.verde, C.amarillo, C.rojo];
+    const labE = ['Pagado','Pendiente','Vencido'], colE = [C.verde, C.amarillo, C.rojo];
     document.getElementById('legendEstado').innerHTML = labE.map((l, i) => `
       <div class="legend-item"><div class="legend-dot" style="background:${colE[i]}"></div>${l}<span class="legend-val">${datosEstado[i]}</span></div>`).join('');
 
