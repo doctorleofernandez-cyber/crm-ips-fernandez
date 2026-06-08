@@ -41,7 +41,7 @@ var PAGINA_MODULO = {
   'pipeline.html':'contactos', 'contactos.html':'contactos', 'contacto-perfil.html':'contactos',
   'citas.html':'calendario',
   'chat.html':'comunicacion', 'correo.html':'comunicacion', 'chats-equipo.html':'comunicacion', 'plantillas.html':'comunicacion',
-  'facturacion.html':'facturacion',
+  'facturacion.html':'facturacion', 'reportes-facturacion.html':'facturacion',
   'reportes.html':'reportes', 'insights.html':'reportes',
   'difusiones.html':'marketing', 'bots.html':'marketing', 'agente-ia.html':'marketing',
   'ajustes.html':'ajustes'

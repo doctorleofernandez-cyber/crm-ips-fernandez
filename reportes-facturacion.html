@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reportes Financieros | IPS Fernández O&M</title>
+  <script src="tema.js"></script>
+  <link rel="stylesheet" href="light-theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #000000;
+      --negro-suave: #111111;
+      --negro-panel: rgba(14,14,22,0.82);
+      --dorado: #C9A84C;
+      --dorado-claro: #e2c47a;
+      --blanco: #ffffff;
+      --gris: #888888;
+      --verde: #a8893f;
+      --rojo: #e05555;
+      --azul: #4C8FCA;
+      --morado: #9B59B6;
+      --naranja: #E67E22;
+      --amarillo: #e0a435;
+    }
+
+    body { background: linear-gradient(145deg, #fdf8f0 0%, #f7f1e4 50%, #faf5ea 100%); font-family: 'Inter', sans-serif; color: #1a1208; display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; height: 100vh; position: fixed; top: 0; left: 0; background: var(--negro-panel); border-right: 1px solid rgba(201,168,76,0.15); display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 22px 18px; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 40px; height: auto; flex-shrink: 0; filter: drop-shadow(0 0 6px rgba(201,168,76,0.2)); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--blanco); }
+    .logo-text span { color: var(--dorado); }
+    .logo-sub { font-size: 9px; color: var(--gris); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+    .nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 3px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.15); border-radius: 2px; }
+    .nav-section { font-size: 9px; color: #8c8472; letter-spacing: 2px; text-transform: uppercase; padding: 8px 10px 3px; margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--gris); transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: rgba(201,168,76,0.06); color: var(--blanco); }
+    .nav-item.active { background: rgba(201,168,76,0.12); color: var(--dorado); }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--dorado); color: var(--negro); padding: 2px 6px; border-radius: 10px; }
+    .nav-badge.alt { background: rgba(201,168,76,0.15); color: var(--dorado); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-info { display: flex; align-items: center; gap: 9px; }
+    .user-av { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dorado); font-weight: 700; flex-shrink: 0; }
+    .user-name { font-size: 12px; font-weight: 500; }
+    .user-role { font-size: 10px; color: var(--gris); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 220px; flex: 1; padding: 32px 36px; }
+
+    /* Topbar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1a1208; }
+    .page-title span { color: var(--dorado); }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    /* Filtro de período */
+    .period-tabs { display: flex; background: rgba(255,255,255,0.55); border: 1px solid rgba(0,0,0,0.10); border-radius: 8px; padding: 3px; gap: 2px; }
+    .period-btn { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 6px; border: none; background: transparent; color: #5a4e3a; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .period-btn:hover { color: #1a1208; }
+    .period-btn.active { background: rgba(201,168,76,0.16); color: #7a5c1e; }
+
+    .btn-export { font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.10); color: #5a4e3a; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+    .btn-export:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35); color: #7a5c1e; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+
+    .kpi-card { background: rgba(255,255,255,0.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 20px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); position: relative; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .kpi-card:hover { border-color: rgba(201,168,76,0.35); box-shadow: 0 10px 28px rgba(120,98,40,0.13); }
+    .kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; }
+    .kpi-card.k1::after,
+    .kpi-card.k2::after,
+    .kpi-card.k3::after,
+    .kpi-card.k4::after { background: var(--dorado); }
+
+    .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .kpi-icon { font-size: 22px; }
+    .kpi-trend { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .kpi-trend.up   { background: rgba(168,137,63,0.12); color: var(--verde); }
+    .kpi-trend.down { background: rgba(224,85,85,0.12); color: var(--rojo); }
+    .kpi-trend.neu  { background: rgba(255,255,255,0.06); color: #9a9180; }
+
+    .kpi-value { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .kpi-card .kpi-value { color: #7a5c1e; }
+
+    .kpi-label { font-size: 11px; color: #9c8c72; }
+
+    /* ── GRÁFICAS ── */
+    .charts-row { display: grid; gap: 14px; margin-bottom: 14px; }
+    .charts-row.cols-2 { grid-template-columns: 2fr 1fr; }
+    .charts-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .charts-row.cols-2b { grid-template-columns: 1fr 1fr; }
+
+    .chart-card { background: rgba(255,255,255,0.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 22px; box-shadow: 0 4px 18px rgba(120,98,40,0.07); }
+
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .chart-title { font-size: 13px; font-weight: 600; color: #1a1208; }
+    .chart-sub { font-size: 11px; color: #9c8c72; margin-top: 2px; }
+    .chart-badge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: rgba(201,168,76,0.14); color: #7a5c1e; }
+
+    .chart-wrap { position: relative; }
+
+    /* ── TABLA TOP TRATAMIENTOS ── */
+    .top-list { display: flex; flex-direction: column; gap: 10px; }
+    .top-item { display: flex; align-items: center; gap: 12px; }
+    .top-rank { font-size: 11px; font-weight: 700; color: #9c8c72; width: 18px; text-align: center; flex-shrink: 0; }
+    .top-emoji { font-size: 18px; flex-shrink: 0; }
+    .top-body { flex: 1; min-width: 0; }
+    .top-name { font-size: 12px; font-weight: 500; color: #1a1208; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-bar-wrap { height: 4px; background: rgba(0,0,0,0.07); border-radius: 2px; }
+    .top-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--dorado), var(--dorado-claro)); transition: width 0.6s ease; }
+    .top-count { font-size: 12px; font-weight: 600; color: #7a5c1e; flex-shrink: 0; }
+
+    /* ── TABLA DE CITAS RECIENTES ── */
+    .recent-table { width: 100%; border-collapse: collapse; }
+    .recent-table thead th { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #9c8c72; padding: 0 0 10px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .recent-table tbody td { padding: 11px 0; font-size: 12px; color: #5a4e3a; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
+    .recent-table tbody tr:last-child td { border-bottom: none; }
+    .rt-name { font-size: 13px; font-weight: 500; color: #1a1208; }
+    .rt-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .rt-badge.completada { background: rgba(168,137,63,0.12); color: var(--verde); }
+    .rt-badge.pendiente  { background: rgba(224,164,53,0.12); color: var(--amarillo); }
+    .rt-badge.confirmada { background: rgba(76,143,202,0.12); color: var(--azul); }
+    .rt-badge.cancelada  { background: rgba(224,85,85,0.12); color: var(--rojo); }
+
+    /* Donut centro */
+    .donut-center { text-align: center; margin-top: 12px; }
+    .donut-total { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #7a5c1e; }
+    .donut-lbl { font-size: 11px; color: #9c8c72; }
+
+    /* Leyenda custom */
+    .legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5a4e3a; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-val { margin-left: auto; font-weight: 600; color: #1a1208; }
+    .sidebar { background: #0e0e16 !important; }
+
+    @media (max-width: 760px) {
+      .main { margin-left: 0; padding: 70px 14px 28px; }
+      .topbar { gap: 10px; margin-bottom: 18px; }
+      .page-title { font-size: 20px; flex: 1 1 100%; }
+      .topbar-right { width: 100%; gap: 8px; }
+      .period-tabs { flex: 1; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .period-btn { flex: 1 0 auto; padding: 8px 12px; font-size: 11.5px; min-height: 38px; white-space: nowrap; }
+      .btn-export { padding: 10px 14px; min-height: 40px; font-size: 12px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+      .kpi-card { padding: 14px; }
+      .kpi-value { font-size: 22px; }
+      .kpi-icon { font-size: 18px; }
+      .charts-row.cols-2,
+      .charts-row.cols-3,
+      .charts-row.cols-2b { grid-template-columns: 1fr; }
+      .chart-card { padding: 16px 14px; }
+      .chart-wrap canvas { max-width: 100% !important; height: auto !important; }
+      .chart-card .recent-table { min-width: 500px; }
+      .chart-card:has(.recent-table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .recent-table thead th,
+      .recent-table tbody td { font-size: 11.5px; }
+    }
+  </style>
+<link rel="stylesheet" href="sidebar.css?v=6" />
+<link rel="stylesheet" href="crm.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="IPS Fernández" class="logo-icon" />
+      <div>
+        <div class="logo-text">IPS Fernández <span>O&M</span></div>
+        <div class="logo-sub">Facturación</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="inicio.html" class="nav-item"><span class="nav-icon">🏠</span> Menú principal</a>
+
+      <div class="nav-divider"></div>
+      <div class="nav-section">Facturación</div>
+      <a href="facturacion.html" class="nav-item"><span class="nav-icon">🧾</span> Facturas</a>
+      <a href="reportes-facturacion.html" class="nav-item active"><span class="nav-icon">📊</span> Reportes</a>
+
+      <div class="nav-divider"></div>
+      <a href="ajustes.html" class="nav-item"><span class="nav-icon">⚙</span> Ajustes</a>
+        </nav>
+    <button class="sidebar-collapse-btn" id="sidebar-toggle" title="Colapsar menú"><span class="collapse-icon">◀</span></button>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-av">LF</div>
+        <div>
+          <div class="user-name">IPS Fernández O & M</div>
+          <div class="user-role">doctorleofernandez</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="cerrarSesion()">→ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <div class="topbar">
+      <h1 class="page-title">Reportes <span>Financieros</span></h1>
+      <div class="topbar-right">
+        <span class="chart-badge" id="badgeAnio">2026</span>
+        <button class="btn-export" onclick="exportarReporte()">↓ Exportar PDF</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card k1">
+        <div class="kpi-top"><span class="kpi-icon">💰</span></div>
+        <div class="kpi-value" id="kpiTotal">$0</div>
+        <div class="kpi-label">Total facturado</div>
+      </div>
+      <div class="kpi-card k2">
+        <div class="kpi-top"><span class="kpi-icon">✅</span></div>
+        <div class="kpi-value" id="kpiCobrado">$0</div>
+        <div class="kpi-label">Cobrado</div>
+      </div>
+      <div class="kpi-card k3">
+        <div class="kpi-top"><span class="kpi-icon">⏳</span></div>
+        <div class="kpi-value" id="kpiPendiente">$0</div>
+        <div class="kpi-label">Pendiente</div>
+      </div>
+      <div class="kpi-card k4">
+        <div class="kpi-top"><span class="kpi-icon">⚠️</span></div>
+        <div class="kpi-value" id="kpiVencido">$0</div>
+        <div class="kpi-label">Vencido</div>
+      </div>
+    </div>
+
+    <!-- Fila 1: Ingresos por mes + Estado de facturas -->
+    <div class="charts-row cols-2">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Ingresos mensuales</div>
+            <div class="chart-sub">Facturación total por mes — COP</div>
+          </div>
+          <span class="chart-badge" id="badgeIngresos">2026</span>
+        </div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="chartIngresos"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Estado de facturas</div>
+            <div class="chart-sub">Cobrado · Pendiente · Vencido</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px">
+          <canvas id="chartEstado"></canvas>
+        </div>
+        <div class="donut-center">
+          <div class="donut-total" id="donutTotal">0</div>
+          <div class="donut-lbl">facturas</div>
+        </div>
+        <div class="legend" id="legendEstado"></div>
+      </div>
+    </div>
+
+    <!-- Fila 2: Facturas recientes -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Facturas recientes</div>
+            <div class="chart-sub">Últimas registradas</div>
+          </div>
+          <a href="facturacion.html" style="font-size:11px;color:var(--dorado);text-decoration:none;opacity:0.7">Ver todas →</a>
+        </div>
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Concepto</th>
+              <th>Valor</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="recentFacturas"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // ── Reportes financieros: leen las facturas guardadas ──
+    const facturas = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+    const C = { dorado:'#C9A84C', doradoT:'rgba(201,168,76,0.15)', verde:'#a8893f',
+                azul:'#4C8FCA', rojo:'#e05555', amarillo:'#e0a435',
+                grid:'rgba(0,0,0,0.07)', text:'#5a4e3a' };
+    Chart.defaults.color = C.text; Chart.defaults.borderColor = C.grid; Chart.defaults.font.family = 'Inter';
+    const fmt = n => '$' + Number(n || 0).toLocaleString('es-CO');
+    const sum = arr => arr.reduce((s, f) => s + Number(f.valor || 0), 0);
+
+    const cobr = facturas.filter(f => f.estado === 'cobrado');
+    const pend = facturas.filter(f => f.estado === 'pendiente');
+    const venc = facturas.filter(f => f.estado === 'vencido');
+
+    // KPIs
+    document.getElementById('kpiTotal').textContent     = fmt(sum(facturas));
+    document.getElementById('kpiCobrado').textContent   = fmt(sum(cobr));
+    document.getElementById('kpiPendiente').textContent = fmt(sum(pend));
+    document.getElementById('kpiVencido').textContent   = fmt(sum(venc));
+
+    // Ingresos por mes (barras)
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const ingresosMes = new Array(12).fill(0);
+    facturas.forEach(f => { if (f.fecha) { const m = parseInt(f.fecha.split('-')[1]) - 1; if (m >= 0 && m < 12) ingresosMes[m] += Number(f.valor || 0); } });
+    new Chart(document.getElementById('chartIngresos'), {
+      type: 'bar',
+      data: { labels: meses, datasets: [{ label: 'Ingresos', data: ingresosMes,
+        backgroundColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : C.doradoT),
+        borderColor: meses.map((_, i) => i === new Date().getMonth() ? C.dorado : 'rgba(201,168,76,0.3)'),
+        borderWidth: 1, borderRadius: 5 }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) } } },
+        scales: { x: { grid: { color: C.grid } }, y: { grid: { color: C.grid }, ticks: { callback: v => '$' + (v/1000000).toFixed(1) + 'M' } } } }
+    });
+
+    // Estado de facturas (donut)
+    const datosEstado = [cobr.length, pend.length, venc.length];
+    document.getElementById('donutTotal').textContent = facturas.length;
+    new Chart(document.getElementById('chartEstado'), {
+      type: 'doughnut',
+      data: { labels: ['Cobrado','Pendiente','Vencido'], datasets: [{ data: datosEstado,
+        backgroundColor: [C.verde, C.amarillo, C.rojo], borderColor: '#fff', borderWidth: 3, hoverOffset: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } } } }
+    });
+    const labE = ['Cobrado','Pendiente','Vencido'], colE = [C.verde, C.amarillo, C.rojo];
+    document.getElementById('legendEstado').innerHTML = labE.map((l, i) => `
+      <div class="legend-item"><div class="legend-dot" style="background:${colE[i]}"></div>${l}<span class="legend-val">${datosEstado[i]}</span></div>`).join('');
+
+    // Facturas recientes
+    const recientes = [...facturas].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '')).slice(0, 8);
+    document.getElementById('recentFacturas').innerHTML = recientes.length
+      ? recientes.map(f => `
+          <tr>
+            <td><div class="rt-name">${f.paciente || '—'}</div></td>
+            <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.concepto || '—'}</td>
+            <td style="font-family:'Playfair Display',serif;color:var(--dorado-claro)">${fmt(f.valor)}</td>
+            <td><span class="rt-badge ${f.estado}">${f.estado}</span></td>
+          </tr>`).join('')
+      : `<tr><td colspan="4" style="text-align:center;padding:24px;color:#9c8c72">Sin facturas registradas</td></tr>`;
+
+    function exportarReporte() { alert('La exportación a PDF estará disponible al conectar el backend.'); }
+  </script>
+  <script src="sidebar.js?v=9"></script>
+</body>
+</html>
