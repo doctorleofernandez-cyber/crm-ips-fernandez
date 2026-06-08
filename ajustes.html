@@ -1307,20 +1307,46 @@
       <div class="section" id="sec-datos">
         <div class="section-header">
           <h2>Datos de <span>prueba</span></h2>
-          <p>Carga contactos de ejemplo para explorar el CRM sin tener que crearlos a mano.</p>
-        </div>
-        <div class="config-card">
-          <div class="config-card-title">🧪 Cargar datos de prueba</div>
-          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
-            Carga 10 contactos de ejemplo en distintas etapas del pipeline, junto con citas y facturas, para que pueda explorar todas las funciones del CRM (pipeline, gamificación, reportes) sin crearlos a mano.
-          </p>
-          <button class="btn-save" onclick="cargarDatosDemo()">📥 &nbsp;Cargar datos de prueba</button>
+          <p>Carga datos de ejemplo en cada módulo para explorarlo sin crearlos a mano, o límpialos para empezar de cero. Cada módulo es independiente.</p>
         </div>
 
         <div class="config-card">
-          <div class="config-card-title">🧹 Limpiar datos</div>
+          <div class="config-card-title">🏥 CRM Comercial</div>
           <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
-            Borra todos los datos del CRM (contactos, citas, facturas, difusiones, plantillas, bots, tareas, notas y puntos) para empezar una prueba desde cero. Conserva el tema y las preferencias visuales.
+            Carga 10 contactos de ejemplo en distintas etapas del pipeline, junto con sus citas, para explorar pipeline, calendario, gamificación y reportes comerciales.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+            <button class="btn-save" style="margin-top:0" onclick="cargarDemoCRM()">📥 &nbsp;Cargar datos del CRM</button>
+            <button class="btn-danger" onclick="limpiarCRM()">🧹 &nbsp;Limpiar CRM</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🧾 Facturación</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Carga 6 facturas de proveedores de ejemplo (pagadas, pendientes y vencidas) para explorar el módulo de facturación y sus reportes financieros.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+            <button class="btn-save" style="margin-top:0" onclick="cargarDemoFacturacion()">📥 &nbsp;Cargar facturas</button>
+            <button class="btn-danger" onclick="limpiarFacturacion()">🧹 &nbsp;Limpiar facturación</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🎯 Metas</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Carga 3 metas de ejemplo (pacientes, ingresos y citas) con avance mes a mes, para explorar el panel de metas.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+            <button class="btn-save" style="margin-top:0" onclick="cargarDemoMetas()">📥 &nbsp;Cargar metas</button>
+            <button class="btn-danger" onclick="limpiarMetas()">🧹 &nbsp;Limpiar metas</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-title">🧹 Limpiar todo</div>
+          <p style="font-size:12.5px;color:#5a4e3a;margin-bottom:14px;line-height:1.5">
+            Borra de una vez los datos de los tres módulos (CRM, Facturación y Metas) y la configuración operativa, para empezar una prueba desde cero. Conserva el tema y las preferencias visuales.
           </p>
           <button class="btn-danger" onclick="limpiarDatos()">🧹 &nbsp;Limpiar todo</button>
         </div>
@@ -1764,8 +1790,10 @@
       setTimeout(() => { window.location.reload(); }, 1200);
     }
 
-    // ── DATOS DE PRUEBA ──
-    function cargarDatosDemo() {
+    // ════════ DATOS DE PRUEBA (por módulo) ════════
+
+    // ── CRM Comercial: contactos + citas ──
+    function cargarDemoCRM() {
       const existentes = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
       if (existentes.length > 0 &&
           !confirm(`Ya tiene ${existentes.length} contacto(s) registrados. ¿Agregar los 10 de prueba de todas formas?`)) return;
@@ -1775,7 +1803,6 @@
       const diasAtras = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() - n); return iso(d); };
       const diasAdelante = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() + n); return iso(d); };
       const uid = () => 'p' + Date.now() + Math.random().toString(36).slice(2, 6);
-      const uidF = () => 'f' + Date.now() + Math.random().toString(36).slice(2, 6);
       const uidC = () => 'c' + Date.now() + Math.random().toString(36).slice(2, 6);
 
       const contactos = [
@@ -1802,27 +1829,80 @@
         { id: uidC(), pacienteId: contactos[6].id, fecha: diasAtras(30),    hora: '16:00', tipoCita: 'Blanqueamiento',      doctor: 'Dr. Fernández', estado: 'completada', notas: '' },
       ];
 
-      // Facturas
-      const facturas = [
-        { id: uidF(), numero: 'F-2026-001', pacienteId: contactos[2].id, paciente: 'Ana Sofía Martínez López',   concepto: 'Limpieza dental + Profilaxis',          valor: 180000, fecha: diasAtras(15), estado: 'pagado'   },
-        { id: uidF(), numero: 'F-2026-002', pacienteId: contactos[3].id, paciente: 'Juan David Hernández Torres', concepto: 'Endodoncia diente 36',                   valor: 750000, fecha: diasAtras(20), estado: 'pagado'   },
-        { id: uidF(), numero: 'F-2026-003', pacienteId: contactos[3].id, paciente: 'Juan David Hernández Torres', concepto: 'Corona porcelana — diente 36',           valor: 950000, fecha: diasAtras(10), estado: 'pendiente' },
-        { id: uidF(), numero: 'F-2026-004', pacienteId: contactos[6].id, paciente: 'Diana Marcela Vargas Ortiz',  concepto: 'Blanqueamiento dental',                   valor: 420000, fecha: diasAtras(30), estado: 'pagado'   },
-        { id: uidF(), numero: 'F-2026-005', pacienteId: contactos[7].id, paciente: 'Roberto Mejía Quintero',      concepto: 'Implante dental + corona',                valor:2800000, fecha: diasAtras(8),  estado: 'pendiente' },
-        { id: uidF(), numero: 'F-2026-006', pacienteId: contactos[9].id, paciente: 'José Luis Patiño Bernal',     concepto: 'Tratamiento completo (3 sesiones)',       valor:1500000, fecha: diasAtras(85), estado: 'pagado'   },
-        { id: uidF(), numero: 'F-2026-007', pacienteId: contactos[7].id, paciente: 'Roberto Mejía Quintero',      concepto: 'Control y radiografía',                   valor:  80000, fecha: diasAtras(40), estado: 'vencido'   },
-      ];
-
-      // Mezclar con datos existentes y guardar
+      // Mezclar con datos existentes y guardar (solo CRM: contactos + citas)
       const existenContactos = JSON.parse(localStorage.getItem('pacientes_ips') || '[]');
       const existenCitas     = JSON.parse(localStorage.getItem('citas_ips')      || '[]');
-      const existenFacts     = JSON.parse(localStorage.getItem('facturas_ips')   || '[]');
-
       localStorage.setItem('pacientes_ips', JSON.stringify([...existenContactos, ...contactos]));
       localStorage.setItem('citas_ips',     JSON.stringify([...existenCitas, ...citas]));
-      localStorage.setItem('facturas_ips',  JSON.stringify([...existenFacts, ...facturas]));
 
-      showToast('10 contactos + 7 citas + 7 facturas cargados');
+      showToast('CRM: 10 contactos + 7 citas cargados');
+    }
+
+    // ── Facturación: facturas de PROVEEDORES ──
+    function cargarDemoFacturacion() {
+      const existen = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+      if (existen.length > 0 &&
+          !confirm(`Ya tiene ${existen.length} factura(s). ¿Agregar las 6 de prueba de todas formas?`)) return;
+
+      const hoyD = new Date();
+      const iso = (d) => d.toISOString().slice(0,10);
+      const diasAtras = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() - n); return iso(d); };
+      const diasAdelante = (n) => { const d = new Date(hoyD); d.setDate(d.getDate() + n); return iso(d); };
+      const uidF = () => 'f' + Date.now() + Math.random().toString(36).slice(2, 6);
+
+      const facturas = [
+        { id: uidF(), numero: 'FAC-001', proveedor: 'Depósito Dental Colombia',     paciente: 'Depósito Dental Colombia',     documento: '900123456-7', telefono: '3001112233', concepto: 'Insumos de odontología',           valor:  850000, fecha: diasAtras(18), vencimiento: diasAtras(3),     estado: 'pagado',    revisado: true  },
+        { id: uidF(), numero: 'FAC-002', proveedor: 'Laboratorio Dental Sonríe',    paciente: 'Laboratorio Dental Sonríe',    documento: '811234567-2', telefono: '3014445566', concepto: 'Trabajos de laboratorio (coronas)', valor: 1200000, fecha: diasAtras(12), vencimiento: diasAdelante(5),  estado: 'pendiente', revisado: false },
+        { id: uidF(), numero: 'FAC-003', proveedor: 'Equipos Médicos del Valle',    paciente: 'Equipos Médicos del Valle',    documento: '900987654-1', telefono: '3027778899', concepto: 'Mantenimiento de unidad odontológica', valor: 480000, fecha: diasAtras(25), vencimiento: diasAtras(8),     estado: 'vencido',   revisado: false },
+        { id: uidF(), numero: 'FAC-004', proveedor: 'Suministros de Oficina S.A.S', paciente: 'Suministros de Oficina S.A.S', documento: '901222333-4', telefono: '3036665544', concepto: 'Papelería y útiles de recepción',   valor:  220000, fecha: diasAtras(7),  vencimiento: diasAdelante(10), estado: 'pendiente', revisado: false },
+        { id: uidF(), numero: 'FAC-005', proveedor: 'Inmobiliaria El Poblado',      paciente: 'Inmobiliaria El Poblado',      documento: '890111222-5', telefono: '3048889900', concepto: 'Arriendo del consultorio (mes)',    valor: 3500000, fecha: diasAtras(30), vencimiento: diasAtras(28),    estado: 'pagado',    revisado: true  },
+        { id: uidF(), numero: 'FAC-006', proveedor: 'Publicidad Creativa Medellín', paciente: 'Publicidad Creativa Medellín', documento: '901333444-6', telefono: '3052223344', concepto: 'Pauta digital y diseño de piezas',  valor:  650000, fecha: diasAtras(5),  vencimiento: diasAdelante(15), estado: 'pendiente', revisado: false },
+      ];
+
+      const existenFacts = JSON.parse(localStorage.getItem('facturas_ips') || '[]');
+      localStorage.setItem('facturas_ips', JSON.stringify([...existenFacts, ...facturas]));
+      showToast('Facturación: 6 facturas de proveedores cargadas');
+    }
+
+    // ── Metas: 3 metas de ejemplo con avance mes a mes ──
+    function cargarDemoMetas() {
+      const existen = JSON.parse(localStorage.getItem('metas_ips') || '[]');
+      if (Array.isArray(existen) && existen.length > 0 &&
+          !confirm(`Ya tiene ${existen.length} meta(s). ¿Agregar las 3 de prueba de todas formas?`)) return;
+
+      const y = String(new Date().getFullYear());
+      const r = () => Math.random().toString(36).slice(2, 6);
+      const nuevas = [
+        { id:'meta_pac'+r(), nombre:'Pacientes nuevos', tipo:'numero', unidad:'pacientes', color:'#C9A84C',
+          anios:{ [y]:{ objetivos:Array(12).fill(20),       meses:[18,22,19,25,21,17,null,null,null,null,null,null] } } },
+        { id:'meta_ing'+r(), nombre:'Ingresos', tipo:'dinero', unidad:'$', color:'#4c8fca',
+          anios:{ [y]:{ objetivos:Array(12).fill(10000000), meses:[8500000,9200000,7800000,11000000,9500000,8000000,null,null,null,null,null,null] } } },
+        { id:'meta_cit'+r(), nombre:'Citas agendadas', tipo:'numero', unidad:'citas', color:'#7ab648',
+          anios:{ [y]:{ objetivos:Array(12).fill(50),       meses:[42,55,48,60,52,45,null,null,null,null,null,null] } } },
+      ];
+      const base = Array.isArray(existen) ? existen : [];
+      localStorage.setItem('metas_ips', JSON.stringify([...base, ...nuevas]));
+      showToast('Metas: 3 metas de ejemplo cargadas');
+    }
+
+    // ── Limpiezas por módulo ──
+    function limpiarCRM() {
+      if (!confirm('¿Borrar todos los datos del CRM (contactos, citas, pipeline, difusiones, plantillas, bots, tareas, notas y puntos)?\n\nNo afecta Facturación ni Metas.')) return;
+      ['pacientes_ips','citas_ips','etapas_pipeline_ips','vista_pipeline_ips','horarios_ips',
+       'difusiones_ips','bots_ips','plantillas_ips','tareas_ips','gamificacion_ips',
+       'agente_ia_config','agente_ia_activo'].forEach(k => localStorage.removeItem(k));
+      Object.keys(localStorage).filter(k => k.startsWith('notas_pac_')).forEach(k => localStorage.removeItem(k));
+      showToast('CRM limpio');
+    }
+    function limpiarFacturacion() {
+      if (!confirm('¿Borrar todas las facturas del módulo de Facturación?\n\nNo afecta el CRM ni las Metas.')) return;
+      localStorage.removeItem('facturas_ips');
+      showToast('Facturación limpia');
+    }
+    function limpiarMetas() {
+      if (!confirm('¿Borrar todas las metas y su avance mes a mes?\n\nNo afecta el CRM ni la Facturación.')) return;
+      localStorage.removeItem('metas_ips');
+      showToast('Metas limpias');
     }
 
     // ── APARIENCIA ──
