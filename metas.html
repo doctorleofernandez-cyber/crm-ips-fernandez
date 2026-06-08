@@ -141,6 +141,7 @@
     .month-table tr.es-actual { background: rgba(201,168,76,0.07); }
     .inp-logrado { width: 110px; text-align: right; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.12); border-radius: 7px; padding: 7px 10px; font-size: 13px; color: #1a1208; font-family: 'Inter', sans-serif; outline: none; }
     .inp-logrado:focus { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.06); }
+    .inp-meta { background: rgba(245,238,225,0.7); color: #6b5c42; border-style: dashed; }
     .cump { font-weight: 600; }
     .cump.ok { color: #4f9d4f; }
     .cump.warn { color: #cc8a2b; }
@@ -323,9 +324,10 @@
             <label>Unidad</label>
             <input type="text" id="mUnidad" placeholder="pacientes, citas, llamadas…" />
           </div>
-          <div class="form-group full">
-            <label>Objetivo anual (<span id="lblAnio">2026</span>)</label>
-            <input type="number" id="mObjetivo" placeholder="0" min="0" step="any" required />
+          <div class="form-group full" id="grpObjetivo">
+            <label>Meta de cada mes</label>
+            <input type="number" id="mObjetivo" placeholder="0" min="0" step="any" />
+            <div style="font-size:11px;color:#9c8c72;margin-top:2px">Punto de partida para los 12 meses de <span id="lblAnio">2026</span>. Luego puedes ajustar mes a mes en la tabla.</div>
           </div>
           <div class="form-group full">
             <label>Color</label>
@@ -362,11 +364,11 @@
     const y = String(new Date().getFullYear());
     return [
       { id:'meta_pac', nombre:'Pacientes nuevos', tipo:'numero', unidad:'pacientes', color:'#C9A84C',
-        anios:{ [y]:{ objetivo:240, meses:[18,22,19,25,21,17,null,null,null,null,null,null] } } },
+        anios:{ [y]:{ objetivos:Array(12).fill(20), meses:[18,22,19,25,21,17,null,null,null,null,null,null] } } },
       { id:'meta_ing', nombre:'Ingresos', tipo:'dinero', unidad:'$', color:'#4c8fca',
-        anios:{ [y]:{ objetivo:120000000, meses:[8500000,9200000,7800000,11000000,9500000,8000000,null,null,null,null,null,null] } } },
+        anios:{ [y]:{ objetivos:Array(12).fill(10000000), meses:[8500000,9200000,7800000,11000000,9500000,8000000,null,null,null,null,null,null] } } },
       { id:'meta_cit', nombre:'Citas agendadas', tipo:'numero', unidad:'citas', color:'#7ab648',
-        anios:{ [y]:{ objetivo:600, meses:[42,55,48,60,52,45,null,null,null,null,null,null] } } },
+        anios:{ [y]:{ objetivos:Array(12).fill(50), meses:[42,55,48,60,52,45,null,null,null,null,null,null] } } },
     ];
   }
 
@@ -383,14 +385,27 @@
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
   }
 
-  /* Devuelve (creando si hace falta) los datos de una meta para el año dado. */
+  /* Devuelve (creando si hace falta) los datos de una meta para el año dado.
+     Cada año tiene la META de cada mes (objetivos[12]) y lo LOGRADO (meses[12]).
+     El objetivo anual es la suma de las 12 metas mensuales. */
   function datosAnio(meta, anio) {
     if (!meta.anios) meta.anios = {};
-    if (!meta.anios[anio]) meta.anios[anio] = { objetivo: 0, meses: Array(12).fill(null) };
-    if (!Array.isArray(meta.anios[anio].meses) || meta.anios[anio].meses.length !== 12) {
-      meta.anios[anio].meses = Array(12).fill(null);
+    if (!meta.anios[anio]) meta.anios[anio] = { objetivos: Array(12).fill(0), meses: Array(12).fill(null) };
+    const da = meta.anios[anio];
+    // Migrar formato viejo { objetivo: <anual>, meses } → metas por mes
+    if (!Array.isArray(da.objetivos)) {
+      const base = Math.round((Number(da.objetivo) || 0) / 12);
+      da.objetivos = Array(12).fill(base);
+      delete da.objetivo;
     }
-    return meta.anios[anio];
+    if (da.objetivos.length !== 12) da.objetivos = Array(12).fill(0);
+    if (!Array.isArray(da.meses) || da.meses.length !== 12) da.meses = Array(12).fill(null);
+    return da;
+  }
+
+  /* Objetivo anual = suma de las metas de los 12 meses. */
+  function objetivoAnual(meta, anio) {
+    return datosAnio(meta, anio).objetivos.reduce((a, b) => a + (Number(b) || 0), 0);
   }
 
   /* ── Formato de valores ── */
@@ -440,13 +455,15 @@
     let sumaPct = 0, conObj = 0, alDia = 0, atras = 0;
     metas.forEach(m => {
       const d = datosAnio(m, anioActual);
-      const obj = Number(d.objetivo) || 0;
+      const obj = objetivoAnual(m, anioActual);
       const logr = sumaLograda(m, anioActual);
       if (obj > 0) {
         const pct = (logr / obj) * 100;
         sumaPct += pct; conObj++;
-        const esperado = obj * (transc / 12);
-        if (logr >= esperado) alDia++; else atras++;
+        // Esperado y logrado solo de los meses ya transcurridos
+        let espHasta = 0, logrHasta = 0;
+        for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
+        if (logrHasta >= espHasta) alDia++; else atras++;
       }
     });
     document.getElementById('kMetas').textContent = metas.length;
@@ -462,12 +479,13 @@
     const transc = mesesTranscurridos(anioActual);
     metas.forEach(m => {
       const d = datosAnio(m, anioActual);
-      const obj = Number(d.objetivo) || 0;
+      const obj = objetivoAnual(m, anioActual);
       const logr = sumaLograda(m, anioActual);
       const pct = obj > 0 ? Math.min(100, Math.round((logr / obj) * 100)) : 0;
       const pctReal = obj > 0 ? Math.round((logr / obj) * 100) : 0;
-      const esperado = obj * (transc / 12);
-      const alDia = obj > 0 && logr >= esperado;
+      let espHasta = 0, logrHasta = 0;
+      for (let i = 0; i < transc; i++) { espHasta += Number(d.objetivos[i]) || 0; logrHasta += Number(d.meses[i]) || 0; }
+      const alDia = obj > 0 && logrHasta >= espHasta;
       const estadoHtml = obj > 0
         ? `<span class="meta-estado ${alDia ? 'aldia' : 'atras'}">${alDia ? '● Al día' : '● Atrasada'}</span>`
         : '';
@@ -516,15 +534,15 @@
     if (!metaSelId || !metas.find(m => m.id === metaSelId)) metaSelId = metas[0].id;
     const meta = metas.find(m => m.id === metaSelId);
     const d = datosAnio(meta, anioActual);
-    const obj = Number(d.objetivo) || 0;
-    const metaMes = obj / 12;
+    const objAnual = objetivoAnual(meta, anioActual);
 
     document.getElementById('dashMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
     document.getElementById('tablaMetaNom').textContent = meta.nombre + ' (' + anioActual + ')';
 
-    // Gráfico: barras = logrado, línea = meta mensual.
+    // Gráfico: barras = logrado, línea = meta de cada mes (puede variar mes a mes).
     // El mes actual (si vemos el año en curso) se resalta y los demás se atenúan.
     const logrados = d.meses.map(v => (v === null || v === undefined || v === '') ? null : Number(v));
+    const metasMes = d.objetivos.map(v => Number(v) || 0);
     const mesActualIdx = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
     const colores = logrados.map((_, i) => (mesActualIdx < 0 || i === mesActualIdx) ? meta.color : hexAlpha(meta.color, 0.4));
     const bordes = logrados.map((_, i) => i === mesActualIdx ? '#1a1208' : 'transparent');
@@ -535,7 +553,7 @@
         labels: MESES,
         datasets: [
           { type: 'bar', label: 'Logrado', data: logrados, backgroundColor: colores, borderColor: bordes, borderWidth: grosores, borderRadius: 6, maxBarThickness: 34, order: 2 },
-          { type: 'line', label: 'Meta del mes', data: Array(12).fill(metaMes), borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 0, tension: 0, order: 1 }
+          { type: 'line', label: 'Meta del mes', data: metasMes, borderColor: '#c0392b', borderWidth: 2, borderDash: [6, 5], pointRadius: 3, pointBackgroundColor: '#c0392b', tension: 0, order: 1 }
         ]
       },
       options: {
@@ -551,12 +569,13 @@
       }
     });
 
-    // Tabla editable
+    // Tabla editable: cada mes tiene su META y su LOGRADO (ambos editables)
     const mesActual = (anioActual === new Date().getFullYear()) ? new Date().getMonth() : -1;
     let rows = '';
     for (let i = 0; i < 12; i++) {
       const v = d.meses[i];
-      const cump = (metaMes > 0 && v !== null && v !== undefined && v !== '') ? (Number(v) / metaMes) * 100 : null;
+      const om = Number(d.objetivos[i]) || 0;
+      const cump = (om > 0 && v !== null && v !== undefined && v !== '') ? (Number(v) / om) * 100 : null;
       let cumpCls = 'warn', cumpTxt = '—';
       if (cump !== null) {
         cumpTxt = Math.round(cump) + '%';
@@ -565,7 +584,9 @@
       rows += `
         <tr class="${i === mesActual ? 'es-actual' : ''}">
           <td class="mes-nombre">${MESES[i]}</td>
-          <td class="num">${obj > 0 ? fmt(meta, Math.round(metaMes)) : '—'}</td>
+          <td class="num"><input class="inp-logrado inp-meta" type="number" step="any" min="0"
+                value="${d.objetivos[i] === null || d.objetivos[i] === undefined ? '' : d.objetivos[i]}"
+                onchange="setObjetivoMes('${meta.id}', ${i}, this.value)" placeholder="0" /></td>
           <td class="num"><input class="inp-logrado" type="number" step="any" min="0"
                 value="${v === null || v === undefined ? '' : v}"
                 onchange="setMes('${meta.id}', ${i}, this.value)" placeholder="—" /></td>
@@ -573,6 +594,17 @@
         </tr>`;
     }
     document.getElementById('monthBody').innerHTML = rows;
+  }
+
+  function setObjetivoMes(metaId, i, valor) {
+    const meta = metas.find(m => m.id === metaId);
+    if (!meta) return;
+    const d = datosAnio(meta, anioActual);
+    d.objetivos[i] = (valor === '' || valor === null) ? 0 : Number(valor);
+    guardarMetas();
+    renderKPIs();
+    renderTarjetas();
+    renderDashboard();
   }
 
   function setMes(metaId, i, valor) {
@@ -615,6 +647,7 @@
     document.getElementById('mId').value = '';
     document.getElementById('modalTitulo').innerHTML = 'Nueva <span>meta</span>';
     document.getElementById('lblAnio').textContent = anioActual;
+    document.getElementById('grpObjetivo').style.display = 'flex';  // al crear sí se pide meta mensual base
     colorSel = COLORES[0];
     pintarColores();
     onTipoChange();
@@ -623,14 +656,12 @@
   function editarMeta(id) {
     const m = metas.find(x => x.id === id);
     if (!m) return;
-    const d = datosAnio(m, anioActual);
     document.getElementById('mId').value = m.id;
     document.getElementById('modalTitulo').innerHTML = 'Editar <span>meta</span>';
     document.getElementById('mNombre').value = m.nombre;
     document.getElementById('mTipo').value = m.tipo || 'numero';
     document.getElementById('mUnidad').value = m.unidad || '';
-    document.getElementById('mObjetivo').value = d.objetivo || '';
-    document.getElementById('lblAnio').textContent = anioActual;
+    document.getElementById('grpObjetivo').style.display = 'none';  // las metas por mes se editan en la tabla
     colorSel = m.color || COLORES[0];
     pintarColores();
     onTipoChange();
@@ -645,16 +676,17 @@
     const nombre = document.getElementById('mNombre').value.trim();
     const tipo = document.getElementById('mTipo').value;
     const unidad = tipo === 'dinero' ? '$' : document.getElementById('mUnidad').value.trim();
-    const objetivo = Number(document.getElementById('mObjetivo').value) || 0;
+    const metaMensual = Number(document.getElementById('mObjetivo').value) || 0;
     if (!nombre) return;
 
     if (id) {
+      // Editar: solo identidad. Las metas de cada mes se ajustan en la tabla.
       const m = metas.find(x => x.id === id);
       m.nombre = nombre; m.tipo = tipo; m.unidad = unidad; m.color = colorSel;
-      datosAnio(m, anioActual).objetivo = objetivo;
     } else {
+      // Crear: la meta mensual base llena los 12 meses (luego se ajusta en la tabla).
       const nueva = { id: 'meta_' + Date.now(), nombre, tipo, unidad, color: colorSel, anios: {} };
-      nueva.anios[anioActual] = { objetivo, meses: Array(12).fill(null) };
+      nueva.anios[anioActual] = { objetivos: Array(12).fill(metaMensual), meses: Array(12).fill(null) };
       metas.push(nueva);
       metaSelId = nueva.id;
     }
@@ -677,6 +709,7 @@
   cargarMetas();
   if (metas.length) metaSelId = metas[0].id;
   render();
+  guardarMetas();  // persiste el formato nuevo si se migró algo viejo
   </script>
 </body>
 </html>
