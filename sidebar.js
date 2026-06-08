@@ -130,44 +130,50 @@ function puedeAcceder(modulo) {
   var btn  = document.getElementById('sidebar-toggle');
   var main = document.querySelector('.main');
 
-  // Estado inicial: colapsado por defecto
-  var pinned = localStorage.getItem('sidebarPinned') === 'true';
-
   function setMargin(expanded) {
     if (main) main.style.marginLeft = expanded ? '220px' : '68px';
   }
 
-  function applyPin(p) {
-    pinned = p;
-    if (p) {
-      sidebar.classList.remove('collapsed');
-      setMargin(true);
-      if (btn) btn.title = 'Colapsar menú';
-    } else {
-      sidebar.classList.add('collapsed');
-      setMargin(false);
-      if (btn) btn.title = 'Anclar menú abierto';
-    }
-    localStorage.setItem('sidebarPinned', p);
-  }
+  if (!btn) {
+    // Páginas sin botón de anclar (menús cortos, p. ej. Facturación):
+    // el menú se deja SIEMPRE abierto. Sin colapso ni expandir-con-hover,
+    // para no confundir. No se toca la preferencia guardada del CRM.
+    sidebar.classList.remove('collapsed');
+    setMargin(true);
+  } else {
+    // Estado inicial: colapsado por defecto (recordando la preferencia)
+    var pinned = localStorage.getItem('sidebarPinned') === 'true';
 
-  // Aplicar sin animación al cargar
-  sidebar.style.transition = 'none';
-  applyPin(pinned);
-  requestAnimationFrame(function () { sidebar.style.transition = ''; });
+    var applyPin = function (p) {
+      pinned = p;
+      if (p) {
+        sidebar.classList.remove('collapsed');
+        setMargin(true);
+        btn.title = 'Colapsar menú';
+      } else {
+        sidebar.classList.add('collapsed');
+        setMargin(false);
+        btn.title = 'Anclar menú abierto';
+      }
+      localStorage.setItem('sidebarPinned', p);
+    };
 
-  // Botón pin: alterna entre anclado y colapsado
-  if (btn) {
+    // Aplicar sin animación al cargar
+    sidebar.style.transition = 'none';
+    applyPin(pinned);
+    requestAnimationFrame(function () { sidebar.style.transition = ''; });
+
+    // Botón pin: alterna entre anclado y colapsado
     btn.addEventListener('click', function () { applyPin(!pinned); });
-  }
 
-  // Hover: expandir el margen del main cuando el sidebar se agranda
-  sidebar.addEventListener('mouseenter', function () {
-    if (!pinned) setMargin(true);
-  });
-  sidebar.addEventListener('mouseleave', function () {
-    if (!pinned) setMargin(false);
-  });
+    // Hover: expandir el margen del main cuando el sidebar se agranda
+    sidebar.addEventListener('mouseenter', function () {
+      if (!pinned) setMargin(true);
+    });
+    sidebar.addEventListener('mouseleave', function () {
+      if (!pinned) setMargin(false);
+    });
+  }
 
 
   /* ── MENÚ MÓVIL (OFF-CANVAS) ── */
